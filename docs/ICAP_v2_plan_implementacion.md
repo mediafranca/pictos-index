@@ -1,12 +1,12 @@
 # ICAP v2: plan de implementación
 
-Repositorio `mediafranca/ICAP`, rama `v2`. Documento operativo que acompaña a la especificación conceptual (`docs/ICAP_v2_especificacion.md`), el recuento de dimensiones (`docs/ICAP_v2_dimensiones.md`) y la especificación formal de comportamiento (`spec/icap.allium`).
+Repositorio `mediafranca/ICAP`, rama `v2`. Documento operativo que acompaña a la especificación formal (`spec/icap.allium`) y a los documentos de diseño de `docs/`.
 
-Este plan define tres cosas: la estrategia de ramas y el archivo de V1, el flujo operativo de ingesta y procesos automáticos, y la secuencia de fases de construcción.
+Este plan define la estrategia de ramas, el flujo operativo y la secuencia de fases de construcción. Fue reordenado tras la evaluación arquitectónica: la versión anterior ordenaba las fases por capa de medición, y ese orden dejó de servir cuando la ingesta y el modelo de registros pasaron a ser prerrequisito de todo lo demás[^1].
 
-## 1. Estrategia de ramas y archivo de V1
+## 1. Estrategia de ramas
 
-V1 es un instrumento cerrado y publicable: evaluador de 3 pasos, seis Likert, hexágono, export `1.2.0`. No se toca. Se preserva como línea de archivo para que cualquier evaluación V1 existente siga siendo reproducible y comparable[^1].
+V1 es un instrumento cerrado y publicable. No se toca. Se preserva como línea de archivo para que cualquier evaluación existente siga siendo reproducible.
 
 ```mermaid
 gitGraph
@@ -17,93 +17,109 @@ gitGraph
     checkout main
     branch v2
     checkout v2
-    commit id: "spec + docs V2"
-    commit id: "capa A + D"
+    commit id: "spec + docs"
+    commit id: "front-end"
     commit id: "..."
 ```
 
-La rama `v1-archive` ya existe apuntando al mismo commit que `main` (`98e3c57`): es el evaluador hexagonal congelado. El desarrollo de V2 ocurre en la rama `v2` y, cuando el instrumento nuevo esté estable, reemplaza a `main`. Mientras tanto, `main` sigue sirviendo V1 en GitHub Pages sin interrupción.
+La rama `v1-archive` apunta al mismo commit que `main`. El desarrollo ocurre en `v2` y, cuando el instrumento nuevo esté estable, reemplaza a `main`. Mientras tanto `main` sigue sirviendo v1 en GitHub Pages sin interrupción.
 
-La regla de convivencia es que ninguna de las tres ramas depende de otra en tiempo de ejecución: `v1-archive` es inmutable, `main` es la versión publicada del momento, `v2` es el frente de trabajo.
+Ninguna de las tres ramas depende de otra en tiempo de ejecución: `v1-archive` es inmutable, `main` es la versión publicada del momento, `v2` es el frente de trabajo.
 
 ## 2. Flujo operativo
 
-El input no cambia: bibliotecas JSON exportadas de PICTOS.net (`payload.rows[]` con `bitmap` raster y `UTTERANCE`). Lo que cambia es lo que ocurre después de la carga.
+El input no cambia: bibliotecas JSON exportadas de PICTOS.net. Lo que cambia es que la ingesta ahora normaliza, valida y versiona antes de que nadie evalúe nada.
 
 ```mermaid
 flowchart TD
-    subgraph ingesta [Ingesta]
-        J[Dump JSON de PICTOS.net] --> F{fila con bitmap raster?}
-        F -- no, SVG o vacio --> X[excluida]
-        F -- si --> P[Pictogram creado]
-    end
+    J[Fuente: biblioteca o item suelto] --> AD[Adaptador de ingesta]
+    AD --> N[Normalizacion: Item con hashes]
+    N --> V[Informe de validacion<br/>bloqueante y descargable]
+    V --> A[Capa A por item]
+    A --> D[Capa D: informe de familia]
+    D --> S[Seleccion de submuestra B]
+    D --> R[Diagnostico disponible<br/>antes de todo dato humano]
 
-    subgraph auto [Procesos automaticos, sin dato humano]
-        P --> A[Capa A: geometria por item]
-        A --> AG{todos con geometria?}
-        AG -- si --> D[Capa D: informe de familia]
-        D --> S[Seleccion de submuestra B: 20% + extremos]
-        D --> R[Informe de biblioteca disponible]
-    end
+    S --> CAL[Calibracion previa<br/>bloqueante]
+    CAL --> B[Capa B sobre submuestra]
+    CAL --> C[Capa C por item]
 
-    subgraph humano [Captura humana]
-        S --> B[Capa B: umbrales sobre la submuestra]
-        P --> C[Capa C: 3 Likert por item]
-    end
-
-    subgraph salida [Salida]
-        A --> G[Compuerta conjuntiva por item]
-        B --> G
-        C --> G
-        D --> G
-        G --> E[Export 2.0.0]
-    end
+    A --> VE[Veredicto por origen del dato]
+    B --> VE
+    C --> VE
+    D --> VE
+    VE --> AG[Agregado: cobertura, personas,<br/>protocolo, desacuerdo, contextos]
+    AG --> E[Export: registro o bundle]
 ```
 
-El punto clave del flujo es que la carga dispara todo el tramo automático en cadena. Al terminar la ingesta se calcula la capa A por item; cuando todos los items tienen geometría, la biblioteca pasa a estado analizada, se computa el informe de familia y se selecciona la submuestra de la capa B. El evaluador recibe el informe de biblioteca antes de entregar un solo dato humano. Esto está formalizado en `spec/icap.allium` como el encadenamiento de las reglas `IngestLibraryDump`, `ComputeGeometry` y `CompleteAnalysis`.
-
-La captura humana es posterior y parcial por diseño: la capa B se pide solo sobre la submuestra (tarea de nombrado con doble pasada por eje), y la capa C son tres Likert por item. La compuerta conjuntiva combina las cuatro capas en un semáforo por item, nunca en un promedio.
+El punto clave sigue siendo que la carga dispara todo el tramo automático en cadena, de modo que el evaluador recibe el informe de familia antes de entregar un solo dato. Lo nuevo es que entre la carga y la evaluación hay ahora dos compuertas: el informe de validación, que impide empezar sobre datos que no se entendieron, y la calibración, que alinea el uso de la escala antes de que la persona puntúe.
 
 ## 3. Fases de construcción
 
-El orden respeta la prioridad de la sección 12 de la especificación: primero lo automático, que produce resultados publicables sin recoger un solo dato humano nuevo y valida la arquitectura antes de invertir en la interfaz de umbrales.
+El orden antepone lo que es prerrequisito de todo lo demás y deja para el final lo que necesita datos reales sobre los cuales operar.
 
-### Fase 1: Capa A y extracción de máscara
+### Fase 1: Ingesta normalizada
 
-Construir el pipeline de ingesta y el cálculo geométrico. Entrega: al cargar un dump, cada pictograma queda con sus cuatro métricas A. Es la base de todo lo demás y da valor inmediato sin datos humanos. Corresponde a las reglas `IngestLibraryDump` y `ComputeGeometry` y al value type `GeometryLayer`. El cálculo de píxel (extracción de máscara, esqueleto, EDT) es una caja negra `compute_geometry` cuya especificación de detalle vive aparte.
+Adaptadores por tipo de fuente, modelo interno estable, resolución de herencia entre fuente e ítem, cálculo de hashes de imagen y enunciado, e informe de validación bloqueante y descargable. Corresponde a `Source`, `Item`, `ImportReport`, `ValidationFinding`, las reglas `ImportSource` y `PublishImportReport`, y la especificación diferida `SourceValidation.normalize`.
 
-Criterio de término: reproducir sobre la biblioteca de referencia las métricas de `metricas_so2027_icap.csv`.
+Es primero porque sin identidad de versión ninguna evaluación es anclable, y porque la regla de nunca corregir en silencio se implementa aquí o no se implementa.
 
-### Fase 2: Módulo D (informe de familia)
+Criterio de término: importar una biblioteca de PICTOS.net y un pictograma suelto por el mismo camino, con informe descargable que nombre toda exclusión.
 
-Construir D1 (matriz de confusabilidad), D2 (coeficientes de variación) y D3 (ranking de fragilidad) como vista independiente. Es la contribución original de V2 y el argumento de publicación. Corresponde a la regla `CompleteAnalysis`, la especificación diferida `FamilyAnalysis.compute` y las entidades `LibraryReport` y `ConfusablePair`.
+### Fase 2: Registro de evaluación
 
-Criterio de término: reproducir los tres pares en alerta del set de referencia, con el peor (`Natación` / `Natación Aguas Abiertas`, r=0,94) marcado.
+Ciclo de vida del registro con sellado irreversible, doble momento de comprensión con sus transiciones, respuestas dimensionales con estados tipados de ausencia, notas tipadas con visibilidad, sesión con contexto heredable, y calibración previa. Corresponde a `EvaluationSession`, `EvaluationRecord`, `ComprehensionMoment`, `DimensionResponse`, `Note`, `SessionCalibration` y sus reglas.
 
-### Fase 3: Compuerta conjuntiva
+Es segundo porque define la estructura que todas las capas de medición van a llenar. Construir las capas antes obligaría a rehacerlas cuando el registro cambie de forma.
 
-Reemplazar el promedio de V1 por la compuerta conjuntiva. Es esfuerzo de horas y corrige un riesgo real. Corresponde a los derivados `meets_layer_a`, `meets_layer_b`, `meets_layer_c`, `in_confusable_pair` y `eligible` de `Pictogram`, más la invariante `EligibleNeverConfusable`.
+Criterio de término: abrir, completar y sellar un registro sin que ninguna ruta permita reescribir una respuesta sellada.
 
-Antes de cerrar esta fase hay que resolver las open questions sobre A3 en la compuerta, el proxy de la capa B para no muestreados y el tratamiento del N/A en C3[^2].
+### Fase 3: Capa A y extracción de máscara
 
-### Fase 4: Capa B con protocolo completo
+Cálculo geométrico sobre el bitmap. Corresponde al value type `GeometryLayer`, la regla `ComputeGeometry` y la caja negra `compute_geometry`.
 
-Construir la medición psicofísica: los tres efectos en canvas sobre el bitmap ya cargado, doble pasada por histéresis, tarea de nombrado, aleatorización de partida y orden. Es el cambio metodológico de fondo. Corresponde a `ThresholdMeasurement`, las reglas `RecordDescendingPass` y `RecordAscendingPass`, la especificación diferida `ThresholdSampling.select` y la surface `ThresholdTask`.
+Criterio de término: reproducir las métricas del corpus de referencia, ya recomputado sobre los 21 pictogramas.
 
-### Fase 5: Ficha de tres bandas
+### Fase 4: Módulo D
 
-Construir la visualización por item que reemplaza al hexágono: barras con umbral para A, unidades físicas para B, triángulo para C. Requiere que las fases 1, 2 y 4 existan. Corresponde a la surface `PictogramFicha`.
+Matriz de confusabilidad con su distribución completa y corte crítico derivado, coeficientes de variación, y ranking de fragilidad. Corresponde a `FamilyReport`, `ConfusablePair` y `FamilyAnalysis.compute`.
 
-### Fase 6: Export 2.0.0 y legacy
+Es la contribución original de la v2 y el argumento de publicación. Junto con la fase 3 produce resultados publicables sin recoger un solo dato humano nuevo.
 
-Último, cuando el modelo de datos esté estable. Incluye el bloque `legacy_v1` con las seis dimensiones derivadas de forma aproximada para retrocompatibilidad. Corresponde a la regla `ExportEvaluation` y la entidad `Export`.
+Criterio de término: identificar los pares críticos del corpus de referencia y situar la biblioteca en el plano de confusabilidad contra consistencia.
 
-## 4. Qué queda abierto antes de fijar umbrales
+### Fase 5: Veredicto de dos niveles
 
-Los umbrales de la sección 7.2 son propuestas sin calibrar, no constantes validadas, y casi toda la evidencia local viene de trece pictogramas de una sola familia gráfica. El paso honesto después de las fases 1 y 2 es correr el instrumento sobre dos o tres bibliotecas de estilos distintos antes de fijar umbral alguno. Hasta entonces, todo umbral vive en el bloque `config` de la especificación, editable y registrado en el export, y toda métrica marcada como hipótesis se muestra como dato exploratorio, nunca como puntaje validado.
+Vetos duros separados por origen del dato y perfil compensatorio. Corresponde a los derivados de `Item` y `EvaluationRecord` y a las invariantes que los sostienen.
 
-Las decisiones aún no tomadas están registradas como open questions al final de `spec/icap.allium`.
+Antes de cerrar esta fase hay que resolver las preguntas abiertas sobre la derivación del corte crítico de D1 y sobre el tratamiento de la capa B en ítems no muestreados.
 
-[^1]: La retrocompatibilidad se apoya además en el bloque `legacy_v1` del export 2.0.0, que deriva las seis dimensiones de V1 desde las capas A y B según el mapeo de la sección 3.3 de la especificación. La derivación es aproximada y así debe documentarse.
+### Fase 6: Capa B con protocolo completo
 
-[^2]: Estas tres decisiones cambian el resultado de la compuerta y por eso bloquean el cierre de la fase 3. La lectura provisional de la especificación formal es: A3 fuera de la compuerta (solo advertencia), capa B verdadera por vacuidad para no muestreados, y N/A excluido del mínimo y del promedio de C.
+Los tres efectos en canvas, doble pasada por histéresis, tarea de nombrado, aleatorización de partida y de orden. Corresponde a `ThresholdMeasurement`, sus reglas y `ThresholdSampling.select`.
+
+Requiere resolver antes el problema de unidades físicas descrito en los requisitos de front-end: los píxeles de canvas no equivalen a tamaño físico, y sin resolverlo el veto B2 se apoya en una unidad ambigua.
+
+### Fase 7: Agregado
+
+Cobertura, distribuciones, desacuerdo entre evaluadores y contextos cubiertos. Corresponde a `SourceAggregate` y `AggregateComputation.recompute`.
+
+Va al final porque necesita registros reales sobre los cuales calcular, y porque la pregunta abierta sobre cómo resumir la capa C entre registros con estados de ausencia mezclados debe resolverse con datos a la vista.
+
+### Fase 8: Exportación en dos niveles
+
+Registro atómico firmable y bundle con vista compacta o resuelta, más el bloque de retrocompatibilidad con v1. Corresponde a `Export` y sus variantes.
+
+## 4. Trabajo posterior: certificación
+
+Fuera del alcance de la v2 y registrado como preguntas abiertas en la especificación: tamaños mínimos de muestra, umbrales de acuerdo interevaluador, firma o URL verificable, y vigencia, revocación y reevaluación del sello.
+
+La infraestructura que necesita ya existe. Sin identidad de versión y sin registros atómicos firmables no hay sello posible, y ambas cosas están en el modelo desde la fase 1.
+
+## 5. Antes de fijar cualquier umbral
+
+Los valores del bloque `config` son propuestas sin calibrar, y el corpus de referencia está en revisión. El paso honesto después de las fases 3 y 4 es recomputar sobre el corpus completo y correr el instrumento sobre dos o tres bibliotecas de estilos gráficos distintos.
+
+Hasta entonces, todo umbral vive en configuración, editable y registrado en el export, y toda métrica marcada como hipótesis se muestra como dato exploratorio y nunca como puntaje validado.
+
+[^1]: La versión anterior de este plan ordenaba: capa A, módulo D, compuerta, capa B, ficha, export. Ese orden suponía que la evaluación era una propiedad del pictograma. Cuando la evaluación pasó a ser un registro independiente anclado a una versión exacta del ítem, la ingesta y el modelo de registros pasaron a ser prerrequisito de todo lo demás, y las capas de medición se desplazaron detrás de ellos.
