@@ -4,6 +4,11 @@
     "description": "PICTOS Index is an instrument for evaluating the communicative quality of pictogram libraries."
   },
   "language": { "label": "Interface language" },
+  "prototype": {
+    "title": "Prototype under development",
+    "body": "The index and its results are experimental. They do not replace comprehension studies, validation with users or a professional accessibility assessment.",
+    "short": "Prototype under development: results are experimental."
+  },
   "a11y": {
     "skip": "Skip to content",
     "brandHome": "PICTOS Index, return to the home page",
@@ -35,7 +40,9 @@
     "relationTitle": "Describe your relationship with AAC",
     "relationBody": "A brief answer helps interpret the experience from which the evaluation is made.",
     "evaluateTitle": "Evaluate each pictogram",
-    "evaluateBody": "First record what it communicates; then review its six dimensions, one at a time, on a scale from 1 to 5."
+    "evaluateBody": "First record what it communicates; then review its six dimensions, one at a time, on a scale from 1 to 5.",
+    "auditTitle": "Evaluate the library",
+    "auditBody": "View the complete set and rate its formal coherence and visual grammar separately."
   },
   "principles": {
     "eyebrow": "Good, beautiful and true",
@@ -45,11 +52,12 @@
   "app": {
     "eyebrow": "Instrument",
     "title": "Evaluate a library",
-    "lead": "Three steps. Progress is stored locally in this browser.",
+    "lead": "Four stages. Progress is stored locally in this browser.",
     "stepLibrary": "Library",
     "stepEvaluator": "Evaluator",
-    "stepEvaluation": "Evaluation",
-    "stepCount": "Step {step} of {total}"
+    "stepEvaluation": "Pictograms",
+    "stepAudit": "Library",
+    "stepCount": "Stage {step} of {total}"
   },
   "library": {
     "title": "Load the library",
@@ -115,7 +123,8 @@
     "exclusiveAnnouncement": "No previous experience selected; the other options have been disabled."
   },
   "evaluation": {
-    "title": "Evaluate the pictograms",
+    "title": "Pictogram evaluation",
+    "pictogramPosition": "Pictogram {current} of {total}",
     "sourcePhrase": "Original source phrase:",
     "firstImpression": "First impression",
     "question": "What does this pictogram communicate?",
@@ -128,6 +137,7 @@
     "dimensionPrevious": "Previous dimension",
     "dimensionNext": "Next dimension",
     "dimensionCount": "Dimension {current} of {total}",
+    "dimensionPosition": "Pictogram {pictogram} of {pictograms} · Dimension {dimension} of {dimensions}",
     "rate": "Rate from 1 to 5",
     "rated": "You rated: {label}",
     "scoreLabel": "{score} out of 5: {label}",
@@ -138,16 +148,56 @@
     "itemPrevious": "Previous pictogram",
     "itemNext": "Next pictogram",
     "progress": "{completed} of {total} evaluated",
+    "partialState": "Partial evaluation",
+    "completeState": "Pictograms evaluated",
     "downloadPartial": "Download partial evaluation",
     "downloadComplete": "Download complete evaluation",
     "back": "Return to step 2",
-    "save": "Save evaluation ({current}/{total})",
-    "saveNext": "Save evaluation and continue to the next ({current}/{total})",
+    "save": "Continue to the library evaluation",
+    "saveNext": "Next pictogram",
     "guessRequired": "Write what the pictogram communicates or choose Skip.",
     "itemFallback": "Item {number}",
     "imageFallback": "Pictogram unavailable",
     "level": "Level {score}",
     "noLevelDescription": "No description is available for this level."
+  },
+  "audit": {
+    "title": "Library audit",
+    "intro": "View the pictograms as a system. This evaluation describes the set and does not change the pictograms' PICTOS Index.",
+    "gridControls": "Grid controls",
+    "orderLabel": "Order",
+    "orderOriginal": "Original order",
+    "orderCategory": "By category",
+    "showLabels": "Show labels",
+    "hideLabels": "Hide labels",
+    "unknownCategory": "Uncategorised",
+    "unlabelledImage": "Unlabelled pictogram",
+    "coherenceTitle": "Formal coherence",
+    "coherenceBody": "Are the pictograms recognisable as members of the same set?",
+    "grammarTitle": "Visual grammar",
+    "grammarBody": "Does the set apply shared, recognisable visual rules?",
+    "chooseRating": "Select a rating.",
+    "scoreLabel": "{dimension}: {score} out of 5. {description}",
+    "levels": {
+      "coherence": {
+        "1": "No common set is apparent.",
+        "2": "Membership of the set is weak.",
+        "3": "The set is recognisable, although visible variations remain.",
+        "4": "The set is coherent, with minor variations.",
+        "5": "The set is clearly coherent and distinctive."
+      },
+      "grammar": {
+        "1": "No shared visual rules are recognisable.",
+        "2": "Shared rules appear only occasionally.",
+        "3": "A recognisable grammar exists but is applied unevenly.",
+        "4": "The visual grammar is stable, with minor exceptions.",
+        "5": "The visual grammar is clear, stable and recognisable."
+      }
+    },
+    "separateTitle": "Separate result.",
+    "separateBody": "Coherence and grammar are not averaged into the PICTOS Index.",
+    "back": "Return to the pictograms",
+    "download": "Download complete evaluation"
   },
   "alerts": {
     "invalidJson": "The library JSON file could not be read.",
@@ -156,7 +206,7 @@
     "loadFirst": "Load a library first.",
     "profileFirst": "Complete the evaluator details first."
   },
-  "status": { "step": "Step {step} of 3" },
+  "status": { "step": "Stage {step} of 4" },
   "rubric": {
     "dimensions": {
       "clarity": { "name": "Clarity", "description": "Clarity is the degree to which the pictogram is visually legible and free from ambiguity." },

@@ -4,6 +4,11 @@
     "description": "PICTOS Index es un instrumento para evaluar la calidad comunicativa de librerías pictográficas."
   },
   "language": { "label": "Idioma de la interfaz" },
+  "prototype": {
+    "title": "Prototipo en construcción",
+    "body": "El índice y sus resultados son experimentales. No sustituyen estudios de comprensión, validación con personas usuarias ni una evaluación profesional de accesibilidad.",
+    "short": "Prototipo en construcción: los resultados son experimentales."
+  },
   "a11y": {
     "skip": "Saltar al contenido",
     "brandHome": "PICTOS Index, volver a la portada",
@@ -35,7 +40,9 @@
     "relationTitle": "Indica tu relación con la CAA",
     "relationBody": "Una respuesta breve permite interpretar desde qué experiencia se realiza la evaluación.",
     "evaluateTitle": "Evalúa cada pictograma",
-    "evaluateBody": "Primero registra qué comunica; después recorre sus seis dimensiones, una por una, en una escala de 1 a 5."
+    "evaluateBody": "Primero registra qué comunica; después recorre sus seis dimensiones, una por una, en una escala de 1 a 5.",
+    "auditTitle": "Evalúa la biblioteca",
+    "auditBody": "Observa el conjunto completo y valora por separado su coherencia formal y su gramática visual."
   },
   "principles": {
     "eyebrow": "Bueno, bello y verdadero",
@@ -45,11 +52,12 @@
   "app": {
     "eyebrow": "Instrumento",
     "title": "Evaluar una librería",
-    "lead": "Tres pasos. El avance queda guardado localmente en este navegador.",
+    "lead": "Cuatro momentos. El avance queda guardado localmente en este navegador.",
     "stepLibrary": "Librería",
     "stepEvaluator": "Evaluador",
-    "stepEvaluation": "Evaluación",
-    "stepCount": "Paso {step} de {total}"
+    "stepEvaluation": "Pictogramas",
+    "stepAudit": "Biblioteca",
+    "stepCount": "Momento {step} de {total}"
   },
   "library": {
     "title": "Carga la librería",
@@ -115,7 +123,8 @@
     "exclusiveAnnouncement": "Se seleccionó sin experiencia previa; se desactivaron las demás opciones."
   },
   "evaluation": {
-    "title": "Evalúa los pictogramas",
+    "title": "Evaluación de pictogramas",
+    "pictogramPosition": "Pictograma {current} de {total}",
     "sourcePhrase": "Frase real de origen:",
     "firstImpression": "Primera impresión",
     "question": "¿Qué comunica este pictograma?",
@@ -128,6 +137,7 @@
     "dimensionPrevious": "Dimensión anterior",
     "dimensionNext": "Dimensión siguiente",
     "dimensionCount": "Dimensión {current} de {total}",
+    "dimensionPosition": "Pictograma {pictogram} de {pictograms} · Dimensión {dimension} de {dimensions}",
     "rate": "Evalúa de 1 a 5",
     "rated": "Evaluaste: {label}",
     "scoreLabel": "{score} de 5: {label}",
@@ -138,16 +148,56 @@
     "itemPrevious": "Pictograma anterior",
     "itemNext": "Pictograma siguiente",
     "progress": "{completed} evaluados de {total}",
+    "partialState": "Evaluación parcial",
+    "completeState": "Pictogramas evaluados",
     "downloadPartial": "Descargar evaluación parcial",
     "downloadComplete": "Descargar evaluación completa",
     "back": "Volver al paso 2",
-    "save": "Guardar evaluación ({current}/{total})",
-    "saveNext": "Guardar evaluación y pasar a la siguiente ({current}/{total})",
+    "save": "Continuar a la evaluación de la biblioteca",
+    "saveNext": "Pictograma siguiente",
     "guessRequired": "Escribe qué comunica el pictograma o usa Omitir.",
     "itemFallback": "Elemento {number}",
     "imageFallback": "Pictograma sin imagen",
     "level": "Nivel {score}",
     "noLevelDescription": "Sin descripción para este nivel."
+  },
+  "audit": {
+    "title": "Auditoría de la biblioteca",
+    "intro": "Mira los pictogramas como un sistema. Esta evaluación describe el conjunto y no modifica el PICTOS Index de los pictogramas.",
+    "gridControls": "Controles de la retícula",
+    "orderLabel": "Ordenar",
+    "orderOriginal": "Orden original",
+    "orderCategory": "Por categoría",
+    "showLabels": "Mostrar etiquetas",
+    "hideLabels": "Ocultar etiquetas",
+    "unknownCategory": "Sin categoría",
+    "unlabelledImage": "Pictograma sin etiqueta",
+    "coherenceTitle": "Coherencia formal",
+    "coherenceBody": "¿Los pictogramas se reconocen como integrantes de un mismo conjunto?",
+    "grammarTitle": "Gramática visual",
+    "grammarBody": "¿El conjunto aplica reglas visuales compartidas y reconocibles?",
+    "chooseRating": "Selecciona una valoración.",
+    "scoreLabel": "{dimension}: {score} de 5. {description}",
+    "levels": {
+      "coherence": {
+        "1": "No se percibe un conjunto común.",
+        "2": "La pertenencia al conjunto es débil.",
+        "3": "El conjunto se reconoce, aunque presenta variaciones visibles.",
+        "4": "El conjunto es coherente, con variaciones menores.",
+        "5": "El conjunto es claramente coherente y distintivo."
+      },
+      "grammar": {
+        "1": "No se reconocen reglas visuales compartidas.",
+        "2": "Las reglas compartidas aparecen de manera ocasional.",
+        "3": "Existe una gramática reconocible, aplicada de forma irregular.",
+        "4": "La gramática visual es estable, con excepciones menores.",
+        "5": "La gramática visual es clara, estable y reconocible."
+      }
+    },
+    "separateTitle": "Resultado separado.",
+    "separateBody": "Coherencia y gramática no se promedian con el PICTOS Index.",
+    "back": "Volver a los pictogramas",
+    "download": "Descargar evaluación completa"
   },
   "alerts": {
     "invalidJson": "No se pudo leer el JSON de la librería.",
@@ -156,7 +206,7 @@
     "loadFirst": "Primero carga una librería.",
     "profileFirst": "Primero completa los datos del evaluador."
   },
-  "status": { "step": "Paso {step} de 3" },
+  "status": { "step": "Momento {step} de 4" },
   "rubric": {
     "dimensions": {
       "clarity": { "name": "Claridad", "description": "La claridad es el grado en que el pictograma resulta visualmente legible y libre de ambigüedad." },

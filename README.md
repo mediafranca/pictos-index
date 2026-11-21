@@ -10,6 +10,9 @@
 
 PICTOS Index permite revisar bibliotecas exportadas desde [pictos.net](https://pictos.net) mediante seis dimensiones complementarias. Todo el proceso ocurre en el navegador: los archivos cargados y el avance de la evaluación permanecen en el dispositivo de quien evalúa.
 
+> [!WARNING]
+> **Prototipo en construcción.** El índice, la rúbrica y los resultados son experimentales. No sustituyen estudios de comprensión, validación con personas usuarias ni una evaluación profesional de accesibilidad. Sus puntajes no deben interpretarse como certificación de una biblioteca pictográfica.
+
 ## Qué evalúa
 
 1. **Claridad**
@@ -20,6 +23,13 @@ PICTOS Index permite revisar bibliotecas exportadas desde [pictos.net](https://p
 6. **Accesibilidad cognitiva**
 
 Cada pictograma recibe una valoración de 1 a 5 por dimensión. El instrumento muestra el perfil resultante en un gráfico hexagonal y acompaña cada puntaje con la descripción correspondiente de la rúbrica.
+
+Al terminar los pictogramas, una auditoría separada muestra la biblioteca completa en una retícula normalizada y permite valorar dos propiedades del conjunto:
+
+- **coherencia formal:** si los pictogramas se reconocen como integrantes de un mismo conjunto;
+- **gramática visual:** si el conjunto aplica reglas visuales compartidas y reconocibles.
+
+Estas dos valoraciones describen la biblioteca y **no se suman ni se promedian con el PICTOS Index** de los pictogramas. El análisis de pares confundibles queda fuera del alcance de esta versión.
 
 ## Probarlo en local
 
@@ -50,7 +60,8 @@ npm run validate-i18n
 1. **Cargar una biblioteca.** Acepta un archivo JSON exportado por PICTOS o una de las tres bibliotecas breves incluidas como ejemplo.
 2. **Describir la relación con la CAA.** Permite marcar una o varias relaciones, o indicar que no existe experiencia previa.
 3. **Evaluar los pictogramas.** Recoge primero una interpretación abierta y luego recorre las seis dimensiones, una por una, mostrando la rúbrica de cada nota.
-4. **Exportar el resultado.** Descarga un JSON con el perfil de la persona evaluadora, el progreso, los promedios y el detalle por pictograma.
+4. **Evaluar la biblioteca.** Presenta todos los pictogramas, primero sin etiquetas y luego con ellas, y registra coherencia formal y gramática visual como resultados separados.
+5. **Exportar el resultado.** Descarga un JSON con el perfil de la persona evaluadora, el progreso, los promedios, el detalle por pictograma y la evaluación separada de la biblioteca.
 
 El avance se guarda localmente en el navegador. La interfaz también ofrece navegación por teclado, gestión de foco, avisos para tecnologías de asistencia y adaptación a pantallas pequeñas.
 
@@ -77,13 +88,14 @@ Las tres bibliotecas de [`examples/`](examples/) contienen las mismas diez frase
 
 La fuente de verdad de la escala está en [`data/rubric-scale-descriptions.json`](data/rubric-scale-descriptions.json). La documentación ampliada vive en [`docs/rubric.md`](docs/rubric.md).
 
-La exportación usa el schema `pictos-index-library-evaluation-1.3.0` e incluye:
+La exportación usa el schema `pictos-index-library-evaluation-1.4.0` e incluye:
 
 - metadatos de la biblioteca;
 - relación de la persona evaluadora con la CAA;
 - identificador UUID y marcas temporales propias de la evaluación;
 - avance y promedios globales y por dimensión;
 - comprensión pragmática, puntajes y promedio de cada pictograma.
+- coherencia formal y gramática visual de la biblioteca, marcadas explícitamente como excluidas del promedio PICTOS Index.
 
 ## Estructura del repositorio
 

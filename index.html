@@ -54,6 +54,10 @@
               PICTOS Index ayuda a evaluar una librería completa desde seis miradas complementarias:
               claridad, reconocimiento, significado, uso, cultura y accesibilidad cognitiva.
             </p>
+            <p class="prototype-notice" role="note">
+              <strong data-i18n="prototype.title">Prototipo en construcción</strong>
+              <span data-i18n="prototype.body">El índice y sus resultados son experimentales. No sustituyen estudios de comprensión, validación con personas usuarias ni una evaluación profesional de accesibilidad.</span>
+            </p>
             <div class="hero-actions">
               <button id="startEvaluationBtn" class="primary-btn large-btn" type="button" data-i18n="home.start">
                 Comenzar una evaluación
@@ -81,6 +85,7 @@
             <li><span>1</span><strong data-i18n="how.loadTitle">Carga una librería</strong><p data-i18n="how.loadBody">Usa un archivo exportado desde PICTOS.net o prueba con la librería de ejemplo.</p></li>
             <li><span>2</span><strong data-i18n="how.relationTitle">Indica tu relación con la CAA</strong><p data-i18n="how.relationBody">Una respuesta breve permite interpretar desde qué experiencia se realiza la evaluación.</p></li>
             <li><span>3</span><strong data-i18n="how.evaluateTitle">Evalúa cada pictograma</strong><p data-i18n="how.evaluateBody">Primero registra qué comunica; después recorre sus seis dimensiones, una por una, en una escala de 1 a 5.</p></li>
+            <li><span>4</span><strong data-i18n="how.auditTitle">Evalúa la biblioteca</strong><p data-i18n="how.auditBody">Observa el conjunto completo y valora por separado su coherencia formal y su gramática visual.</p></li>
           </ol>
         </section>
 
@@ -97,17 +102,19 @@
         <header class="app-header">
           <p class="eyebrow" data-i18n="app.eyebrow">Instrumento</p>
           <h1 data-i18n="app.title">Evaluar una librería</h1>
-          <p class="lead" data-i18n="app.lead">Tres pasos. El avance queda guardado localmente en este navegador.</p>
+          <p class="lead" data-i18n="app.lead">Cuatro momentos. El avance queda guardado localmente en este navegador.</p>
+          <p class="app-prototype-note" data-i18n="prototype.short">Prototipo en construcción: los resultados son experimentales.</p>
         </header>
 
       <nav class="stepper" aria-label="Pasos" data-i18n-aria-label="a11y.steps">
         <button id="stepBtn1" class="step-pill active" type="button"><span>1</span><span data-i18n="app.stepLibrary">Librería</span></button>
         <button id="stepBtn2" class="step-pill" type="button" disabled><span>2</span><span data-i18n="app.stepEvaluator">Evaluador</span></button>
         <button id="stepBtn3" class="step-pill" type="button" disabled><span>3</span><span data-i18n="app.stepEvaluation">Evaluación</span></button>
+        <button id="stepBtn4" class="step-pill" type="button" disabled><span>4</span><span data-i18n="app.stepAudit">Biblioteca</span></button>
       </nav>
 
       <section id="step1" class="screen" aria-labelledby="step1Title">
-        <p class="step-kicker" data-i18n="status.step" data-i18n-vars='{"step":1}'>Paso 1 de 3</p>
+        <p class="step-kicker" data-i18n="status.step" data-i18n-vars='{"step":1}'>Momento 1 de 4</p>
         <h2 id="step1Title" tabindex="-1" data-i18n="library.title">Carga la librería</h2>
         <p id="step1Instruction" class="muted" data-i18n="library.instruction">
           Selecciona un archivo JSON exportado desde PICTOS.net. El instrumento admite imágenes raster y SVG del formato actual.
@@ -190,7 +197,7 @@
       </div>
 
       <section id="step2" class="screen hidden" aria-labelledby="step2Title">
-        <p class="step-kicker" data-i18n="status.step" data-i18n-vars='{"step":2}'>Paso 2 de 3</p>
+        <p class="step-kicker" data-i18n="status.step" data-i18n-vars='{"step":2}'>Momento 2 de 4</p>
         <h2 id="step2Title" tabindex="-1" data-i18n="profile.title">Cuéntanos tu relación con la CAA</h2>
         <p class="muted" data-i18n="profile.help">Puedes marcar más de una opción.</p>
 
@@ -234,8 +241,8 @@
       </div>
 
       <section id="step3" class="screen hidden" aria-labelledby="step3Title">
-        <p class="step-kicker" data-i18n="status.step" data-i18n-vars='{"step":3}'>Paso 3 de 3</p>
-        <h2 id="step3Title" tabindex="-1" data-i18n="evaluation.title">Evalúa los pictogramas</h2>
+        <h2 id="step3Title" class="sr-only" tabindex="-1" data-i18n="evaluation.title">Evaluación de pictogramas</h2>
+        <p id="pictogramPosition" class="pictogram-position" aria-live="polite"></p>
 
         <div id="realPhraseSlot" class="phrase-slot concealed" aria-hidden="true">
           <p id="realPhraseLabel" class="real-phrase-label" data-i18n="evaluation.sourcePhrase">Frase real de origen:</p>
@@ -275,13 +282,13 @@
 
           <section class="dimension-step" aria-labelledby="activeDimensionTitle">
             <div class="dimension-step-head">
-              <button id="dimensionPrevBtn" type="button" class="arrow-btn" aria-label="Dimensión anterior" data-i18n-aria-label="evaluation.dimensionPrevious">◀</button>
+              <button id="dimensionPrevBtn" type="button" class="arrow-btn dimension-chevron" aria-label="Dimensión anterior" data-i18n-aria-label="evaluation.dimensionPrevious">‹</button>
               <div class="dimension-heading">
                 <p id="dimensionCounter" class="eyebrow">Dimensión 1 de 6</p>
                 <h3 id="activeDimensionTitle" class="right-title"></h3>
                 <p id="activeDimensionDescription" class="dimension-description"></p>
               </div>
-              <button id="dimensionNextBtn" type="button" class="arrow-btn" aria-label="Dimensión siguiente" data-i18n-aria-label="evaluation.dimensionNext">▶</button>
+              <button id="dimensionNextBtn" type="button" class="arrow-btn dimension-chevron" aria-label="Dimensión siguiente" data-i18n-aria-label="evaluation.dimensionNext">›</button>
             </div>
 
             <div class="dimension-response">
@@ -300,27 +307,69 @@
         </div>
 
         <div class="evaluation-bottom-bar">
-          <div class="item-nav" aria-label="Navegación entre pictogramas" data-i18n-aria-label="evaluation.itemNavigation">
-            <button id="evalPrevBtn" type="button" class="arrow-btn" aria-label="Pictograma anterior" data-i18n-aria-label="evaluation.itemPrevious">◀</button>
-            <span id="evalCounter" class="counter">0 / 0</span>
-            <button id="evalNextBtn" type="button" class="arrow-btn" aria-label="Pictograma siguiente" data-i18n-aria-label="evaluation.itemNext">▶</button>
-          </div>
+          <button id="evalPrevBtn" type="button" class="secondary-btn pictogram-nav-btn" aria-label="Pictograma anterior" data-i18n-aria-label="evaluation.itemPrevious">
+            <span class="pictogram-chevron" aria-hidden="true">«</span>
+            <span data-i18n="evaluation.itemPrevious">Pictograma anterior</span>
+          </button>
           <div class="evaluation-bottom-status">
-            <div id="evalProgress" class="muted small"></div>
+            <div>
+              <strong id="evaluationStateLabel" data-i18n="evaluation.partialState">Evaluación parcial</strong>
+              <div id="evalProgress" class="muted small"></div>
+            </div>
             <button id="exportJsonBtn" type="button" class="download-link">
               <img src="./web/assets/download.svg" alt="" aria-hidden="true" class="icon-svg" />
               <span id="exportJsonLabel" data-i18n="evaluation.downloadPartial">Descargar evaluación parcial</span>
             </button>
           </div>
+          <button id="saveAndNextBtn" class="primary-btn pictogram-nav-btn next" type="button" disabled>
+            <span id="saveAndNextLabel" data-i18n="evaluation.itemNext">Pictograma siguiente</span>
+            <span class="pictogram-chevron" aria-hidden="true">»</span>
+          </button>
         </div>
       </section>
 
       <div id="step3Nav" class="moment-nav hidden">
         <button id="step3BackBtn" class="secondary-btn" type="button" data-i18n="evaluation.back">Volver al paso 2</button>
-        <button id="saveAndNextBtn" class="primary-btn" type="button" disabled>
-          Guardar evaluación y pasar a la siguiente
-          <span id="saveAndNextCounter"></span>
-        </button>
+      </div>
+
+      <section id="step4" class="screen hidden" aria-labelledby="step4Title">
+        <p class="step-kicker" data-i18n="status.step" data-i18n-vars='{"step":4}'>Momento 4 de 4</p>
+        <h2 id="step4Title" tabindex="-1" data-i18n="audit.title">Auditoría de la biblioteca</h2>
+        <p class="muted audit-intro" data-i18n="audit.intro">Mira los pictogramas como un sistema. Esta evaluación describe el conjunto y no modifica el PICTOS Index de los pictogramas.</p>
+
+        <div class="audit-toolbar" aria-label="Controles de la retícula" data-i18n-aria-label="audit.gridControls">
+          <fieldset class="audit-sort">
+            <legend data-i18n="audit.orderLabel">Ordenar</legend>
+            <label><input type="radio" name="auditOrder" value="original" checked /><span data-i18n="audit.orderOriginal">Orden original</span></label>
+            <label><input type="radio" name="auditOrder" value="category" /><span data-i18n="audit.orderCategory">Por categoría</span></label>
+          </fieldset>
+          <label class="audit-label-toggle"><input id="auditLabelsToggle" type="checkbox" /><span data-i18n="audit.showLabels">Mostrar etiquetas</span></label>
+        </div>
+
+        <div id="auditGrid" class="audit-grid"></div>
+
+        <form id="libraryAuditForm" class="audit-form">
+          <div class="audit-dimensions">
+            <fieldset class="audit-dimension">
+              <legend data-i18n="audit.coherenceTitle">Coherencia formal</legend>
+              <p data-i18n="audit.coherenceBody">¿Los pictogramas se reconocen como integrantes de un mismo conjunto?</p>
+              <div id="coherenceScale" class="radio-scale audit-scale"></div>
+              <p id="coherenceDescription" class="audit-rating-description" aria-live="polite" data-i18n="audit.chooseRating">Selecciona una valoración.</p>
+            </fieldset>
+            <fieldset class="audit-dimension">
+              <legend data-i18n="audit.grammarTitle">Gramática visual</legend>
+              <p data-i18n="audit.grammarBody">¿El conjunto aplica reglas visuales compartidas y reconocibles?</p>
+              <div id="grammarScale" class="radio-scale audit-scale"></div>
+              <p id="grammarDescription" class="audit-rating-description" aria-live="polite" data-i18n="audit.chooseRating">Selecciona una valoración.</p>
+            </fieldset>
+          </div>
+          <p class="audit-separation-note"><strong data-i18n="audit.separateTitle">Resultado separado.</strong> <span data-i18n="audit.separateBody">Coherencia y gramática no se promedian con el PICTOS Index.</span></p>
+        </form>
+      </section>
+
+      <div id="step4Nav" class="moment-nav hidden">
+        <button id="step4BackBtn" class="secondary-btn" type="button" data-i18n="audit.back">Volver a los pictogramas</button>
+        <button id="auditExportBtn" class="primary-btn" type="button" data-i18n="audit.download">Descargar evaluación completa</button>
       </div>
       </section>
       <div id="statusRegion" class="sr-only" role="status" aria-live="polite"></div>

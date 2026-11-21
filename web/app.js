@@ -13,6 +13,7 @@ const AXIS_COLORS = ["#2563eb", "#0d9488", "#d97706", "#9333ea", "#e11d48", "#16
 const PROFILE_STORAGE_KEY = "pictos-index:evaluator-profile:v5";
 const LEGACY_PROFILE_STORAGE_KEYS = ["pictos-index:evaluator-profile:v4", "pictos-index:evaluator-profile:v3"];
 const LIBRARY_STORAGE_PREFIX = "pictos-index:library-evals:v3:";
+const LIBRARY_DIMENSIONS = ["coherence", "grammar"];
 
 const state = {
   rubric: null,
@@ -24,6 +25,7 @@ const state = {
   assessment: null,
   evaluatorProfile: null,
   evaluations: new Map(),
+  libraryAssessment: createEmptyLibraryAssessment(),
 };
 
 const el = {};
@@ -38,6 +40,7 @@ async function init() {
   bindEvents();
   state.rubric = await loadRubric();
   buildSliders();
+  buildLibraryScales();
   loadEvaluatorProfile();
   updateStepLocks();
   showHome(false);
@@ -54,15 +57,18 @@ function bindElements() {
   el.stepBtn1 = document.getElementById("stepBtn1");
   el.stepBtn2 = document.getElementById("stepBtn2");
   el.stepBtn3 = document.getElementById("stepBtn3");
+  el.stepBtn4 = document.getElementById("stepBtn4");
 
   el.step1 = document.getElementById("step1");
   el.step1Title = document.getElementById("step1Title");
   el.step1Instruction = document.getElementById("step1Instruction");
   el.step2 = document.getElementById("step2");
   el.step3 = document.getElementById("step3");
+  el.step4 = document.getElementById("step4");
   el.step1Nav = document.getElementById("step1Nav");
   el.step2Nav = document.getElementById("step2Nav");
   el.step3Nav = document.getElementById("step3Nav");
+  el.step4Nav = document.getElementById("step4Nav");
 
   el.libraryFileInput = document.getElementById("libraryFileInput");
   el.libraryLoader = document.getElementById("libraryLoader");
@@ -87,10 +93,10 @@ function bindElements() {
   el.step2BackBtn = document.getElementById("step2BackBtn");
 
   el.step3BackBtn = document.getElementById("step3BackBtn");
+  el.pictogramPosition = document.getElementById("pictogramPosition");
   el.evalPrevBtn = document.getElementById("evalPrevBtn");
-  el.evalNextBtn = document.getElementById("evalNextBtn");
-  el.evalCounter = document.getElementById("evalCounter");
   el.evalProgress = document.getElementById("evalProgress");
+  el.evaluationStateLabel = document.getElementById("evaluationStateLabel");
   el.exportJsonBtn = document.getElementById("exportJsonBtn");
   el.exportJsonLabel = document.getElementById("exportJsonLabel");
 
@@ -110,7 +116,7 @@ function bindElements() {
   el.clearEvalBtn = document.getElementById("clearEvalBtn");
 
   el.saveAndNextBtn = document.getElementById("saveAndNextBtn");
-  el.saveAndNextCounter = document.getElementById("saveAndNextCounter");
+  el.saveAndNextLabel = document.getElementById("saveAndNextLabel");
 
   el.slidersContainer = document.getElementById("slidersContainer");
   el.rubricDetails = document.getElementById("rubricDetails");
@@ -122,6 +128,17 @@ function bindElements() {
   el.scalePrompt = document.getElementById("scalePrompt");
   el.hexChart = document.getElementById("hexChart");
   el.scoreBadge = document.getElementById("scoreBadge");
+
+  el.auditGrid = document.getElementById("auditGrid");
+  el.auditOrderInputs = Array.from(document.querySelectorAll('input[name="auditOrder"]'));
+  el.auditLabelsToggle = document.getElementById("auditLabelsToggle");
+  el.auditLabelsText = el.auditLabelsToggle.closest("label")?.querySelector("span");
+  el.coherenceScale = document.getElementById("coherenceScale");
+  el.grammarScale = document.getElementById("grammarScale");
+  el.coherenceDescription = document.getElementById("coherenceDescription");
+  el.grammarDescription = document.getElementById("grammarDescription");
+  el.step4BackBtn = document.getElementById("step4BackBtn");
+  el.auditExportBtn = document.getElementById("auditExportBtn");
 }
 
 function bindEvents() {
@@ -143,6 +160,9 @@ function bindEvents() {
   el.stepBtn3.addEventListener("click", () => {
     if (!el.stepBtn3.disabled) goToStep(3);
   });
+  el.stepBtn4.addEventListener("click", () => {
+    if (!el.stepBtn4.disabled) goToStep(4);
+  });
 
   el.libraryFileInput.addEventListener("change", onLibraryFileChange);
   el.replaceLibraryBtn.addEventListener("click", () => el.libraryFileInput.click());
@@ -158,8 +178,8 @@ function bindEvents() {
   el.step2BackBtn.addEventListener("click", () => goToStep(1));
 
   el.step3BackBtn.addEventListener("click", () => goToStep(2));
+  el.step4BackBtn.addEventListener("click", () => goToStep(3));
   el.evalPrevBtn.addEventListener("click", () => changeEvalItem(state.evalIndex - 1));
-  el.evalNextBtn.addEventListener("click", () => changeEvalItem(state.evalIndex + 1));
   el.dimensionPrevBtn.addEventListener("click", () => changeDimension(-1));
   el.dimensionNextBtn.addEventListener("click", () => changeDimension(1));
 
@@ -170,6 +190,9 @@ function bindEvents() {
   el.saveAndNextBtn.addEventListener("click", onSaveAndNext);
 
   el.exportJsonBtn.addEventListener("click", exportEvaluationJson);
+  el.auditExportBtn.addEventListener("click", exportEvaluationJson);
+  el.auditOrderInputs.forEach((input) => input.addEventListener("change", renderAuditGrid));
+  el.auditLabelsToggle.addEventListener("change", renderAuditGrid);
   document.addEventListener("keydown", onEvaluationKeydown);
 }
 
@@ -202,12 +225,14 @@ function onLanguageChange(event) {
   if (!setLocale(event.target.value)) return;
   applyTranslations();
   buildSliders();
+  buildLibraryScales();
 
   if (state.library) {
     renderLibrarySummary();
     renderPreview();
   }
   if (state.items.length && !el.step3.classList.contains("hidden")) renderCurrentEvalItem(true);
+  if (state.items.length && !el.step4.classList.contains("hidden")) renderLibraryAudit();
 }
 
 function showHome(moveFocus = true) {
@@ -221,21 +246,25 @@ function goToStep(step, moveFocus = true) {
   el.step1.classList.toggle("hidden", step !== 1);
   el.step2.classList.toggle("hidden", step !== 2);
   el.step3.classList.toggle("hidden", step !== 3);
+  el.step4.classList.toggle("hidden", step !== 4);
 
   el.step1Nav.classList.toggle("hidden", step !== 1);
   el.step2Nav.classList.toggle("hidden", step !== 2);
   el.step3Nav.classList.toggle("hidden", step !== 3);
+  el.step4Nav.classList.toggle("hidden", step !== 4);
 
   el.stepBtn1.classList.toggle("active", step === 1);
   el.stepBtn2.classList.toggle("active", step === 2);
   el.stepBtn3.classList.toggle("active", step === 3);
+  el.stepBtn4.classList.toggle("active", step === 4);
 
-  [el.stepBtn1, el.stepBtn2, el.stepBtn3].forEach((button, index) => {
+  [el.stepBtn1, el.stepBtn2, el.stepBtn3, el.stepBtn4].forEach((button, index) => {
     if (index + 1 === step) button.setAttribute("aria-current", "step");
     else button.removeAttribute("aria-current");
   });
 
   if (step === 3) renderCurrentEvalItem();
+  if (step === 4) renderLibraryAudit();
 
   if (moveFocus) {
     const heading = document.getElementById(`step${step}Title`);
@@ -256,9 +285,11 @@ function announce(message) {
 function updateStepLocks() {
   const hasLibrary = state.items.length > 0;
   const hasProfile = isProfileComplete(state.evaluatorProfile);
+  const pictogramsComplete = hasLibrary && countCompletedItems() === state.items.length;
 
   el.stepBtn2.disabled = !hasLibrary;
   el.stepBtn3.disabled = !(hasLibrary && hasProfile);
+  el.stepBtn4.disabled = !(hasLibrary && hasProfile && pictogramsComplete);
   el.step1NextBtn.disabled = !hasLibrary;
 }
 
@@ -338,6 +369,7 @@ function loadLibraryPayload(payload, fileName) {
   state.dimensionIndex = 0;
   state.assessment = null;
   state.evaluations = new Map();
+  state.libraryAssessment = createEmptyLibraryAssessment();
   loadStoredEvaluations();
   if (!state.assessment) state.assessment = createAssessmentIdentity();
 
@@ -362,7 +394,8 @@ function normalizeRowItem(row, index) {
   const utterance = String(row.UTTERANCE || row.utterance || row.prompt || t("evaluation.itemFallback", { number: index + 1 }));
   const image = resolveRowImage(row);
   if (!image) return null;
-  return { index, id, utterance, imageSrc: image.src, imageFormat: image.format };
+  const category = String(row.NLU?.domain || row.domain || row.category || "").trim();
+  return { index, id, utterance, category, imageSrc: image.src, imageFormat: image.format };
 }
 
 function resolveRowImage(row) {
@@ -633,11 +666,14 @@ function renderCurrentEvalItem(preserveDimension = false) {
   setImage(el.dimensionImage, item.imageSrc, `${t("evaluation.dimensionImageAlt")} ${item.id}`);
 
   el.realPhraseText.textContent = item.utterance;
-  el.evalCounter.textContent = `${state.evalIndex + 1} / ${state.items.length}`;
+  el.pictogramPosition.textContent = t("evaluation.pictogramPosition", {
+    current: state.evalIndex + 1,
+    total: state.items.length,
+  });
   el.evalPrevBtn.disabled = state.evalIndex === 0;
-  el.evalNextBtn.disabled = state.evalIndex === state.items.length - 1;
 
   updateEvaluationStatus();
+  updateStepLocks();
 
   const hasGuess = Boolean(record.guess && record.guess.trim());
   const skipped = Boolean(record.guessSkipped);
@@ -788,9 +824,11 @@ function renderActiveDimension(scores) {
   const cards = Array.from(el.slidersContainer.querySelectorAll(".dimension-card"));
 
   cards.forEach((card, index) => card.classList.toggle("hidden", index !== state.dimensionIndex));
-  el.dimensionCounter.textContent = t("evaluation.dimensionCount", {
-    current: state.dimensionIndex + 1,
-    total: DIMENSIONS.length,
+  el.dimensionCounter.textContent = t("evaluation.dimensionPosition", {
+    pictogram: state.evalIndex + 1,
+    pictograms: state.items.length,
+    dimension: state.dimensionIndex + 1,
+    dimensions: DIMENSIONS.length,
   });
   el.activeDimensionTitle.textContent = meta.name;
   el.activeDimensionDescription.textContent = meta.description;
@@ -839,12 +877,18 @@ function onDimensionScoreChange() {
   updateLikertPanels(scores);
   updateSaveAndNextBtn(scores);
   updateEvaluationStatus();
+  updateStepLocks();
 }
 
 function updateEvaluationStatus() {
   const completed = countCompletedItems();
-  const isComplete = state.items.length > 0 && completed === state.items.length;
+  const isComplete = state.items.length > 0
+    && completed === state.items.length
+    && isLibraryAssessmentComplete();
   el.evalProgress.textContent = t("evaluation.progress", { completed, total: state.items.length });
+  el.evaluationStateLabel.textContent = isComplete
+    ? t("evaluation.completeState")
+    : t("evaluation.partialState");
   el.exportJsonLabel.textContent = isComplete
     ? t("evaluation.downloadComplete")
     : t("evaluation.downloadPartial");
@@ -858,15 +902,17 @@ function updateSaveAndNextBtn(scores) {
   const allScored = hasAllDimensionsScored(scores);
   const isLast = state.evalIndex >= state.items.length - 1;
   el.saveAndNextBtn.disabled = !allScored;
-  el.saveAndNextBtn.textContent = isLast
+  el.saveAndNextLabel.textContent = isLast
     ? t("evaluation.save", { current: state.evalIndex + 1, total: state.items.length })
-    : t("evaluation.saveNext", { current: state.evalIndex + 1, total: state.items.length });
+    : t("evaluation.itemNext");
 }
 
 function onSaveAndNext() {
   if (state.evalIndex < state.items.length - 1) {
     changeEvalItem(state.evalIndex + 1);
+    return;
   }
+  if (countCompletedItems() === state.items.length) goToStep(4);
 }
 
 function updateLikertPanels(scores) {
@@ -1076,6 +1122,143 @@ function syncRadioSelectionStyles() {
   });
 }
 
+function createEmptyLibraryAssessment() {
+  return {
+    scores: { coherence: null, grammar: null },
+    updatedAt: null,
+  };
+}
+
+function buildLibraryScales() {
+  LIBRARY_DIMENSIONS.forEach((dimension) => {
+    const container = document.getElementById(`${dimension}Scale`);
+    if (!container) return;
+    container.innerHTML = "";
+
+    for (let score = 1; score <= 5; score += 1) {
+      const description = t(`audit.levels.${dimension}.${score}`);
+      const option = document.createElement("label");
+      option.className = "radio-option";
+
+      const number = document.createElement("span");
+      number.className = "radio-number";
+      number.textContent = String(score);
+
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = `library-score-${dimension}`;
+      radio.value = String(score);
+      radio.checked = normalizeScore(state.libraryAssessment?.scores?.[dimension]) === score;
+      radio.setAttribute("aria-label", t("audit.scoreLabel", {
+        dimension: t(`audit.${dimension}Title`),
+        score,
+        description,
+      }));
+      radio.addEventListener("change", onLibraryScoreChange);
+
+      option.append(number, radio);
+      container.append(option);
+    }
+  });
+  syncLibraryScoreStyles();
+  renderLibraryRatingDescriptions();
+}
+
+function readLibraryScores() {
+  const scores = {};
+  LIBRARY_DIMENSIONS.forEach((dimension) => {
+    const selected = document.querySelector(`input[name="library-score-${dimension}"]:checked`);
+    scores[dimension] = selected ? normalizeScore(selected.value) : null;
+  });
+  return scores;
+}
+
+function onLibraryScoreChange() {
+  state.libraryAssessment = {
+    scores: readLibraryScores(),
+    updatedAt: new Date().toISOString(),
+  };
+  syncLibraryScoreStyles();
+  renderLibraryRatingDescriptions();
+  persistEvaluations();
+  updateAuditState();
+}
+
+function syncLibraryScoreStyles() {
+  LIBRARY_DIMENSIONS.forEach((dimension) => {
+    document.querySelectorAll(`input[name="library-score-${dimension}"]`).forEach((input) => {
+      input.closest(".radio-option")?.classList.toggle("active", input.checked);
+    });
+  });
+}
+
+function renderLibraryRatingDescriptions() {
+  LIBRARY_DIMENSIONS.forEach((dimension) => {
+    const target = document.getElementById(`${dimension}Description`);
+    if (!target) return;
+    const score = normalizeScore(state.libraryAssessment?.scores?.[dimension]);
+    target.textContent = score === null
+      ? t("audit.chooseRating")
+      : t(`audit.levels.${dimension}.${score}`);
+  });
+}
+
+function renderLibraryAudit() {
+  buildLibraryScales();
+  renderAuditGrid();
+  updateAuditState();
+}
+
+function renderAuditGrid() {
+  if (!el.auditGrid) return;
+  const order = el.auditOrderInputs.find((input) => input.checked)?.value || "original";
+  const showLabels = Boolean(el.auditLabelsToggle.checked);
+  if (el.auditLabelsText) {
+    el.auditLabelsText.textContent = showLabels ? t("audit.hideLabels") : t("audit.showLabels");
+  }
+
+  const items = [...state.items];
+  if (order === "category") {
+    const collator = new Intl.Collator(getLocale(), { sensitivity: "base", numeric: true });
+    items.sort((a, b) => {
+      const categoryOrder = collator.compare(a.category || t("audit.unknownCategory"), b.category || t("audit.unknownCategory"));
+      return categoryOrder || collator.compare(a.utterance, b.utterance);
+    });
+  }
+
+  el.auditGrid.innerHTML = "";
+  items.forEach((item) => {
+    const figure = document.createElement("figure");
+    figure.className = "audit-card";
+    figure.classList.toggle("with-label", showLabels);
+
+    const image = document.createElement("img");
+    image.alt = showLabels ? item.utterance : t("audit.unlabelledImage");
+    setImage(image, item.imageSrc, t("evaluation.imageFallback"));
+    figure.append(image);
+
+    if (showLabels) {
+      const caption = document.createElement("figcaption");
+      caption.textContent = item.utterance;
+      const category = document.createElement("span");
+      category.textContent = (item.category || t("audit.unknownCategory")).replaceAll("_", " ");
+      caption.append(category);
+      figure.append(caption);
+    }
+    el.auditGrid.append(figure);
+  });
+}
+
+function isLibraryAssessmentComplete() {
+  return LIBRARY_DIMENSIONS.every(
+    (dimension) => normalizeScore(state.libraryAssessment?.scores?.[dimension]) !== null,
+  );
+}
+
+function updateAuditState() {
+  if (el.auditExportBtn) el.auditExportBtn.disabled = !isLibraryAssessmentComplete();
+}
+
 function polarPoint(cx, cy, radius, index, total) {
   const angle = -Math.PI / 2 + (index * (Math.PI * 2)) / total;
   return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
@@ -1148,13 +1331,16 @@ function persistEvaluations() {
   if (!state.library) return;
   const key = LIBRARY_STORAGE_PREFIX + state.library.key;
   if (!state.assessment) state.assessment = createAssessmentIdentity();
-  if (!state.assessment.completedAt && state.items.length > 0 && countCompletedItems() === state.items.length) {
-    state.assessment.completedAt = new Date().toISOString();
-  }
+  const isComplete = state.items.length > 0
+    && countCompletedItems() === state.items.length
+    && isLibraryAssessmentComplete();
+  if (isComplete && !state.assessment.completedAt) state.assessment.completedAt = new Date().toISOString();
+  if (!isComplete) state.assessment.completedAt = null;
   const payload = {
     savedAt: new Date().toISOString(),
     assessment: state.assessment,
     evaluations: Array.from(state.evaluations.values()),
+    libraryAssessment: state.libraryAssessment,
   };
   localStorage.setItem(key, JSON.stringify(payload));
 }
@@ -1168,6 +1354,15 @@ function loadStoredEvaluations() {
   try {
     const parsed = JSON.parse(raw);
     if (isValidAssessmentIdentity(parsed.assessment)) state.assessment = parsed.assessment;
+    if (parsed.libraryAssessment && typeof parsed.libraryAssessment === "object") {
+      state.libraryAssessment = {
+        scores: {
+          coherence: normalizeScore(parsed.libraryAssessment.scores?.coherence),
+          grammar: normalizeScore(parsed.libraryAssessment.scores?.grammar),
+        },
+        updatedAt: parsed.libraryAssessment.updatedAt || null,
+      };
+    }
     const map = new Map();
     if (Array.isArray(parsed.evaluations)) {
       parsed.evaluations.forEach((record) => {
@@ -1176,6 +1371,10 @@ function loadStoredEvaluations() {
       });
     }
     state.evaluations = map;
+    if (state.assessment
+      && (countCompletedItems() !== state.items.length || !isLibraryAssessmentComplete())) {
+      state.assessment.completedAt = null;
+    }
   } catch (error) {
     console.warn("No se pudieron recuperar evaluaciones guardadas.", error);
   }
@@ -1223,6 +1422,7 @@ function exportEvaluationJson() {
       index: index + 1,
       itemId: item.id,
       utterance: item.utterance,
+      category: item.category || null,
       comprension_pragmatica: {
         estado: record ? (record.guessSkipped ? "omitida" : record.guess ? "respondida" : "pendiente") : "pendiente",
         respuesta: record && record.guess ? record.guess : "",
@@ -1240,18 +1440,28 @@ function exportEvaluationJson() {
   });
 
   const payload = {
-    schemaVersion: "pictos-index-library-evaluation-1.3.0",
+    schemaVersion: "pictos-index-library-evaluation-1.4.0",
     exportedAt: new Date().toISOString(),
     uiLocale: getLocale(),
     evaluation: state.assessment || createAssessmentIdentity(),
     library: state.library,
     evaluator: state.evaluatorProfile,
     summary: buildSummary(),
+    libraryAssessment: {
+      scores: {
+        coherence: normalizeScore(state.libraryAssessment?.scores?.coherence),
+        grammar: normalizeScore(state.libraryAssessment?.scores?.grammar),
+      },
+      averageExcludedFromPictosIndex: true,
+      updatedAt: state.libraryAssessment?.updatedAt || null,
+    },
     items,
   };
 
   const baseName = sanitizeFilename((state.library.fileName || "library").replace(/\.json$/i, ""));
-  const completion = countCompletedItems() === state.items.length ? "complete" : "partial";
+  const completion = countCompletedItems() === state.items.length && isLibraryAssessmentComplete()
+    ? "complete"
+    : "partial";
   const outName = `${baseName}-pictos-index-eval-${completion}-${new Date().toISOString().slice(0, 10)}.json`;
   downloadJson(payload, outName);
 }
