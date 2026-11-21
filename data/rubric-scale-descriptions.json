@@ -43,7 +43,7 @@
     "clarity": {
       "name_es": "Claridad",
       "name_en": "Clarity",
-      "description_es": "El grado en que el pictograma es visualmente claro, legible y libre de ambigüedad visual.",
+      "description_es": "La claridad es el grado en que el pictograma resulta visualmente legible y libre de ambigüedad.",
       "description_en": "The degree to which the pictogram is visually clear, legible, and free from visual ambiguity.",
       "levels": {
         "5": {
@@ -71,7 +71,7 @@
     "recognizability": {
       "name_es": "Reconocibilidad",
       "name_en": "Recognizability",
-      "description_es": "La facilidad con la que un observador puede identificar lo que representa el pictograma sin contexto adicional o explicación.",
+      "description_es": "La reconocibilidad es la facilidad con que una persona puede identificar lo que representa el pictograma sin contexto adicional.",
       "description_en": "The ease with which a viewer can identify what the pictogram represents without additional context or explanation.",
       "levels": {
         "5": {
@@ -99,7 +99,7 @@
     "semantic_transparency": {
       "name_es": "Transparencia Semántica",
       "name_en": "Semantic Transparency",
-      "description_es": "El grado en que el pictograma transmite con precisión el significado específico de la frase objetivo.",
+      "description_es": "La transparencia semántica es el grado en que el pictograma comunica con precisión el significado de la frase objetivo.",
       "description_en": "The degree to which the pictogram accurately conveys the specific meaning of the target phrase.",
       "levels": {
         "5": {
@@ -127,7 +127,7 @@
     "pragmatic_fit": {
       "name_es": "Adecuación Pragmática",
       "name_en": "Pragmatic Fit",
-      "description_es": "La utilidad y adecuación del pictograma en contextos reales de comunicación AAC.",
+      "description_es": "La adecuación pragmática es la utilidad del pictograma en situaciones reales de comunicación mediante CAA.",
       "description_en": "The usefulness and appropriateness of the pictogram in real-world AAC communication contexts.",
       "levels": {
         "5": {
@@ -155,7 +155,7 @@
     "cultural_adequacy": {
       "name_es": "Adecuación Cultural",
       "name_en": "Cultural Adequacy",
-      "description_es": "La adecuación y relevancia del pictograma para el contexto cultural y lingüístico del público objetivo.",
+      "description_es": "La adecuación cultural es la pertinencia del pictograma para el contexto cultural y lingüístico de sus destinatarios.",
       "description_en": "The appropriateness and relevance of the pictogram for the cultural and linguistic context of the target audience.",
       "levels": {
         "5": {
@@ -183,7 +183,7 @@
     "cognitive_accessibility": {
       "name_es": "Accesibilidad Cognitiva",
       "name_en": "Cognitive Accessibility",
-      "description_es": "La accesibilidad y usabilidad del pictograma para usuarios con diferencias cognitivas, dificultades de aprendizaje o discapacidad intelectual.",
+      "description_es": "La accesibilidad cognitiva es la facilidad con que personas con distintas capacidades cognitivas pueden comprender y usar el pictograma.",
       "description_en": "The accessibility and usability of the pictogram for users with cognitive differences, learning disabilities, or intellectual disabilities.",
       "levels": {
         "5": {

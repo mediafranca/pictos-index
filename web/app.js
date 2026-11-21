@@ -1,10 +1,10 @@
 const DIMENSIONS = [
-  { key: "clarity", code: "CLA", fallbackName: "Claridad" },
-  { key: "recognizability", code: "REC", fallbackName: "Reconocibilidad" },
-  { key: "semantic_transparency", code: "SEM", fallbackName: "Transparencia Semántica" },
-  { key: "pragmatic_fit", code: "PRA", fallbackName: "Adecuación Pragmática" },
-  { key: "cultural_adequacy", code: "CUL", fallbackName: "Adecuación Cultural" },
-  { key: "cognitive_accessibility", code: "COG", fallbackName: "Accesibilidad Cognitiva" },
+  { key: "clarity", code: "CLA", fallbackName: "Claridad", fallbackDescription: "La claridad es el grado en que el pictograma resulta visualmente legible y libre de ambigüedad." },
+  { key: "recognizability", code: "REC", fallbackName: "Reconocibilidad", fallbackDescription: "La reconocibilidad es la facilidad con que una persona puede identificar lo que representa el pictograma sin contexto adicional." },
+  { key: "semantic_transparency", code: "SEM", fallbackName: "Transparencia semántica", fallbackDescription: "La transparencia semántica es el grado en que el pictograma comunica con precisión el significado de la frase objetivo." },
+  { key: "pragmatic_fit", code: "PRA", fallbackName: "Adecuación pragmática", fallbackDescription: "La adecuación pragmática es la utilidad del pictograma en situaciones reales de comunicación mediante CAA." },
+  { key: "cultural_adequacy", code: "CUL", fallbackName: "Adecuación cultural", fallbackDescription: "La adecuación cultural es la pertinencia del pictograma para el contexto cultural y lingüístico de sus destinatarios." },
+  { key: "cognitive_accessibility", code: "COG", fallbackName: "Accesibilidad cognitiva", fallbackDescription: "La accesibilidad cognitiva es la facilidad con que personas con distintas capacidades cognitivas pueden comprender y usar el pictograma." },
 ];
 
 const AXIS_COLORS = ["#2563eb", "#0d9488", "#d97706", "#9333ea", "#e11d48", "#16a34a"];
@@ -113,6 +113,7 @@ function bindElements() {
   el.dimensionCounter = document.getElementById("dimensionCounter");
   el.activeDimensionTitle = document.getElementById("activeDimensionTitle");
   el.activeDimensionDescription = document.getElementById("activeDimensionDescription");
+  el.scalePrompt = document.getElementById("scalePrompt");
   el.hexChart = document.getElementById("hexChart");
   el.scoreBadge = document.getElementById("scoreBadge");
 }
@@ -162,6 +163,7 @@ function bindEvents() {
   el.saveAndNextBtn.addEventListener("click", onSaveAndNext);
 
   el.exportJsonBtn.addEventListener("click", exportEvaluationJson);
+  document.addEventListener("keydown", onEvaluationKeydown);
 }
 
 async function loadRubric() {
@@ -192,7 +194,7 @@ function createFallbackRubric() {
     }
     dimensions[dim.key] = {
       name_es: dim.fallbackName,
-      description_es: dim.fallbackName,
+      description_es: dim.fallbackDescription,
       levels,
     };
   });
@@ -784,7 +786,31 @@ function renderActiveDimension(scores) {
   el.activeDimensionTitle.tabIndex = -1;
   el.dimensionPrevBtn.disabled = state.dimensionIndex === 0;
   el.dimensionNextBtn.disabled = state.dimensionIndex === DIMENSIONS.length - 1;
+  const currentScore = normalizeScore(scores[dimension.key]);
+  el.dimensionNextBtn.classList.toggle(
+    "ready",
+    currentScore !== null && state.dimensionIndex < DIMENSIONS.length - 1,
+  );
+  el.scalePrompt.textContent = currentScore === null
+    ? "Evalúa de 1 a 5"
+    : `Evaluaste: ${getScaleMeta(currentScore).label}`;
   renderRubricDetails(scores);
+}
+
+function onEvaluationKeydown(event) {
+  if (event.key !== "Enter" || el.likertStage.classList.contains("hidden")) return;
+  if (!event.target.matches('input[type="radio"]')) return;
+
+  const scores = readScoresFromUI();
+  const dimension = DIMENSIONS[state.dimensionIndex];
+  if (normalizeScore(scores[dimension.key]) === null) return;
+
+  event.preventDefault();
+  if (state.dimensionIndex < DIMENSIONS.length - 1) {
+    changeDimension(1);
+    return;
+  }
+  if (hasAllDimensionsScored(scores)) onSaveAndNext();
 }
 
 function onDimensionScoreChange() {
@@ -870,19 +896,14 @@ function renderRubricDetails(scores) {
   el.rubricDetails.innerHTML = "";
   const dimension = DIMENSIONS[state.dimensionIndex];
   const score = normalizeScore(scores[dimension.key]);
-  const meta = getDimensionMeta(dimension.key);
   const card = document.createElement("article");
   card.className = "rubric-item";
 
   if (score === null) {
-    card.innerHTML = `<h4>${escapeHtml(meta.name)} · Sin evaluar</h4><p>Selecciona una nota para ver qué significa en esta dimensión.</p>`;
+    card.innerHTML = `<p>La explicación de la nota aparecerá aquí.</p>`;
   } else {
-    const scaleMeta = getScaleMeta(score);
     const rubricText = getDimensionLevelText(dimension.key, score);
-    card.innerHTML = `
-      <h4>${escapeHtml(meta.name)} · ${score}/5 (${escapeHtml(scaleMeta.label)})</h4>
-      <p>${escapeHtml(rubricText)}</p>
-    `;
+    card.innerHTML = `<p>${escapeHtml(rubricText)}</p>`;
   }
   el.rubricDetails.append(card);
 }
@@ -1069,7 +1090,7 @@ function getDimensionMeta(key) {
   const fallback = DIMENSIONS.find((d) => d.key === key);
   return {
     name: raw && raw.name_es ? raw.name_es : fallback.fallbackName,
-    description: raw && raw.description_es ? raw.description_es : fallback.fallbackName,
+    description: raw && raw.description_es ? raw.description_es : fallback.fallbackDescription,
   };
 }
 
