@@ -1,0 +1,193 @@
+{
+  "_meta": {
+    "locale": "es-419",
+    "estado": "inicial",
+    "nota": "Toda cadena de la interfaz pasa por aquí desde el primer commit. Nada de texto literal en un componente."
+  },
+  "brand": {
+    "name": "ICAP",
+    "expansion": "Índice de Calidad Pictográfica",
+    "tagline": "Protocolo de medición de calidad pictográfica",
+    "network": "Una iniciativa de la red MediaFranca",
+    "relation": "PICTOS.net publica bibliotecas; ICAP produce registros de evidencia sobre versiones exactas de sus pictogramas."
+  },
+  "prep": {
+    "rail_label": "Preparación",
+    "source": "Fuente",
+    "validation": "Validación",
+    "profile": "Perfil",
+    "context": "Contexto",
+    "calibration": "Calibración",
+    "blocked_until_calibrated": "La tarea está bloqueada hasta completar la calibración.",
+    "diagnostics_available": "El diagnóstico ya está disponible: las capas A y D se calcularon en la ingesta."
+  },
+  "layers": {
+    "a": "Capa A · geométrica",
+    "b": "Capa B · psicofísica",
+    "c": "Capa C · interpretativa",
+    "d": "Capa D · familia",
+    "origin_script": "Script, sin costo humano",
+    "origin_adjustment": "Ajuste humano, sobre la submuestra",
+    "origin_judgment": "Juicio humano, Likert 1–5",
+    "origin_script_set": "Script, sobre el set completo"
+  },
+  "dims": {
+    "A1": "Grosor de trazo",
+    "A2": "Unidades desligadas",
+    "A3": "Regiones cerradas",
+    "A4": "Contorno inferido",
+    "B1": "Desenfoque",
+    "B2": "Tamaño",
+    "B3": "Desplazamiento",
+    "C1": "Transparencia semántica",
+    "C2": "Adecuación pragmática",
+    "C3": "Adecuación cultural",
+    "C4": "Aprendibilidad",
+    "D1": "Confusabilidad",
+    "D2": "Consistencia paradigmática",
+    "D3": "Fragilidad"
+  },
+  "evidence": {
+    "hypothesis": "Hipótesis",
+    "hypothesis_note": "Sin respaldo empírico aún.",
+    "warning": "Advertencia",
+    "warning_note": "Fuera de todo veredicto.",
+    "uncalibrated": "Propuesta sin calibrar",
+    "uncalibrated_note": "Valor heredado de las anclas verbales de la rúbrica v1 y de literatura de población general. No proviene de calibración sobre datos de comportamiento."
+  },
+  "verdict": {
+    "blocked": "Bloqueado",
+    "admissible": "Admisible",
+    "blocked_count": "{{count}} de 3 vetos falló",
+    "admissible_note": "Los tres vetos pasan. El perfil se reporta abajo.",
+    "veto_failed": "Veto",
+    "veto_passed": "Pasa",
+    "profile_title": "Perfil compensatorio",
+    "profile_note": "Se reporta, no elimina.",
+    "veto_a1": "Grosor de trazo bajo el mínimo",
+    "veto_b2": "Tamaño de legibilidad bajo el tamaño de presentación",
+    "veto_d1": "Confusabilidad con un vecino del mismo tablero"
+  },
+  "comprehension": {
+    "question": "¿Qué muestra este pictograma?",
+    "placeholder": "Escriba su respuesta",
+    "deferred_label": "Revelación diferida",
+    "deferred_note": "La frase objetivo no está en esta vista.",
+    "seal": "Sellar respuesta",
+    "seal_warning": "Al sellar se revela la frase objetivo y su respuesta queda fija. No podrá editarla después.",
+    "confirm_title": "Paso irreversible",
+    "confirm_body": "Va a sellar «{{answer}}». Al confirmar aparecerá la frase objetivo y su respuesta quedará registrada tal como está.",
+    "confirm_seal": "Sellar y revelar",
+    "confirm_cancel": "Seguir editando",
+    "revealed_label": "Revelado · sellado",
+    "your_answer": "Usted respondió",
+    "target_phrase": "Frase objetivo",
+    "sealed_at": "Sellado {{time}} · registro inmutable",
+    "continue": "Continuar a correspondencia",
+    "omit": "Prefiero omitir esta pregunta"
+  },
+  "calibration": {
+    "anchor_label": "Ancla consensuada",
+    "divergence": "Divergencia con el ancla",
+    "divergence_note": "Se reporta para su información. No impide continuar."
+  },
+  "judgment": {
+    "not_answered": "Sin responder",
+    "not_applicable": "No aplica",
+    "no_competence": "No sé juzgar esto",
+    "prefer_omit": "Prefiero omitir",
+    "reason_label": "Motivo",
+    "reason_required": "Obligatorio",
+    "reason_optional": "Opcional",
+    "c1_question": "¿Cuánto se adivina el significado sin haberlo aprendido antes?",
+    "c1_low": "Nada transparente",
+    "c1_high": "Del todo transparente",
+    "c2_question": "¿Cuánto sirve este pictograma para la función comunicativa declarada?",
+    "c2_low": "No sirve para esa función",
+    "c2_high": "Sirve perfectamente",
+    "c3_question": "¿Cuánto respeta este pictograma los referentes culturales del contexto?",
+    "c3_low": "Ajeno al contexto",
+    "c3_high": "Del todo apropiado",
+    "c4_question": "¿Cuánto se retiene el significado después de haberlo visto una sola vez?",
+    "c4_low": "No se retiene",
+    "c4_high": "Se retiene fácilmente",
+    "c4_note": "Se reporta junto al triángulo, en la misma unidad."
+  },
+  "threshold": {
+    "task": "Mueva el control hasta el punto en que ya no pueda nombrar qué muestra el pictograma.",
+    "sharp": "Nítido",
+    "illegible": "Ilegible",
+    "value_hidden": "Valor oculto por diseño · las flechas ajustan en pasos discretos",
+    "pass": "Pasada {{n}} de 2",
+    "pass_down": "Nítido → degradado",
+    "pass_up": "Degradado → nítido",
+    "progress": "Ítem {{n}} de {{total}} · submuestra",
+    "commit": "Registrar punto",
+    "cannot": "No puedo hacer esta tarea",
+    "randomised": "El punto de partida y el orden de los ítems se aleatorizan.",
+    "delta_note": "La diferencia entre pasadas indica la fiabilidad del dato. No es un error.",
+    "b2_limit": "B2 sólo compara dentro de una misma sesión mientras no exista calibración física."
+  },
+  "states": {
+    "pending": "Pendiente",
+    "not_sampled": "No muestreado",
+    "not_sampled_note": "Fuera de la submuestra de capa B. No hay tarea asociada.",
+    "recorded": "Registrada",
+    "superseded": "Superada",
+    "superseded_note": "Referida a una versión anterior del ítem.",
+    "computing": "Calculando",
+    "excluded": "Excluida",
+    "inherited": "Heredado",
+    "exception": "Excepción del ítem",
+    "empty_library": "Todavía no hay ítems. Importe una fuente para empezar.",
+    "partial_note": "Una biblioteca evaluada a medias es la situación normal, no un error."
+  },
+  "validation": {
+    "title": "Informe de validación",
+    "rows_valid": "Filas válidas",
+    "rows_partial": "Parcialmente compatibles",
+    "rows_invalid": "Inválidas",
+    "duplicates": "Identificadores duplicados",
+    "missing_images": "Imágenes ausentes",
+    "bad_formats": "Formatos no admitidos",
+    "empty_phrases": "Frases vacías",
+    "inheritance": "Herencias aplicadas",
+    "exceptions": "Excepciones detectadas",
+    "schema_version": "Versión de esquema reconocida",
+    "no_autofix": "Nada se corrige en silencio. Toda exclusión está nombrada.",
+    "download": "Descargar informe",
+    "accept": "He leído el informe · continuar"
+  },
+  "aggregate": {
+    "coverage": "Cobertura",
+    "people": "Personas",
+    "protocol": "Protocolo",
+    "disagreement": "Desacuerdo",
+    "contexts": "Contextos",
+    "never_a_number": "El agregado no colapsa en una cifra."
+  },
+  "family": {
+    "plane_title": "Plano de familia",
+    "axis_d1": "D1 · Confusabilidad máxima con un vecino",
+    "axis_d2": "D2 · CV de consistencia",
+    "veto_zone": "Zona de veto D1",
+    "pair_distribution": "Distribución de pares",
+    "cut": "Corte {{value}}",
+    "fragility_note": "D3 es un ordenamiento diagnóstico, sin criterio de corte."
+  },
+  "item": {
+    "version": "Versión",
+    "hash": "Hash",
+    "computed_on": "Lo que ve se computó sobre esta versión.",
+    "superseded_section": "Evidencia superada"
+  },
+  "footer": {
+    "schema": "Esquema",
+    "rubric": "Rúbrica",
+    "protocol": "Protocolo",
+    "calibration": "Calibración",
+    "methodology": "Metodología",
+    "repository": "Repositorio",
+    "licence": "Licencia"
+  }
+}

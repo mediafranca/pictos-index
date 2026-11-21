@@ -1,4 +1,4 @@
-# ICAP - Image-Communication Accessibility Protocol
+# ICAP — Índice de Calidad Pictográfica
 
 Módulo extraído de [pictos-net](https://github.com/mediafranca/pictos-net) para integración en el repositorio independiente [mediafranca/ICAP](https://github.com/mediafranca/ICAP).
 

@@ -70,13 +70,56 @@ La arquitectura no depende de esos datos, depende de literatura externa citable.
 
 ## Front-end
 
-Stack decidido: framework con build. Nota de despliegue: `main` hoy publica el directorio raíz tal cual en GitHub Pages, de modo que introducir un paso de build exige ajustar la publicación.
+Stack decidido: framework con build. Locale inicial `es-419`, i18n desde el primer commit. Nota de despliegue: `main` hoy publica el directorio raíz tal cual en GitHub Pages, de modo que introducir un paso de build exige ajustar la publicación.
 
 Acceso al sitio: abierto, con perfil etnográfico del evaluador, consentimiento versionado y calibración previa bloqueante.
 
-Marca principal: **ICAP**, sola. El nombre extendido va como subtítulo. Hay una inconsistencia heredada por resolver: `index.html` expande la sigla como *Índice de Calidad Pictográfica* y `ICAP-extract/README.md` como *Image-Communication Accessibility Protocol*. La segunda describe mejor lo que el instrumento hace tras la v2, porque ya no produce un índice.
+Marca principal: **ICAP**, sola, en Lexend 800 versalita. Sigla resuelta como *Índice de Calidad Pictográfica*.
 
 Las surfaces de `spec/icap.allium` mapean casi uno a uno a tipos de pantalla, y sus garantías son requisitos de interfaz, no recomendaciones.
+
+### Lectura obligatoria antes de tocar UI
+
+En este orden; no se puede saltar:
+
+1. `docs/GUARANTEES_UI.md` — las 13 garantías traducidas a exigencias de DOM. Romper una rompe el instrumento. Tres de ellas exigen que un dato no llegue al cliente: ocultarlo con CSS deja la garantía decorativa.
+2. `docs/VISUAL_LANGUAGE.md` — el vocabulario visual y su razón de ser.
+3. `docs/UI_CONVENTIONS.md` — cómo se escribe. Es **ley** y no se sobreescribe por instrucciones de chat.
+4. `docs/UI_MAP.md` — mapa de IDs semánticos de las 17 pantallas. Actualizarlo en el mismo commit que crea o renombra una región.
+5. `docs/lenguaje-visual.html` — hoja de especímenes. Abrirla en el navegador: forma canónica de cada componente con su ID. Cuando un documento y la hoja difieran, manda la hoja.
+
+### Reglas que se rompen sin darse cuenta
+
+- **Ningún puntaje único.** No hay promedio de capas, no hay hexágono de seis ejes, no hay semáforo agregado.
+- **La frase objetivo no está en el DOM** de la vista de comprensión espontánea. Tampoco el ancla en calibración mientras se puntúa. El endpoint no entrega esos campos.
+- **Tras sellar, el control de edición se retira**, no se deshabilita.
+- **Los tres estados de ausencia de la capa C tienen el mismo peso gráfico que la escala 1–5**, en la misma fila. Ninguna dimensión arranca con valor.
+- **El control de umbrales nunca muestra su valor numérico**, ni en pantalla, ni en tooltip, ni en `aria-valuetext`.
+- **`pendiente` y `no muestreado` no pueden verse iguales.** La segunda no tiene tarea asociada y nunca la tendrá.
+- **Los tres umbrales de veto son propuestas sin calibrar** y la interfaz lo dice en el punto de edición, no en la documentación.
+- **Ningún valor literal** de color, spacing, radio o z-index en un componente: todo sale de `styles/variables.css`. Ningún texto literal fuera de `locales/`.
+
+### Convenciones de marcado propias
+
+Además de los `id` semánticos de `docs/UI_MAP.md`:
+
+- `data-screen-label` en la raíz de cada pantalla.
+- `data-icap-layer="A|B|C|D"` en cada bloque de capa.
+- `data-icap-dim="A1…D3"` en cada elemento que presente una dimensión.
+- `data-icap-state="pendiente|no-muestreado|registrada|superada|calculando|excluida"` en cada elemento que presente un estado de dato.
+
+### Tipografía
+
+- `font-sans` = Lexend — todo lo que una persona dice o lee.
+- `font-mono` = Fira Code — IDs, hashes, versiones, valores numéricos medidos, nombres de dimensión. Nada más. La separación es semántica: crea costura visible entre lo que una persona dijo y lo que el sistema midió.
+
+### Accesibilidad
+
+WCAG 2.1 AA completo es piso, no meta. Uno de los roles de evaluador es *persona usuaria de pictogramas*: si la interfaz no le sirve, el instrumento excluye del juicio a la población para la que los pictogramas fueron hechos, y el sesgo contamina la capa C entera.
+
+### Lo que no está decidido
+
+Ver `docs/VISUAL_LANGUAGE.md` § 7. Cinco puntos abiertos — el triángulo de capa C frente a C4, la unidad ambigua de B2, el isotipo. No resolverlos por cuenta propia.
 
 ## Convenciones del proyecto
 

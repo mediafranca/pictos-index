@@ -1,0 +1,96 @@
+/* ==========================================================================
+   ICAP v2 — tokens
+   Base: PICTOS.net design system (ver styles/pictos.tokens.css, sin modificar).
+   Este archivo importa esa base y agrega SÓLO la extensión propia de ICAP.
+   Ningún componente escribe un color, spacing, radio o z-index literal.
+   ========================================================================== */
+
+@import url('./pictos.tokens.css');
+
+:root {
+  /* ========== CAPAS ICAP ==========
+     Reasignación de los matices de fase del pipeline de PICTOS.net a las cuatro
+     capas de ICAP, según el ORIGEN DEL DATO — el principio organizador del
+     instrumento. El matiz identifica la capa.
+     PROHIBIDO usarlo para codificar calidad, magnitud o aprobación. */
+  --icap-layer-a:        var(--phase-understand);   /* #3b82f6 · script, en la ingesta */
+  --icap-layer-a-bg:     var(--phase-understand-bg);
+  --icap-layer-b:        var(--phase-produce);      /* #f97316 · ajuste humano, submuestra */
+  --icap-layer-b-bg:     var(--phase-produce-bg);
+  --icap-layer-c:        var(--phase-compose);      /* #10b981 · juicio humano, Likert */
+  --icap-layer-c-bg:     var(--phase-compose-bg);
+  --icap-layer-d:        var(--phase-vectorize);    /* #8b5cf6 · script, set completo */
+  --icap-layer-d-bg:     var(--phase-vectorize-bg);
+
+  /* ========== VEREDICTO ==========
+     Bloqueado usa la rampa de error completa.
+     Admisible NO usa la rampa de éxito completa: significa "los tres vetos
+     pasan", no "el signo es bueno". Superficie blanca, punto emerald. */
+  --icap-blocked-bg:     var(--color-error-light);
+  --icap-blocked-border: #fecaca;
+  --icap-blocked-fg:     var(--color-error-dark);
+  --icap-blocked-mark:   var(--color-error);
+
+  --icap-admissible-bg:     var(--bg-surface);
+  --icap-admissible-border: var(--border-default);
+  --icap-admissible-fg:     var(--color-success-dark);
+  --icap-admissible-mark:   var(--color-success);
+
+  /* Perfil compensatorio: neutro. Sin rojo, sin alarma. */
+  --icap-profile-bg:     var(--bg-surface);
+  --icap-profile-border: var(--border-default);
+
+  /* ========== NIVEL DE EVIDENCIA ==========
+     La rampa "obsoleto / inconsistente" del sistema base pasa a significar
+     evidencia de menor grado: hipótesis (A4), advertencia (A3), umbral sin
+     calibrar. Etiqueta SIEMPRE visible; nombre de dimensión en cursiva. */
+  --icap-lesser-bg:      var(--color-stale-50);
+  --icap-lesser-surface: var(--color-stale-100);
+  --icap-lesser-border:  var(--color-stale-200);
+  --icap-lesser-fg:      var(--color-stale-700);
+  --icap-lesser-fill:    #d6b45e;
+
+  /* ========== REVELACIÓN DIFERIDA ==========
+     La marca del patrón de sellado: regla de 2px sobre el bloque diferido.
+     Aparece en EXACTAMENTE dos pantallas: comprensión espontánea y calibración.
+     Es el gesto expresivo único del sistema, como el spectral-pulse de PICTOS. */
+  --icap-deferred-rule:      var(--color-primary);
+  --icap-deferred-rule-width: 2px;
+  --icap-deferred-label:     var(--color-primary);
+
+  /* ========== ESCENARIO DEL PICTOGRAMA ==========
+     Grilla punteada de 20px sobre gris plano. Única textura del sistema; aquí
+     tiene función: da campo medible al signo que se está midiendo. */
+  --icap-stage-bg:       #e5e5e5;
+  --icap-stage-dot:      var(--color-slate-300);
+  --icap-stage-dot-size: 20px;
+
+  /* ========== ESTADOS DEL DATO ==========
+     "pendiente" y "no muestreado" NO pueden verse iguales: la segunda no tiene
+     tarea asociada y nunca la tendrá. Se distingue por borde discontinuo. */
+  --icap-state-pending-border:     var(--border-default);
+  --icap-state-notsampled-border:  var(--border-strong);
+  --icap-state-notsampled-style:   dashed;
+  --icap-state-superseded-bg:      var(--color-slate-100);
+  --icap-state-superseded-border:  var(--border-strong);
+
+  /* ========== OBJETIVO TÁCTIL ==========
+     Piso WCAG. La celda de escala C es mayor a propósito: las siete opciones
+     —cinco puntos y tres ausencias— deben tener el mismo tamaño. */
+  --icap-touch-min:      44px;
+  --icap-scale-cell:     60px;
+}
+
+/* Escenario del pictograma. Todo pictograma presentado lleva alt, incluido
+   el degradado de la tarea de umbrales. */
+.icap-stage {
+  background-color: var(--icap-stage-bg);
+  background-image: radial-gradient(var(--icap-stage-dot) 1px, transparent 1px);
+  background-size: var(--icap-stage-dot-size) var(--icap-stage-dot-size);
+  border: var(--border-width) solid var(--border-strong);
+}
+
+/* Marca del patrón de revelación diferida. */
+.icap-deferred {
+  border-top: var(--icap-deferred-rule-width) solid var(--icap-deferred-rule);
+}
