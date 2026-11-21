@@ -33,10 +33,17 @@ async function init() {
   buildSliders();
   loadEvaluatorProfile();
   updateStepLocks();
-  goToStep(1);
+  showHome(false);
 }
 
 function bindElements() {
+  el.homeScreen = document.getElementById("homeScreen");
+  el.evaluatorShell = document.getElementById("evaluatorShell");
+  el.startEvaluationBtn = document.getElementById("startEvaluationBtn");
+  el.backHomeBtn = document.getElementById("backHomeBtn");
+  el.brandHome = document.getElementById("brandHome");
+  el.statusRegion = document.getElementById("statusRegion");
+
   el.stepBtn1 = document.getElementById("stepBtn1");
   el.stepBtn2 = document.getElementById("stepBtn2");
   el.stepBtn3 = document.getElementById("stepBtn3");
@@ -102,6 +109,17 @@ function bindElements() {
 }
 
 function bindEvents() {
+  el.startEvaluationBtn.addEventListener("click", () => {
+    el.homeScreen.classList.add("hidden");
+    el.evaluatorShell.classList.remove("hidden");
+    goToStep(1, true);
+  });
+  el.backHomeBtn.addEventListener("click", showHome);
+  el.brandHome.addEventListener("click", (event) => {
+    event.preventDefault();
+    showHome();
+  });
+
   el.stepBtn1.addEventListener("click", () => goToStep(1));
   el.stepBtn2.addEventListener("click", () => {
     if (!el.stepBtn2.disabled) goToStep(2);
@@ -168,7 +186,14 @@ function createFallbackRubric() {
   return { version: "fallback", scale, dimensions };
 }
 
-function goToStep(step) {
+function showHome(moveFocus = true) {
+  el.evaluatorShell.classList.add("hidden");
+  el.homeScreen.classList.remove("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  if (moveFocus) document.getElementById("homeTitle").focus({ preventScroll: true });
+}
+
+function goToStep(step, moveFocus = true) {
   el.step1.classList.toggle("hidden", step !== 1);
   el.step2.classList.toggle("hidden", step !== 2);
   el.step3.classList.toggle("hidden", step !== 3);
@@ -181,7 +206,27 @@ function goToStep(step) {
   el.stepBtn2.classList.toggle("active", step === 2);
   el.stepBtn3.classList.toggle("active", step === 3);
 
+  [el.stepBtn1, el.stepBtn2, el.stepBtn3].forEach((button, index) => {
+    if (index + 1 === step) button.setAttribute("aria-current", "step");
+    else button.removeAttribute("aria-current");
+  });
+
   if (step === 3) renderCurrentEvalItem();
+
+  if (moveFocus) {
+    const heading = document.getElementById(`step${step}Title`);
+    heading?.focus({ preventScroll: true });
+    el.evaluatorShell.scrollIntoView({ behavior: "smooth", block: "start" });
+    announce(`Paso ${step} de 3`);
+  }
+}
+
+function announce(message) {
+  if (!el.statusRegion) return;
+  el.statusRegion.textContent = "";
+  window.requestAnimationFrame(() => {
+    el.statusRegion.textContent = message;
+  });
 }
 
 function updateStepLocks() {
@@ -555,6 +600,8 @@ function buildSliders() {
       radio.name = `score-${dimension.key}`;
       radio.value = String(score);
       radio.dataset.key = dimension.key;
+      const scaleMeta = getScaleMeta(score);
+      radio.setAttribute("aria-label", `${score} de 5: ${scaleMeta.label}`);
       radio.addEventListener("change", onDimensionScoreChange);
 
       option.append(number, radio);
@@ -665,7 +712,7 @@ function drawHexChart(scores) {
 
   for (let level = 1; level <= 5; level += 1) {
     const points = DIMENSIONS.map((_, i) => polarPoint(cx, cy, (radius * level) / 5, i, DIMENSIONS.length));
-    strokePolygon(ctx, points, level === 5 ? "#9ca3af" : "#e5e7eb", level === 5 ? 0 : 3);
+    strokePolygon(ctx, points, level === 5 ? "#72558f" : "#38264d", level === 5 ? 0 : 3);
   }
 
   DIMENSIONS.forEach((dimension, index) => {
@@ -673,11 +720,11 @@ function drawHexChart(scores) {
     ctx.beginPath();
     ctx.moveTo(cx, cy);
     ctx.lineTo(edge.x, edge.y);
-    ctx.strokeStyle = "#e5e7eb";
+    ctx.strokeStyle = "#38264d";
     ctx.stroke();
 
     const label = polarPoint(cx, cy, radius + 20, index, DIMENSIONS.length);
-    ctx.fillStyle = "#4b5563";
+    ctx.fillStyle = "#d8cfe3";
     ctx.font = "600 12px Lexend, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -700,8 +747,8 @@ function drawHexChart(scores) {
       else ctx.lineTo(entry.point.x, entry.point.y);
     });
     ctx.closePath();
-    ctx.fillStyle = "rgba(37, 99, 235, 0.16)";
-    ctx.strokeStyle = "#1d4ed8";
+    ctx.fillStyle = "rgba(157, 107, 255, 0.22)";
+    ctx.strokeStyle = "#b794ff";
     ctx.lineWidth = 2;
     ctx.fill();
     ctx.stroke();
@@ -709,7 +756,7 @@ function drawHexChart(scores) {
     ctx.beginPath();
     ctx.moveTo(ratedPoints[0].point.x, ratedPoints[0].point.y);
     ctx.lineTo(ratedPoints[1].point.x, ratedPoints[1].point.y);
-    ctx.strokeStyle = "#1d4ed8";
+    ctx.strokeStyle = "#b794ff";
     ctx.lineWidth = 2;
     ctx.stroke();
   }

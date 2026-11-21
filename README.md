@@ -6,11 +6,14 @@ La aplicación principal está en [`index.html`](index.html) y está pensada par
 
 ## Estado actual del evaluador
 
+- Portada breve que explica propósito, recorrido y tratamiento local de los datos.
+- Lenguaje visual hermano de PICTOS.net en variante oscura, con superficies de pictogramas blancas para no alterar la muestra.
 - Flujo guiado en **3 pasos**.
 - Entrada por `library dump` JSON.
 - Evaluación enfocada en **bitmaps** (`row.bitmap`) solamente.
 - Se excluyen imágenes `data:image/svg+xml` de forma intencional.
 - Rúbrica 1-5 por dimensión + gráfico hexagonal + explicación dinámica por puntaje.
+- Navegación por teclado, foco gestionado entre pasos, región de estado para tecnologías de asistencia y diseño responsive.
 
 ## Ejecución local
 
