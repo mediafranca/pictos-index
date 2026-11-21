@@ -35,6 +35,16 @@ Luego abre [http://localhost:4191](http://localhost:4191).
 
 No hay dependencias que instalar: el servidor local usa únicamente Node.js.
 
+## Idiomas
+
+La interfaz y la rúbrica están disponibles en español latinoamericano (`es-419`) e inglés británico (`en-GB`). El idioma inicial sigue la preferencia del navegador y el selector del encabezado conserva la elección localmente.
+
+Los catálogos viven en `locales/es-419.json` y `locales/en-GB.json`. Toda clave debe existir en ambos archivos y las descripciones de la rúbrica deben conservar sus pares `_es` / `_en`:
+
+```bash
+npm run validate-i18n
+```
+
 ## Recorrido
 
 1. **Cargar una biblioteca.** Acepta un archivo JSON exportado por PICTOS o una de las tres bibliotecas breves incluidas como ejemplo.
@@ -80,6 +90,7 @@ La exportación usa el schema `pictos-index-library-evaluation-1.3.0` e incluye:
 ```text
 index.html             Interfaz principal
 web/                   Lógica, estilos y recursos gráficos
+locales/               Catálogos paralelos es-419 / en-GB
 data/                  Descripciones canónicas de la rúbrica
 examples/              Bibliotecas breves para probar el instrumento
 docs/                   Documentación de la rúbrica

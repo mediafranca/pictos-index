@@ -1,10 +1,12 @@
+import { applyTranslations, getLocale, initI18n, setLocale, t } from "./i18n.js";
+
 const DIMENSIONS = [
-  { key: "clarity", code: "CLA", fallbackName: "Claridad", fallbackDescription: "La claridad es el grado en que el pictograma resulta visualmente legible y libre de ambigüedad." },
-  { key: "recognizability", code: "REC", fallbackName: "Reconocibilidad", fallbackDescription: "La reconocibilidad es la facilidad con que una persona puede identificar lo que representa el pictograma sin contexto adicional." },
-  { key: "semantic_transparency", code: "SEM", fallbackName: "Transparencia semántica", fallbackDescription: "La transparencia semántica es el grado en que el pictograma comunica con precisión el significado de la frase objetivo." },
-  { key: "pragmatic_fit", code: "PRA", fallbackName: "Adecuación pragmática", fallbackDescription: "La adecuación pragmática es la utilidad del pictograma en situaciones reales de comunicación mediante CAA." },
-  { key: "cultural_adequacy", code: "CUL", fallbackName: "Adecuación cultural", fallbackDescription: "La adecuación cultural es la pertinencia del pictograma para el contexto cultural y lingüístico de sus destinatarios." },
-  { key: "cognitive_accessibility", code: "COG", fallbackName: "Accesibilidad cognitiva", fallbackDescription: "La accesibilidad cognitiva es la facilidad con que personas con distintas capacidades cognitivas pueden comprender y usar el pictograma." },
+  { key: "clarity", code: "CLA" },
+  { key: "recognizability", code: "REC" },
+  { key: "semantic_transparency", code: "SEM" },
+  { key: "pragmatic_fit", code: "PRA" },
+  { key: "cultural_adequacy", code: "CUL" },
+  { key: "cognitive_accessibility", code: "COG" },
 ];
 
 const AXIS_COLORS = ["#2563eb", "#0d9488", "#d97706", "#9333ea", "#e11d48", "#16a34a"];
@@ -29,7 +31,10 @@ const el = {};
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
+  await initI18n();
   bindElements();
+  applyTranslations();
+  el.languageSelect.value = getLocale();
   bindEvents();
   state.rubric = await loadRubric();
   buildSliders();
@@ -44,6 +49,7 @@ function bindElements() {
   el.startEvaluationBtn = document.getElementById("startEvaluationBtn");
   el.brandHome = document.getElementById("brandHome");
   el.statusRegion = document.getElementById("statusRegion");
+  el.languageSelect = document.getElementById("languageSelect");
 
   el.stepBtn1 = document.getElementById("stepBtn1");
   el.stepBtn2 = document.getElementById("stepBtn2");
@@ -119,6 +125,7 @@ function bindElements() {
 }
 
 function bindEvents() {
+  el.languageSelect.addEventListener("change", onLanguageChange);
   el.startEvaluationBtn.addEventListener("click", () => {
     el.homeScreen.classList.add("hidden");
     el.evaluatorShell.classList.remove("hidden");
@@ -178,28 +185,29 @@ async function loadRubric() {
 }
 
 function createFallbackRubric() {
-  const scale = {
-    "1": { label_es: "No funcional", general_es: "No funciona y requiere rediseño.", color: "#dc2626" },
-    "2": { label_es: "Insuficiente", general_es: "Presenta problemas relevantes.", color: "#ea580c" },
-    "3": { label_es: "Funciona", general_es: "Funciona, con mejoras pendientes.", color: "#d97706" },
-    "4": { label_es: "Bien", general_es: "Cumple bien, con mejoras menores.", color: "#65a30d" },
-    "5": { label_es: "Excelente", general_es: "No requiere mejoras.", color: "#16a34a" },
+  return {
+    version: "fallback",
+    scale: {
+      "1": { color: "#dc2626" },
+      "2": { color: "#ea580c" },
+      "3": { color: "#d97706" },
+      "4": { color: "#65a30d" },
+      "5": { color: "#16a34a" },
+    },
+    dimensions: {},
   };
+}
 
-  const dimensions = {};
-  DIMENSIONS.forEach((dim) => {
-    const levels = {};
-    for (let i = 1; i <= 5; i += 1) {
-      levels[String(i)] = { text_es: `Nivel ${i} para ${dim.fallbackName}.` };
-    }
-    dimensions[dim.key] = {
-      name_es: dim.fallbackName,
-      description_es: dim.fallbackDescription,
-      levels,
-    };
-  });
+function onLanguageChange(event) {
+  if (!setLocale(event.target.value)) return;
+  applyTranslations();
+  buildSliders();
 
-  return { version: "fallback", scale, dimensions };
+  if (state.library) {
+    renderLibrarySummary();
+    renderPreview();
+  }
+  if (state.items.length && !el.step3.classList.contains("hidden")) renderCurrentEvalItem(true);
 }
 
 function showHome(moveFocus = true) {
@@ -233,7 +241,7 @@ function goToStep(step, moveFocus = true) {
     const heading = document.getElementById(`step${step}Title`);
     heading?.focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: "smooth" });
-    announce(`Paso ${step} de 3`);
+    announce(t("status.step", { step }));
   }
 }
 
@@ -269,7 +277,7 @@ async function onLibraryFileChange(event) {
     loadLibraryPayload(payload, file.name);
   } catch (error) {
     console.error(error);
-    alert("No se pudo leer el JSON de biblioteca.");
+    alert(t("alerts.invalidJson"));
   } finally {
     event.target.value = "";
   }
@@ -287,11 +295,11 @@ async function onLoadSampleLibrary(button) {
     const response = await fetch(path);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const payload = await response.json();
-    const fileName = path.split("/").pop() || "biblioteca-ejemplo.json";
+    const fileName = path.split("/").pop() || "sample-library.json";
     loadLibraryPayload(payload, fileName);
   } catch (error) {
     console.error(error);
-    alert("No se pudo cargar la biblioteca de ejemplo.");
+    alert(t("alerts.sampleLoad"));
   } finally {
     button.disabled = false;
     button.removeAttribute("aria-busy");
@@ -302,7 +310,7 @@ async function onLoadSampleLibrary(button) {
 function loadLibraryPayload(payload, fileName) {
   const { items } = parseLibraryPayload(payload);
   if (!items.length) {
-    alert("El archivo no contiene imágenes compatibles en row.bitmap, row.rawSvg o row.structuredSvg.");
+    alert(t("alerts.noImages"));
     return;
   }
 
@@ -315,7 +323,7 @@ function loadLibraryPayload(payload, fileName) {
   state.library = {
     fileName,
     type: payload.type || "library_dump",
-    version: payload.appVersion || payload.version || "desconocida",
+    version: payload.appVersion || payload.version || "",
     schemaVersion: payload.schemaVersion || null,
     name: payload.config && payload.config.name ? payload.config.name : "",
     model: payload.config && payload.config.generationModel ? payload.config.generationModel : "",
@@ -351,7 +359,7 @@ function parseLibraryPayload(payload) {
 
 function normalizeRowItem(row, index) {
   const id = String(row.id || row.sourceRowId || `ROW_${index + 1}`);
-  const utterance = String(row.UTTERANCE || row.utterance || row.prompt || `Item ${index + 1}`);
+  const utterance = String(row.UTTERANCE || row.utterance || row.prompt || t("evaluation.itemFallback", { number: index + 1 }));
   const image = resolveRowImage(row);
   if (!image) return null;
   return { index, id, utterance, imageSrc: image.src, imageFormat: image.format };
@@ -452,40 +460,40 @@ function utf8ToBase64(value) {
 function renderLibrarySummary() {
   if (!state.library) return;
 
-  el.libraryStatus.textContent = `Biblioteca importada correctamente: ${state.items.length} pictogramas listos para evaluar.`;
+  el.libraryStatus.textContent = t("library.successStatus", { count: state.items.length });
   el.libraryStatus.classList.add("sr-only");
-  el.step1Title.textContent = "Biblioteca lista";
-  el.step1Instruction.textContent = "Comprueba una muestra y los datos esenciales antes de comenzar la evaluación.";
-  el.step1NextBtn.textContent = "Usar esta biblioteca";
+  el.step1Title.textContent = t("library.ready");
+  el.step1Instruction.textContent = t("library.confirmation");
+  el.step1NextBtn.textContent = t("library.use");
   el.libraryLoader.classList.add("hidden");
   el.libraryLoaded.classList.remove("hidden");
-  el.loadedLibraryName.textContent = state.library.name || "Biblioteca sin nombre";
+  el.loadedLibraryName.textContent = state.library.name || t("library.untitled");
   el.loadedLibraryFile.textContent = state.library.fileName;
 
   const imageFormatsLabel = Object.entries(state.library.imageFormats)
     .map(([format, count]) => `${count} ${format}`)
     .join(" · ");
   const highlights = [
-    ["Pictogramas", String(state.items.length)],
-    ["Imágenes", imageFormatsLabel],
-    ["Modelo", state.library.model || "No informado"],
-    ["Formato", state.library.schemaVersion ? `PICTOS v${state.library.schemaVersion}` : "Legado"],
+    [t("library.highlights.pictograms"), String(state.items.length)],
+    [t("library.highlights.images"), imageFormatsLabel],
+    [t("library.highlights.model"), state.library.model || t("library.notReported")],
+    [t("library.highlights.format"), state.library.schemaVersion ? `PICTOS v${state.library.schemaVersion}` : t("library.legacy")],
   ];
   el.libraryHighlights.innerHTML = highlights
     .map(([label, value]) => `<div class="library-highlight"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`)
     .join("");
 
   const rows = [
-    ["Biblioteca", state.library.name || "Sin nombre"],
-    ["Archivo", state.library.fileName],
-    ["Tipo", state.library.type],
-    ["Formato", state.library.schemaVersion ? `PICTOS v${state.library.schemaVersion}` : "Legado"],
-    ["Aplicación", state.library.version],
-    ["Modelo", state.library.model || "No informado"],
-    ["Elementos", String(state.items.length)],
-    ["Imágenes", imageFormatsLabel],
-    ["Autor", state.library.author || "No informado"],
-    ["Timestamp", state.library.timestamp || "No informado"],
+    [t("library.metadata.library"), state.library.name || t("library.noName")],
+    [t("library.metadata.file"), state.library.fileName],
+    [t("library.metadata.type"), state.library.type],
+    [t("library.metadata.format"), state.library.schemaVersion ? `PICTOS v${state.library.schemaVersion}` : t("library.legacy")],
+    [t("library.metadata.application"), state.library.version || t("library.unknown")],
+    [t("library.metadata.model"), state.library.model || t("library.notReported")],
+    [t("library.metadata.items"), String(state.items.length)],
+    [t("library.metadata.images"), imageFormatsLabel],
+    [t("library.metadata.author"), state.library.author || t("library.notReported")],
+    [t("library.metadata.timestamp"), state.library.timestamp || t("library.notReported")],
   ];
 
   el.librarySummary.innerHTML = `
@@ -513,7 +521,7 @@ function renderPreview() {
   if (!state.items.length) return;
   const item = state.items[state.previewIndex];
 
-  setImage(el.previewImage, item.imageSrc, `Pictograma ${item.id}`);
+  setImage(el.previewImage, item.imageSrc, `${t("library.previewAlt")} ${item.id}`);
   el.previewCounter.textContent = `${state.previewIndex + 1} / ${state.items.length}`;
   el.previewPrevBtn.disabled = state.previewIndex === 0;
   el.previewNextBtn.disabled = state.previewIndex === state.items.length - 1;
@@ -528,7 +536,7 @@ function onEvaluatorSubmit(event) {
   };
 
   if (!isProfileComplete(profile)) {
-    alert("Completa todos los campos obligatorios del evaluador.");
+    alert(t("profile.required"));
     return;
   }
 
@@ -552,7 +560,7 @@ function onAacRelationChange(event) {
         input.checked = false;
         input.disabled = true;
       });
-      announce("Se seleccionó sin experiencia previa; se desactivaron las demás opciones.");
+      announce(t("profile.exclusiveAnnouncement"));
     } else {
       specificInputs.forEach((input) => {
         input.disabled = false;
@@ -615,14 +623,14 @@ function changeEvalItem(nextIndex) {
   renderCurrentEvalItem();
 }
 
-function renderCurrentEvalItem() {
+function renderCurrentEvalItem(preserveDimension = false) {
   if (!state.items.length) return;
 
   const item = state.items[state.evalIndex];
   const record = ensureRecord(item.id);
 
-  setImage(el.pragmaticImage, item.imageSrc, `Pictograma ${item.id}`);
-  setImage(el.dimensionImage, item.imageSrc, `Pictograma ${item.id}`);
+  setImage(el.pragmaticImage, item.imageSrc, `${t("evaluation.imageAlt")} ${item.id}`);
+  setImage(el.dimensionImage, item.imageSrc, `${t("evaluation.dimensionImageAlt")} ${item.id}`);
 
   el.realPhraseText.textContent = item.utterance;
   el.evalCounter.textContent = `${state.evalIndex + 1} / ${state.items.length}`;
@@ -650,7 +658,7 @@ function renderCurrentEvalItem() {
 
   const scores = normalizeScores(record.scores);
   const firstUnscoredIndex = DIMENSIONS.findIndex((dimension) => normalizeScore(scores[dimension.key]) === null);
-  state.dimensionIndex = firstUnscoredIndex === -1 ? 0 : firstUnscoredIndex;
+  if (!preserveDimension) state.dimensionIndex = firstUnscoredIndex === -1 ? 0 : firstUnscoredIndex;
   setScoresToUI(scores);
   updateLikertPanels(scores);
   updateSaveAndNextBtn(scores);
@@ -666,7 +674,7 @@ function onSaveGuess() {
   const guess = el.guessText.value.trim();
 
   if (!guess) {
-    alert("Debes escribir qué comunica el pictograma o usar omitir.");
+    alert(t("evaluation.guessRequired"));
     return;
   }
 
@@ -754,7 +762,7 @@ function buildSliders() {
       radio.value = String(score);
       radio.dataset.key = dimension.key;
       const scaleMeta = getScaleMeta(score);
-      radio.setAttribute("aria-label", `${score} de 5: ${scaleMeta.label}`);
+      radio.setAttribute("aria-label", t("evaluation.scoreLabel", { score, label: scaleMeta.label }));
       radio.addEventListener("change", onDimensionScoreChange);
 
       option.append(number, radio);
@@ -780,7 +788,10 @@ function renderActiveDimension(scores) {
   const cards = Array.from(el.slidersContainer.querySelectorAll(".dimension-card"));
 
   cards.forEach((card, index) => card.classList.toggle("hidden", index !== state.dimensionIndex));
-  el.dimensionCounter.textContent = `Dimensión ${state.dimensionIndex + 1} de ${DIMENSIONS.length}`;
+  el.dimensionCounter.textContent = t("evaluation.dimensionCount", {
+    current: state.dimensionIndex + 1,
+    total: DIMENSIONS.length,
+  });
   el.activeDimensionTitle.textContent = meta.name;
   el.activeDimensionDescription.textContent = meta.description;
   el.activeDimensionTitle.tabIndex = -1;
@@ -792,8 +803,8 @@ function renderActiveDimension(scores) {
     currentScore !== null && state.dimensionIndex < DIMENSIONS.length - 1,
   );
   el.scalePrompt.textContent = currentScore === null
-    ? "Evalúa de 1 a 5"
-    : `Evaluaste: ${getScaleMeta(currentScore).label}`;
+    ? t("evaluation.rate")
+    : t("evaluation.rated", { label: getScaleMeta(currentScore).label });
   renderRubricDetails(scores);
 }
 
@@ -833,13 +844,13 @@ function onDimensionScoreChange() {
 function updateEvaluationStatus() {
   const completed = countCompletedItems();
   const isComplete = state.items.length > 0 && completed === state.items.length;
-  el.evalProgress.textContent = `${completed} evaluados de ${state.items.length}`;
+  el.evalProgress.textContent = t("evaluation.progress", { completed, total: state.items.length });
   el.exportJsonLabel.textContent = isComplete
-    ? "Descargar evaluación completa"
-    : "Descargar evaluación parcial";
+    ? t("evaluation.downloadComplete")
+    : t("evaluation.downloadPartial");
   el.exportJsonBtn.setAttribute(
     "aria-label",
-    isComplete ? "Descargar evaluación completa" : "Descargar evaluación parcial",
+    isComplete ? t("evaluation.downloadComplete") : t("evaluation.downloadPartial"),
   );
 }
 
@@ -848,8 +859,8 @@ function updateSaveAndNextBtn(scores) {
   const isLast = state.evalIndex >= state.items.length - 1;
   el.saveAndNextBtn.disabled = !allScored;
   el.saveAndNextBtn.textContent = isLast
-    ? `Guardar evaluación (${state.evalIndex + 1}/${state.items.length})`
-    : `Guardar evaluación y pasar a la siguiente (${state.evalIndex + 1}/${state.items.length})`;
+    ? t("evaluation.save", { current: state.evalIndex + 1, total: state.items.length })
+    : t("evaluation.saveNext", { current: state.evalIndex + 1, total: state.items.length });
 }
 
 function onSaveAndNext() {
@@ -900,7 +911,7 @@ function renderRubricDetails(scores) {
   card.className = "rubric-item";
 
   if (score === null) {
-    card.innerHTML = `<p>La explicación de la nota aparecerá aquí.</p>`;
+    card.innerHTML = `<p>${escapeHtml(t("evaluation.rubricEmpty"))}</p>`;
   } else {
     const rubricText = getDimensionLevelText(dimension.key, score);
     card.innerHTML = `<p>${escapeHtml(rubricText)}</p>`;
@@ -1087,24 +1098,28 @@ function strokePolygon(ctx, points, strokeColor, dashLength) {
 
 function getDimensionMeta(key) {
   const raw = state.rubric && state.rubric.dimensions ? state.rubric.dimensions[key] : null;
-  const fallback = DIMENSIONS.find((d) => d.key === key);
+  const suffix = getLocale() === "en-GB" ? "en" : "es";
   return {
-    name: raw && raw.name_es ? raw.name_es : fallback.fallbackName,
-    description: raw && raw.description_es ? raw.description_es : fallback.fallbackDescription,
+    name: raw && raw[`name_${suffix}`] ? raw[`name_${suffix}`] : t(`rubric.dimensions.${key}.name`),
+    description: raw && raw[`description_${suffix}`]
+      ? raw[`description_${suffix}`]
+      : t(`rubric.dimensions.${key}.description`),
   };
 }
 
 function getDimensionLevelText(key, score) {
   const raw = state.rubric && state.rubric.dimensions ? state.rubric.dimensions[key] : null;
   const level = raw && raw.levels ? raw.levels[String(score)] : null;
-  return level && level.text_es ? level.text_es : "Sin descripción para este nivel.";
+  const suffix = getLocale() === "en-GB" ? "en" : "es";
+  return level && level[`text_${suffix}`] ? level[`text_${suffix}`] : t("evaluation.noLevelDescription");
 }
 
 function getScaleMeta(score) {
   const raw = state.rubric && state.rubric.scale ? state.rubric.scale[String(score)] : null;
+  const suffix = getLocale() === "en-GB" ? "en" : "es";
   return {
-    label: raw && raw.label_es ? raw.label_es : `Nivel ${score}`,
-    general: raw && raw.general_es ? raw.general_es : "",
+    label: raw && raw[`label_${suffix}`] ? raw[`label_${suffix}`] : t(`rubric.scale.${score}.label`),
+    general: raw && raw[`general_${suffix}`] ? raw[`general_${suffix}`] : t(`rubric.scale.${score}.general`),
     color: raw && raw.color ? raw.color : "#111827",
   };
 }
@@ -1193,12 +1208,12 @@ function countCompletedItems() {
 
 function exportEvaluationJson() {
   if (!state.library || !state.items.length) {
-    alert("Primero carga una biblioteca.");
+    alert(t("alerts.loadFirst"));
     return;
   }
 
   if (!isProfileComplete(state.evaluatorProfile)) {
-    alert("Primero completa los datos del evaluador.");
+    alert(t("alerts.profileFirst"));
     return;
   }
 
@@ -1227,6 +1242,7 @@ function exportEvaluationJson() {
   const payload = {
     schemaVersion: "pictos-index-library-evaluation-1.3.0",
     exportedAt: new Date().toISOString(),
+    uiLocale: getLocale(),
     evaluation: state.assessment || createAssessmentIdentity(),
     library: state.library,
     evaluator: state.evaluatorProfile,
@@ -1277,7 +1293,7 @@ function buildSummary() {
 }
 
 function setImage(imgEl, source, label) {
-  const fallback = createPlaceholder(label || "Pictograma sin imagen");
+  const fallback = createPlaceholder(label || t("evaluation.imageFallback"));
   imgEl.onerror = () => {
     if (imgEl.src !== fallback) imgEl.src = fallback;
   };

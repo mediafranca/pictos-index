@@ -68,6 +68,12 @@ a:hover { color: var(--white); }
   border: 0; background: transparent; color: var(--ink-soft); font-size: .85rem;
   font-weight: 600; text-decoration: none; cursor: pointer;
 }
+.header-actions { display: flex; align-items: center; gap: 1rem; }
+.language-picker select {
+  min-height: 2.35rem; padding: .35rem 1.8rem .35rem .65rem; border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm); background: var(--surface); color: var(--ink-soft); font-size: .78rem;
+  font-weight: 650; cursor: pointer;
+}
 .site-link:hover, .text-link:hover { color: var(--white); }
 
 #mainContent { min-height: calc(100vh - 4.25rem); }
@@ -171,11 +177,13 @@ button:disabled { cursor: not-allowed; opacity: .42; transform: none !important;
 .step-pill {
   min-height: 3.25rem; padding: .5rem .8rem; display: flex; align-items: center; gap: .65rem;
   border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface);
-  color: var(--muted); font-weight: 600; text-align: left;
+  color: var(--ink-soft); font-weight: 600; text-align: left;
 }
-.step-pill span { width: 1.75rem; height: 1.75rem; display: grid; place-content: center; border-radius: 50%; background: var(--surface-soft); font-size: .72rem; }
+.step-pill > span:first-child { width: 1.75rem; height: 1.75rem; flex: 0 0 auto; display: grid; place-content: center; border-radius: 50%; background: var(--surface-soft); font-size: .72rem; }
+.step-pill:disabled { opacity: 1; color: var(--ink-soft); }
+.step-pill:disabled > span:first-child { color: var(--ink-soft); }
 .step-pill.active { border-color: var(--violet); background: rgb(64 6 158 / .28); color: var(--white); }
-.step-pill.active span { background: var(--violet); color: var(--bg-deep); }
+.step-pill.active > span:first-child { background: var(--violet); color: var(--bg-deep); }
 .screen {
   margin-top: .75rem; padding: clamp(1rem, 2vw, 1.5rem); border: 1px solid var(--line);
   border-radius: var(--radius-lg); background: rgb(20 12 32 / .86); box-shadow: var(--shadow);
@@ -405,6 +413,9 @@ textarea { min-height: 9rem; resize: vertical; }
 }
 @media (max-width: 480px) {
   .site-link { font-size: .75rem; }
+  .header-actions { gap: .5rem; }
+  .language-picker select { width: 5.5rem; padding-inline: .5rem; }
+  .site-link-label { display: none; }
   .brand > span { gap: .35rem; }
   .hero h1 { font-size: clamp(2.55rem, 15vw, 4.1rem); }
   .index-orbit { width: 19rem; max-width: 100%; }
