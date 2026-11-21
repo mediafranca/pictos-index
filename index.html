@@ -86,12 +86,9 @@
 
       <section id="evaluatorShell" class="app-shell hidden" aria-label="Instrumento de evaluación">
         <header class="app-header">
-          <button id="backHomeBtn" class="back-link" type="button">← Volver a la portada</button>
-          <div>
-            <p class="eyebrow">Instrumento</p>
-            <h1>Evaluar una biblioteca</h1>
-            <p class="lead">Tres pasos. El avance queda guardado localmente en este navegador.</p>
-          </div>
+          <p class="eyebrow">Instrumento</p>
+          <h1>Evaluar una biblioteca</h1>
+          <p class="lead">Tres pasos. El avance queda guardado localmente en este navegador.</p>
         </header>
 
       <nav class="stepper" aria-label="Pasos">
@@ -104,14 +101,39 @@
         <p class="step-kicker">Paso 1 de 3</p>
         <h2 id="step1Title" tabindex="-1">Carga la biblioteca</h2>
         <p class="muted">
-          Selecciona un archivo JSON exportado desde PICTOS.net. El instrumento usa las imágenes raster incluidas en <code>row.bitmap</code>.
+          Selecciona un archivo JSON exportado desde PICTOS.net. El instrumento admite imágenes raster y SVG del formato actual.
         </p>
 
         <div class="step1-grid">
           <div class="step1-left">
             <div class="load-row">
+              <label class="file-field" for="libraryFileInput">
+                <strong>Cargar un archivo propio</strong>
+                <span>Formato JSON exportado desde PICTOS.net.</span>
+              </label>
               <input id="libraryFileInput" type="file" accept=".json,application/json" />
-              <button id="loadPictosIndex50Btn" class="secondary-btn" type="button">Cargar biblioteca PICTOS Index 50 de ejemplo</button>
+
+              <div class="sample-picker" aria-labelledby="samplePickerTitle">
+                <h3 id="samplePickerTitle">O prueba con una biblioteca breve</h3>
+                <p>Las tres contienen las mismas 10 frases producidas con modelos distintos.</p>
+                <div class="sample-grid">
+                  <button class="sample-card" type="button" data-sample-path="./examples/index-ex00-graph-2026-11-21.json">
+                    <strong>Ejemplo 00</strong>
+                    <span>Raster · GPT Image</span>
+                    <small>10 pictogramas</small>
+                  </button>
+                  <button class="sample-card" type="button" data-sample-path="./examples/index-ex01-graph-2026-11-21.json">
+                    <strong>Ejemplo 01</strong>
+                    <span>Vector · Recraft 4.1</span>
+                    <small>10 pictogramas</small>
+                  </button>
+                  <button class="sample-card" type="button" data-sample-path="./examples/index-ex02-graph-2026-11-21.json">
+                    <strong>Ejemplo 02</strong>
+                    <span>Vector · Recraft Pro</span>
+                    <small>10 pictogramas</small>
+                  </button>
+                </div>
+              </div>
             </div>
 
             <p id="libraryStatus" class="status-text">Aún no hay biblioteca cargada.</p>

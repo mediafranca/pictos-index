@@ -10,8 +10,8 @@ La aplicación principal está en [`index.html`](index.html) y está pensada par
 - Lenguaje visual hermano de PICTOS.net en variante oscura, con superficies de pictogramas blancas para no alterar la muestra.
 - Flujo guiado en **3 pasos**.
 - Entrada por `library dump` JSON.
-- Evaluación enfocada en **bitmaps** (`row.bitmap`) solamente.
-- Se excluyen imágenes `data:image/svg+xml` de forma intencional.
+- Compatible con exportaciones PICTOS `schemaVersion: 3` y con archivos legados.
+- Admite imágenes raster (`row.bitmap`) y vectoriales (`row.rawSvg` o `row.structuredSvg`).
 - Rúbrica 1-5 por dimensión + gráfico hexagonal + explicación dinámica por puntaje.
 - Navegación por teclado, foco gestionado entre pasos, región de estado para tecnologías de asistencia y diseño responsive.
 
@@ -20,17 +20,17 @@ La aplicación principal está en [`index.html`](index.html) y está pensada par
 ```bash
 git clone https://github.com/mediafranca/pictos-index.git
 cd pictos-index
-python3 -m http.server 4173
+npm run dev
 ```
 
-Abrir: `http://localhost:4173`
+Abrir: `http://localhost:4191`
 
 ## Flujo de evaluación (UI)
 
 ### Paso 1. Cargar biblioteca
 
 - Carga manual de JSON exportado desde pictos.net.
-- Botón para cargar ejemplo: `examples/pictos-index-50-v1-graph-2026-02-11.json`.
+- Tres bibliotecas breves de ejemplo con las mismas 10 frases: raster, Recraft Vector y Recraft Pro Vector.
 - Resumen de metadatos en tabla (`key` a la derecha, `value` a la izquierda).
 - Navegación horizontal de pictogramas con flechas.
 
@@ -91,9 +91,10 @@ El evaluador consume `payload.rows[]` y toma:
 
 - `row.id` o `row.sourceRowId`
 - `row.UTTERANCE` (o equivalentes)
-- `row.bitmap` (imagen raster)
+- `row.bitmap` (imagen raster), o
+- `row.structuredSvg` / `row.rawSvg` (imagen vectorial)
 
-`row.bitmap` soporta:
+Las imágenes raster soportan:
 
 - `data:image/jpeg;base64,...`
 - `data:image/png;base64,...`
@@ -101,7 +102,7 @@ El evaluador consume `payload.rows[]` y toma:
 - Base64 plano (se interpreta como JPEG)
 - URL `http(s)`
 
-No se procesan SVG para evaluación en esta versión.
+Los SVG se analizan, se retiran elementos ejecutables y referencias externas, y se muestran como recursos de imagen aislados.
 
 ## Exportación JSON
 
@@ -140,7 +141,9 @@ web/
 data/
   rubric-scale-descriptions.json
 examples/
-  pictos-index-50-v1-graph-2026-02-11.json
+  index-ex00-graph-2026-11-21.json
+  index-ex01-graph-2026-11-21.json
+  index-ex02-graph-2026-11-21.json
 frases.json
 docs/
   rubric.md

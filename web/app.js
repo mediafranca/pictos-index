@@ -8,7 +8,6 @@ const DIMENSIONS = [
 ];
 
 const AXIS_COLORS = ["#2563eb", "#0d9488", "#d97706", "#9333ea", "#e11d48", "#16a34a"];
-const PICTOS_INDEX_50_LIBRARY_PATH = "./examples/pictos-index-50-v1-graph-2026-02-11.json";
 const PROFILE_STORAGE_KEY = "pictos-index:evaluator-profile:v3";
 const LIBRARY_STORAGE_PREFIX = "pictos-index:library-evals:v3:";
 
@@ -40,7 +39,6 @@ function bindElements() {
   el.homeScreen = document.getElementById("homeScreen");
   el.evaluatorShell = document.getElementById("evaluatorShell");
   el.startEvaluationBtn = document.getElementById("startEvaluationBtn");
-  el.backHomeBtn = document.getElementById("backHomeBtn");
   el.brandHome = document.getElementById("brandHome");
   el.statusRegion = document.getElementById("statusRegion");
 
@@ -56,7 +54,7 @@ function bindElements() {
   el.step3Nav = document.getElementById("step3Nav");
 
   el.libraryFileInput = document.getElementById("libraryFileInput");
-  el.loadPictosIndex50Btn = document.getElementById("loadPictosIndex50Btn");
+  el.sampleLibraryButtons = Array.from(document.querySelectorAll("[data-sample-path]"));
   el.libraryStatus = document.getElementById("libraryStatus");
   el.librarySummary = document.getElementById("librarySummary");
   el.libraryPreview = document.getElementById("libraryPreview");
@@ -114,7 +112,6 @@ function bindEvents() {
     el.evaluatorShell.classList.remove("hidden");
     goToStep(1, true);
   });
-  el.backHomeBtn.addEventListener("click", showHome);
   el.brandHome.addEventListener("click", (event) => {
     event.preventDefault();
     showHome();
@@ -129,7 +126,9 @@ function bindEvents() {
   });
 
   el.libraryFileInput.addEventListener("change", onLibraryFileChange);
-  el.loadPictosIndex50Btn.addEventListener("click", onLoadPictosIndex50Click);
+  el.sampleLibraryButtons.forEach((button) => {
+    button.addEventListener("click", () => onLoadSampleLibrary(button));
+  });
   el.previewPrevBtn.addEventListener("click", () => changePreviewIndex(state.previewIndex - 1));
   el.previewNextBtn.addEventListener("click", () => changePreviewIndex(state.previewIndex + 1));
   el.step1NextBtn.addEventListener("click", () => goToStep(2));
@@ -216,7 +215,7 @@ function goToStep(step, moveFocus = true) {
   if (moveFocus) {
     const heading = document.getElementById(`step${step}Title`);
     heading?.focus({ preventScroll: true });
-    el.evaluatorShell.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
     announce(`Paso ${step} de 3`);
   }
 }
@@ -268,32 +267,53 @@ async function onLibraryFileChange(event) {
   }
 }
 
-async function onLoadPictosIndex50Click() {
+async function onLoadSampleLibrary(button) {
+  const path = button.dataset.samplePath;
+  if (!path) return;
+
+  const previousLabel = button.innerHTML;
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
+
   try {
-    const response = await fetch(PICTOS_INDEX_50_LIBRARY_PATH);
+    const response = await fetch(path);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const payload = await response.json();
-    loadLibraryPayload(payload, "pictos-index-50-v1-graph-2026-02-11.json");
+    const fileName = path.split("/").pop() || "biblioteca-ejemplo.json";
+    loadLibraryPayload(payload, fileName);
   } catch (error) {
     console.error(error);
-    alert("No se pudo cargar la biblioteca PICTOS Index 50 de ejemplo.");
+    alert("No se pudo cargar la biblioteca de ejemplo.");
+  } finally {
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
+    button.innerHTML = previousLabel;
   }
 }
 
 function loadLibraryPayload(payload, fileName) {
   const { items } = parseLibraryPayload(payload);
   if (!items.length) {
-    alert("El archivo no contiene bitmaps válidos en row.bitmap.");
+    alert("El archivo no contiene imágenes compatibles en row.bitmap, row.rawSvg o row.structuredSvg.");
     return;
   }
+
+  const imageFormats = items.reduce((counts, item) => {
+    counts[item.imageFormat] = (counts[item.imageFormat] || 0) + 1;
+    return counts;
+  }, {});
 
   state.items = items;
   state.library = {
     fileName,
     type: payload.type || "library_dump",
-    version: payload.version || "desconocida",
+    version: payload.appVersion || payload.version || "desconocida",
+    schemaVersion: payload.schemaVersion || null,
+    name: payload.config && payload.config.name ? payload.config.name : "",
+    model: payload.config && payload.config.generationModel ? payload.config.generationModel : "",
     timestamp: payload.timestamp || null,
-    author: payload.config && payload.config.author ? payload.config.author : "",
+    author: payload.config && (payload.config.credits || payload.config.author) ? (payload.config.credits || payload.config.author) : "",
+    imageFormats,
     key: buildLibraryStorageKey(payload, items),
   };
 
@@ -321,9 +341,19 @@ function parseLibraryPayload(payload) {
 function normalizeRowItem(row, index) {
   const id = String(row.id || row.sourceRowId || `ROW_${index + 1}`);
   const utterance = String(row.UTTERANCE || row.utterance || row.prompt || `Item ${index + 1}`);
-  const imageSrc = normalizeImageSource(row.bitmap);
-  if (!imageSrc) return null;
-  return { index, id, utterance, imageSrc };
+  const image = resolveRowImage(row);
+  if (!image) return null;
+  return { index, id, utterance, imageSrc: image.src, imageFormat: image.format };
+}
+
+function resolveRowImage(row) {
+  const bitmap = normalizeImageSource(row.bitmap);
+  if (bitmap) return { src: bitmap, format: "raster" };
+
+  const svg = normalizeSvgSource(row.structuredSvg) || normalizeSvgSource(row.rawSvg);
+  if (svg) return { src: svg, format: "SVG" };
+
+  return null;
 }
 
 function normalizeImageSource(raw) {
@@ -353,16 +383,75 @@ function normalizeImageSource(raw) {
   return "";
 }
 
+function normalizeSvgSource(raw) {
+  if (typeof raw !== "string" || !raw.trim()) return "";
+
+  const documentNode = new DOMParser().parseFromString(raw, "image/svg+xml");
+  const root = documentNode.documentElement;
+  if (!root || root.localName !== "svg" || documentNode.querySelector("parsererror")) return "";
+
+  root.querySelectorAll("script, foreignObject, iframe, object, embed, audio, video").forEach((node) => node.remove());
+
+  [root, ...root.querySelectorAll("*")].forEach((node) => {
+    Array.from(node.attributes).forEach((attribute) => {
+      const name = attribute.name.toLowerCase();
+      const value = attribute.value.trim();
+
+      if (name.startsWith("on")) {
+        node.removeAttribute(attribute.name);
+        return;
+      }
+
+      if (name === "href" || name === "xlink:href") {
+        const isLocalReference = value.startsWith("#");
+        const isEmbeddedRaster = /^data:image\/(?:png|jpeg|jpg|webp);/i.test(value);
+        if (!isLocalReference && !isEmbeddedRaster) node.removeAttribute(attribute.name);
+        return;
+      }
+
+      if (/url\s*\(/i.test(value) && !/url\s*\(\s*#[^)]+\)/i.test(value)) {
+        node.removeAttribute(attribute.name);
+      }
+    });
+  });
+
+  root.querySelectorAll("style").forEach((styleNode) => {
+    if (/@import|url\s*\(\s*(?:['"]?https?:|['"]?\/\/|['"]?javascript:)/i.test(styleNode.textContent || "")) {
+      styleNode.remove();
+    }
+  });
+
+  if (!root.hasAttribute("xmlns")) root.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  const viewBox = (root.getAttribute("viewBox") || "").trim().split(/[\s,]+/).map(Number);
+  if (viewBox.length === 4 && viewBox.every(Number.isFinite) && viewBox[2] > 0 && viewBox[3] > 0) {
+    if (!root.hasAttribute("width")) root.setAttribute("width", String(viewBox[2]));
+    if (!root.hasAttribute("height")) root.setAttribute("height", String(viewBox[3]));
+  }
+  const serialized = new XMLSerializer().serializeToString(root);
+  return `data:image/svg+xml;base64,${utf8ToBase64(serialized)}`;
+}
+
+function utf8ToBase64(value) {
+  const bytes = new TextEncoder().encode(value);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
 function renderLibrarySummary() {
   if (!state.library) return;
 
   el.libraryStatus.textContent = `Biblioteca cargada con ${state.items.length} elementos.`;
 
   const rows = [
+    ["Biblioteca", state.library.name || "Sin nombre"],
     ["Archivo", state.library.fileName],
     ["Tipo", state.library.type],
-    ["Versión", state.library.version],
+    ["Formato", state.library.schemaVersion ? `PICTOS v${state.library.schemaVersion}` : "Legado"],
+    ["Aplicación", state.library.version],
+    ["Modelo", state.library.model || "No informado"],
     ["Elementos", String(state.items.length)],
+    ["Imágenes", Object.entries(state.library.imageFormats).map(([format, count]) => `${count} ${format}`).join(" · ")],
     ["Autor", state.library.author || "No informado"],
     ["Timestamp", state.library.timestamp || "No informado"],
   ];
@@ -902,7 +991,8 @@ function getScaleMeta(score) {
 function buildLibraryStorageKey(payload, items) {
   const basis = [
     payload.type || "",
-    payload.version || "",
+    payload.schemaVersion || payload.version || "",
+    payload.appVersion || "",
     payload.timestamp || "",
     String(items.length),
     items[0] ? items[0].id : "",
