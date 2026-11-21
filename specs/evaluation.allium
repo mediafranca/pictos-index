@@ -1,0 +1,491 @@
+-- allium: 3
+-- evaluation.allium
+
+-- Scope: One person evaluating one pictogram library in the browser, from
+--   loading the library to exporting the result.
+-- Includes:
+--   - Loading a library (a PICTOS export or a bundled example) and resuming
+--     saved progress for the same library
+--   - The evaluator's relationship with AAC (augmentative and alternative
+--     communication)
+--   - Per-pictogram evaluation: blind interpretation first, then six
+--     dimensions scored 1-5 against the rubric, giving the PICTOS Index
+--   - Library-level evaluation: formal coherence and visual grammar, kept
+--     apart from the PICTOS Index
+--   - Step gating, completion, JSON and PDF export
+-- Excludes:
+--   - Rubric wording and translations (data/rubric-scale-descriptions.json,
+--     locales/); the spec only needs the dimensions and the scale
+--   - Image sanitising and format decoding (implementation of "has an image")
+--   - Radar chart, colours, PDF layout and keyboard shortcuts
+--   - Migration of profiles saved by earlier versions (legacy)
+--   - Offline report scripts (scripts/generate-report.js,
+--     scripts/compile-evaluation-text.js)
+--   - Confusable-pair analysis (out of scope for this version, per README)
+-- Dependencies:
+--   - The library export format of pictos.net (its Row entity,
+--     visual-reasoning.allium in that project)
+
+------------------------------------------------------------
+-- External Entities
+------------------------------------------------------------
+
+-- A library exported by pictos.net. Read only; the evaluator never changes it.
+external entity Library {
+    name: String?
+    generation_model: String?
+    format_version: String?
+    exported_at: Timestamp?
+    author: String?
+}
+
+-- One row of the library that carries an image. Rows without a usable
+-- raster or SVG image are not pictograms for this instrument.
+external entity Pictogram {
+    library: Library
+    position: Integer              -- order in the exported file
+    utterance: String              -- the phrase the pictogram stands for
+    category: String?              -- the communicative domain, when known
+    image_format: ImageFormat
+}
+
+------------------------------------------------------------
+-- Enumerations
+------------------------------------------------------------
+
+enum ImageFormat { raster | svg }
+
+enum Dimension {
+    clarity
+    | recognizability
+    | semantic_transparency
+    | pragmatic_fit
+    | cultural_adequacy
+    | cognitive_accessibility
+}
+
+enum LibraryProperty {
+    formal_coherence               -- pictograms read as one set
+    | visual_grammar               -- the set applies shared visual rules
+}
+
+enum AacRelation {
+    aac_user
+    | family_or_caregiver
+    | aac_professional
+    | research_or_design
+    | no_experience                -- exclusive of every other relation
+}
+
+------------------------------------------------------------
+-- Entities
+------------------------------------------------------------
+
+-- The evaluator's relationship with AAC. One per device, shared across
+-- every library evaluated there.
+entity EvaluatorProfile {
+    aac_relations: Set<AacRelation>
+    saved_at: Timestamp
+
+    is_complete: aac_relations.count > 0
+}
+
+-- One evaluation session of one library. Resumed, not restarted, when the
+-- same library is loaded again on the same device.
+entity Assessment {
+    library: Library
+    started_at: Timestamp
+    status: in_progress | complete
+    completed_at: Timestamp when status = complete
+
+    pictograms: Pictogram with library = library
+    evaluations: PictogramEvaluation with assessment = this
+    library_ratings: LibraryRating with assessment = this
+    completed_evaluations: evaluations where is_complete
+    -- Only when every pictogram is complete; no average over partial data.
+    overall_pictos_index: if pictograms_complete: mean(completed_evaluations -> pictos_index) else: null
+
+    pictograms_complete: completed_evaluations.count = pictograms.count
+    library_complete: library_ratings.count = config.library_property_count
+    is_ready: pictograms_complete and library_complete
+    is_unfinished: not is_ready
+
+    transitions status {
+        in_progress -> complete
+        complete -> in_progress
+    }
+}
+
+-- The evaluation of one pictogram within an assessment.
+entity PictogramEvaluation {
+    assessment: Assessment
+    pictogram: Pictogram
+    interpretation: pending | answered | skipped
+    guess: String when interpretation = answered
+    updated_at: Timestamp
+
+    ratings: DimensionRating with evaluation = this
+
+    -- A pending interpretation (never answered, or skipped and reopened)
+    -- leaves the evaluation incomplete, whatever its ratings.
+    is_complete: interpretation != pending and ratings.count = config.dimension_count
+    -- Only when all six dimensions are rated; no average over partial data.
+    pictos_index: if is_complete: mean(ratings -> score) else: null
+
+    transitions interpretation {
+        pending -> answered
+        pending -> skipped
+        answered -> answered
+        skipped -> pending
+    }
+}
+
+entity DimensionRating {
+    evaluation: PictogramEvaluation
+    dimension: Dimension
+    score: Integer
+}
+
+entity LibraryRating {
+    assessment: Assessment
+    property: LibraryProperty
+    score: Integer
+}
+
+------------------------------------------------------------
+-- Config
+------------------------------------------------------------
+
+config {
+    min_score: Integer = 1
+    max_score: Integer = 5
+    dimension_count: Integer = 6
+    library_property_count: Integer = 2
+}
+
+------------------------------------------------------------
+-- Rules
+------------------------------------------------------------
+
+-- Loading a library replaces the one in use. Saved progress for the same
+-- library is restored; otherwise a fresh assessment starts.
+rule LoadLibrary {
+    when: LibraryLoaded(library)
+    requires: exists Pictogram{library: library}
+    ensures:
+        if not exists Assessment{library: library}:
+            Assessment.created(
+                library: library,
+                started_at: now,
+                status: in_progress
+            )
+
+    @guidance
+        -- A file without any pictogram is rejected with a message and the
+        -- previous library stays loaded. Identity of "the same library" is
+        -- derived from the export's type, version, timestamp, row count and
+        -- first and last row ids; evaluations are matched by row id.
+}
+
+rule SaveProfile {
+    when: ProfileSubmitted(relations)
+    requires: relations.count > 0
+    requires: (no_experience in relations) implies relations.count = 1
+    ensures: EvaluatorProfile.created(aac_relations: relations, saved_at: now)
+
+    @guidance
+        -- Replaces any earlier profile on the device. Choosing "no
+        -- experience" clears and disables the other options; choosing any
+        -- other option clears "no experience".
+}
+
+rule StartPictogramEvaluation {
+    when: PictogramOpened(assessment, pictogram)
+    requires: pictogram in assessment.pictograms
+    requires: not exists PictogramEvaluation{assessment: assessment, pictogram: pictogram}
+    ensures: PictogramEvaluation.created(
+        assessment: assessment,
+        pictogram: pictogram,
+        interpretation: pending,
+        updated_at: now
+    )
+}
+
+-- The evaluator says what they think the pictogram means before seeing the
+-- intended phrase.
+rule AnswerInterpretation {
+    when: InterpretationSubmitted(evaluation, text)
+    requires: evaluation.interpretation in {pending, answered}
+    requires: trim(text) != ""
+    ensures:
+        evaluation.interpretation = answered
+        evaluation.guess = trim(text)
+        evaluation.updated_at = now
+}
+
+rule SkipInterpretation {
+    when: InterpretationSkipped(evaluation)
+    requires: evaluation.interpretation = pending
+    ensures:
+        evaluation.interpretation = skipped
+        evaluation.updated_at = now
+}
+
+-- Reopening a skipped interpretation returns it to pending; dimension
+-- ratings already given are kept.
+rule ReopenSkippedInterpretation {
+    when: InterpretationReopened(evaluation)
+    requires: evaluation.interpretation = skipped
+    ensures: evaluation.interpretation = pending
+}
+
+rule RateDimension {
+    when: DimensionRated(evaluation, dimension, score)
+    requires: evaluation.interpretation in {answered, skipped}
+    requires: score >= config.min_score and score <= config.max_score
+    ensures:
+        let existing = DimensionRating{evaluation: evaluation, dimension: dimension}
+        if exists existing:
+            existing.score = score
+        else:
+            DimensionRating.created(evaluation: evaluation, dimension: dimension, score: score)
+        evaluation.updated_at = now
+
+    @guidance
+        -- Every dimension must be rated; there is no N/A. Skipping exists only
+        -- for the interpretation. Dimensions are shown one at a time, in Dimension order; reopening a
+        -- pictogram lands on its first unrated dimension. Rating the last
+        -- dimension for the first time, with all six rated, moves on to the
+        -- next pictogram, or to the library evaluation after the last one.
+}
+
+-- Discards everything recorded for one pictogram.
+rule ClearPictogramEvaluation {
+    when: PictogramEvaluationCleared(evaluation)
+    ensures:
+        for r in evaluation.ratings:
+            not exists r
+        not exists evaluation
+}
+
+rule RateLibraryProperty {
+    when: LibraryPropertyRated(assessment, property, score)
+    requires: assessment.pictograms_complete
+    requires: score >= config.min_score and score <= config.max_score
+    ensures:
+        let existing = LibraryRating{assessment: assessment, property: property}
+        if exists existing:
+            existing.score = score
+        else:
+            LibraryRating.created(assessment: assessment, property: property, score: score)
+}
+
+rule CompleteAssessment {
+    when: assessment: Assessment.is_ready
+    requires: assessment.status = in_progress
+    ensures:
+        assessment.status = complete
+        assessment.completed_at = now
+}
+
+-- Anything that breaks completion reopens the assessment: clearing a
+-- pictogram, or reopening a skipped interpretation.
+rule ReopenAssessment {
+    when: assessment: Assessment.is_unfinished
+    requires: assessment.status = complete
+    ensures:
+        assessment.status = in_progress
+        assessment.completed_at = null
+}
+
+rule ExportJson {
+    when: JsonExportRequested(assessment, profile)
+    requires: profile.is_complete
+    ensures: JsonDownloaded(assessment: assessment, profile: profile, partial: not assessment.is_ready)
+
+    @guidance
+        -- Allowed mid-evaluation; the file name says "partial" or
+        -- "complete". The file carries the library metadata, the profile,
+        -- progress, overall and per-dimension averages, each pictogram's
+        -- interpretation ('pending', 'answered' or 'skipped'), ratings and
+        -- PICTOS Index, and the library ratings flagged as excluded from the
+        -- PICTOS Index. An average whose inputs are not all present is
+        -- exported as absent, never as a partial mean: a pictogram's index
+        -- needs its six ratings, the overall and per-dimension averages need
+        -- every pictogram complete.
+}
+
+rule ExportPdf {
+    when: PdfExportRequested(assessment)
+    requires: assessment.is_ready
+    ensures: PdfDownloaded(assessment: assessment)
+
+    @guidance
+        -- Built on the device. A cover with the overall PICTOS Index and the
+        -- two library ratings, then one page per pictogram with its image,
+        -- radar chart, interpretation, six ratings and PICTOS Index.
+}
+
+------------------------------------------------------------
+-- Invariants
+------------------------------------------------------------
+
+invariant ScoresWithinScale {
+    for r in DimensionRatings:
+        r.score >= config.min_score and r.score <= config.max_score
+}
+
+invariant LibraryScoresWithinScale {
+    for r in LibraryRatings:
+        r.score >= config.min_score and r.score <= config.max_score
+}
+
+invariant OneRatingPerDimension {
+    for a in DimensionRatings:
+        for b in DimensionRatings:
+            (a != b and a.evaluation = b.evaluation) implies a.dimension != b.dimension
+}
+
+invariant OneRatingPerLibraryProperty {
+    for a in LibraryRatings:
+        for b in LibraryRatings:
+            (a != b and a.assessment = b.assessment) implies a.property != b.property
+}
+
+invariant NoExperienceIsExclusive {
+    for p in EvaluatorProfiles:
+        (no_experience in p.aac_relations) implies p.aac_relations.count = 1
+}
+
+------------------------------------------------------------
+-- Surfaces
+------------------------------------------------------------
+
+actor Evaluator {
+    identified_by: EvaluatorProfile where is_complete
+}
+
+surface LoadLibraryStep {
+    provides:
+        LibraryLoaded(library)
+
+    @guarantee StaysOnDevice
+        -- Files, images and progress never leave the browser. Nothing is
+        -- uploaded, including for the PDF.
+
+    @guidance
+        -- Step 1. Upload a PICTOS JSON export or pick one of the three
+        -- bundled examples.
+}
+
+surface LibrarySummary {
+    context assessment: Assessment
+
+    exposes:
+        assessment.library.name
+        assessment.library.generation_model
+        assessment.library.format_version
+        assessment.library.exported_at
+        assessment.library.author
+        assessment.pictograms.count
+        for p in assessment.pictograms:
+            p.image_format
+
+    @guidance
+        -- Shown in step 1 after loading: name, file, pictogram count, count
+        -- per image format, generation model, format version, author and
+        -- export date, with a preview carousel of the pictograms in order.
+}
+
+surface ProfileStep {
+    provides:
+        ProfileSubmitted(relations)
+
+    @guidance
+        -- Step 2. Reachable once a library is loaded. Several relations may
+        -- be chosen.
+}
+
+surface PictogramNavigation {
+    facing evaluator: Evaluator
+    context assessment: Assessment
+
+    exposes:
+        for p in assessment.pictograms:
+            p.position
+
+    provides:
+        PictogramOpened(assessment, pictogram)
+        JsonExportRequested(assessment, evaluator)
+
+    @guidance
+        -- Pictograms are visited in position order. The evaluator may go
+        -- back freely but can only move forward from a pictogram whose six
+        -- dimensions are rated.
+}
+
+surface PictogramEvaluationStep {
+    context evaluation: PictogramEvaluation
+
+    exposes:
+        evaluation.pictogram.utterance when evaluation.interpretation != pending
+        evaluation.pictogram.category
+        evaluation.ratings
+        evaluation.pictos_index
+        evaluation.assessment.completed_evaluations.count
+        evaluation.assessment.pictograms.count
+
+    provides:
+        InterpretationSubmitted(evaluation, text) when evaluation.interpretation = pending
+        InterpretationSkipped(evaluation) when evaluation.interpretation = pending
+        InterpretationReopened(evaluation) when evaluation.interpretation = skipped
+        DimensionRated(evaluation, dimension, score) when evaluation.interpretation != pending
+        PictogramEvaluationCleared(evaluation)
+
+    @guarantee BlindInterpretation
+        -- The intended phrase stays hidden until the evaluator has answered
+        -- or skipped the interpretation, so the answer is not primed.
+
+    @guarantee RubricBesideEveryScore
+        -- Each chosen score is shown with the rubric's description of that
+        -- level for that dimension.
+
+    @guidance
+        -- Step 3. Reachable once a library is loaded and the profile is
+        -- complete. A radar chart shows the six ratings.
+}
+
+surface LibraryEvaluationStep {
+    facing evaluator: Evaluator
+    context assessment: Assessment where pictograms_complete
+
+    exposes:
+        for p in assessment.pictograms:
+            p.category
+        assessment.library_ratings
+        assessment.overall_pictos_index
+
+    provides:
+        LibraryPropertyRated(assessment, property, score)
+        JsonExportRequested(assessment, evaluator) when assessment.library_complete
+        PdfExportRequested(assessment) when assessment.is_ready
+
+    @guarantee LibraryRatingsAreSeparate
+        -- Formal coherence and visual grammar describe the set. They are
+        -- never added to or averaged with the PICTOS Index of the
+        -- pictograms, and the export marks them as excluded.
+
+    @guidance
+        -- Step 4. All pictograms in a uniform grid, in original order or by
+        -- category, with utterance labels off by default and toggleable.
+}
+
+------------------------------------------------------------
+-- Open Questions
+------------------------------------------------------------
+
+-- Resolved: a pictogram whose interpretation is pending is incomplete, even with six ratings; 'pending' is the right export label
+-- Resolved: no N/A; every dimension is rated, only the interpretation can be skipped (docs/rubric.md updated)
+-- Resolved: the library grid offers a labels toggle, off by default; no enforced unlabelled-then-labelled sequence
+-- Resolved: no average is computed unless all its inputs are present
+-- Resolved: one evaluator profile per device, shared by every assessment

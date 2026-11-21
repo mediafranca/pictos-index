@@ -154,8 +154,6 @@ Quick reference:
 - **2 (Insuficiente)**: Problemas de adecuación cultural, alineamiento débil
 - **1 (No funcional)**: Culturalmente inapropiado u ofensivo, requiere rediseño
 
-**N/A Option**: Select N/A if the concept is universally applicable, cultural considerations are not relevant, or evaluator lacks cultural competence to judge.
-
 ---
 
 ## Dimension 6: Cognitive Accessibility
@@ -182,8 +180,6 @@ Quick reference:
 - **2 (Insuficiente)**: Desafíos significativos, carga cognitiva alta
 - **1 (No funcional)**: Inaccesible, carga excesiva, requiere simplificación radical
 
-**N/A Option**: Select N/A if evaluator lacks expertise in cognitive accessibility or specialized assessment tools are needed.
-
 ---
 
 ## Using This Rubric
@@ -200,15 +196,13 @@ Quick reference:
 1. View pictogram at standard size
 2. Rate each dimension independently
 3. Use anchors as reference points
-4. Document reasoning in comments
-5. Be consistent across all pictograms
+4. Be consistent across all pictograms
 
 ### After Rating
 
 1. Review for consistency
-2. Check that comments support ratings
-3. Identify patterns in your ratings
-4. Discuss discrepancies with team (if applicable)
+2. Identify patterns in your ratings
+3. Discuss discrepancies with team (if applicable)
 
 ---
 
