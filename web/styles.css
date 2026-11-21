@@ -320,14 +320,13 @@ textarea { min-height: 9rem; resize: vertical; }
 .data-notice strong { color: var(--ink-soft); }
 .evaluation-bottom-bar {
   width: 100%; margin-top: .75rem; padding: .75rem; display: grid;
-  grid-template-columns: minmax(10rem, auto) minmax(16rem, 1fr) minmax(10rem, auto);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch; gap: .75rem; border: 1px solid var(--line-strong); border-radius: var(--radius);
   background: var(--surface-raised);
 }
 .evaluation-bottom-status { min-width: 0; display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; text-align: center; }
 .evaluation-bottom-status strong { color: var(--ink); font-size: .86rem; }
-.pictogram-nav-btn { min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: .65rem; }
-.pictogram-nav-btn.next { justify-self: stretch; }
+.pictogram-nav-btn { width: 100%; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: .65rem; }
 .pictogram-chevron { font-size: 1.35rem; line-height: 1; }
 .dimension-chevron { font-size: 1.5rem; line-height: 1; }
 .download-link {

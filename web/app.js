@@ -115,8 +115,8 @@ function bindElements() {
   el.editGuessBtn = document.getElementById("editGuessBtn");
   el.clearEvalBtn = document.getElementById("clearEvalBtn");
 
-  el.saveAndNextBtn = document.getElementById("saveAndNextBtn");
-  el.saveAndNextLabel = document.getElementById("saveAndNextLabel");
+  el.evalNextBtn = document.getElementById("evalNextBtn");
+  el.evalNextLabel = document.getElementById("evalNextLabel");
 
   el.slidersContainer = document.getElementById("slidersContainer");
   el.rubricDetails = document.getElementById("rubricDetails");
@@ -187,7 +187,7 @@ function bindEvents() {
   el.skipGuessBtn.addEventListener("click", onSkipGuess);
   el.editGuessBtn.addEventListener("click", onEditGuess);
   el.clearEvalBtn.addEventListener("click", clearCurrentEvaluation);
-  el.saveAndNextBtn.addEventListener("click", onSaveAndNext);
+  el.evalNextBtn.addEventListener("click", advanceToNextPictogram);
 
   el.exportJsonBtn.addEventListener("click", exportEvaluationJson);
   el.auditExportBtn.addEventListener("click", exportEvaluationJson);
@@ -683,8 +683,8 @@ function renderCurrentEvalItem(preserveDimension = false) {
     el.interpretationStage.classList.remove("hidden");
     el.likertStage.classList.add("hidden");
     el.guessText.value = record.guess || "";
-    el.saveAndNextBtn.disabled = true;
-    updateSaveAndNextBtn({});
+    el.evalNextBtn.disabled = true;
+    updatePictogramNavigation({});
     return;
   }
 
@@ -697,7 +697,7 @@ function renderCurrentEvalItem(preserveDimension = false) {
   if (!preserveDimension) state.dimensionIndex = firstUnscoredIndex === -1 ? 0 : firstUnscoredIndex;
   setScoresToUI(scores);
   updateLikertPanels(scores);
-  updateSaveAndNextBtn(scores);
+  updatePictogramNavigation(scores);
 }
 
 function setRealPhraseVisibility(isVisible) {
@@ -859,7 +859,7 @@ function onEvaluationKeydown(event) {
     changeDimension(1);
     return;
   }
-  if (hasAllDimensionsScored(scores)) onSaveAndNext();
+  if (hasAllDimensionsScored(scores)) advanceToNextPictogram();
 }
 
 function onDimensionScoreChange() {
@@ -868,6 +868,11 @@ function onDimensionScoreChange() {
 
   const scores = readScoresFromUI();
   const record = ensureRecord(item.id);
+  const activeDimension = DIMENSIONS[state.dimensionIndex];
+  const completedLastDimension = state.dimensionIndex === DIMENSIONS.length - 1
+    && normalizeScore(record.scores?.[activeDimension.key]) === null
+    && normalizeScore(scores[activeDimension.key]) !== null
+    && hasAllDimensionsScored(scores);
   record.scores = scores;
   record.average = averageScore(scores);
   record.updatedAt = new Date().toISOString();
@@ -875,9 +880,11 @@ function onDimensionScoreChange() {
   state.evaluations.set(item.id, record);
   persistEvaluations();
   updateLikertPanels(scores);
-  updateSaveAndNextBtn(scores);
+  updatePictogramNavigation(scores);
   updateEvaluationStatus();
   updateStepLocks();
+
+  if (completedLastDimension) advanceToNextPictogram();
 }
 
 function updateEvaluationStatus() {
@@ -898,16 +905,20 @@ function updateEvaluationStatus() {
   );
 }
 
-function updateSaveAndNextBtn(scores) {
+function updatePictogramNavigation(scores) {
   const allScored = hasAllDimensionsScored(scores);
   const isLast = state.evalIndex >= state.items.length - 1;
-  el.saveAndNextBtn.disabled = !allScored;
-  el.saveAndNextLabel.textContent = isLast
+  el.evalNextBtn.disabled = !allScored;
+  el.evalNextLabel.textContent = isLast
     ? t("evaluation.save", { current: state.evalIndex + 1, total: state.items.length })
     : t("evaluation.itemNext");
+  el.evalNextBtn.setAttribute(
+    "aria-label",
+    isLast ? t("evaluation.save", { current: state.evalIndex + 1, total: state.items.length }) : t("evaluation.itemNext"),
+  );
 }
 
-function onSaveAndNext() {
+function advanceToNextPictogram() {
   if (state.evalIndex < state.items.length - 1) {
     changeEvalItem(state.evalIndex + 1);
     return;
