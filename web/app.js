@@ -8,7 +8,8 @@ const DIMENSIONS = [
 ];
 
 const AXIS_COLORS = ["#2563eb", "#0d9488", "#d97706", "#9333ea", "#e11d48", "#16a34a"];
-const PROFILE_STORAGE_KEY = "pictos-index:evaluator-profile:v3";
+const PROFILE_STORAGE_KEY = "pictos-index:evaluator-profile:v5";
+const LEGACY_PROFILE_STORAGE_KEYS = ["pictos-index:evaluator-profile:v4", "pictos-index:evaluator-profile:v3"];
 const LIBRARY_STORAGE_PREFIX = "pictos-index:library-evals:v3:";
 
 const state = {
@@ -17,6 +18,8 @@ const state = {
   items: [],
   previewIndex: 0,
   evalIndex: 0,
+  dimensionIndex: 0,
+  assessment: null,
   evaluatorProfile: null,
   evaluations: new Map(),
 };
@@ -65,15 +68,8 @@ function bindElements() {
   el.step1NextBtn = document.getElementById("step1NextBtn");
 
   el.evaluatorForm = document.getElementById("evaluatorForm");
-  el.evalAgeRange = document.getElementById("evalAgeRange");
-  el.evalGender = document.getElementById("evalGender");
-  el.evalRegion = document.getElementById("evalRegion");
-  el.evalEducation = document.getElementById("evalEducation");
-  el.evalPrimaryLanguage = document.getElementById("evalPrimaryLanguage");
-  el.evalAacExperience = document.getElementById("evalAacExperience");
-  el.evalContext = document.getElementById("evalContext");
-  el.evalRole = document.getElementById("evalRole");
-  el.evalConsent = document.getElementById("evalConsent");
+  el.evalAacRelationInputs = Array.from(document.querySelectorAll('input[name="aacRelations"]'));
+  el.evalAacNoExperience = document.getElementById("evalAacNoExperience");
   el.step2BackBtn = document.getElementById("step2BackBtn");
 
   el.step3BackBtn = document.getElementById("step3BackBtn");
@@ -85,6 +81,7 @@ function bindElements() {
 
   el.realPhraseLabel = document.getElementById("realPhraseLabel");
   el.realPhraseText = document.getElementById("realPhraseText");
+  el.realPhraseSlot = document.getElementById("realPhraseSlot");
   el.interpretationStage = document.getElementById("interpretationStage");
   el.likertStage = document.getElementById("likertStage");
 
@@ -102,6 +99,11 @@ function bindElements() {
 
   el.slidersContainer = document.getElementById("slidersContainer");
   el.rubricDetails = document.getElementById("rubricDetails");
+  el.dimensionPrevBtn = document.getElementById("dimensionPrevBtn");
+  el.dimensionNextBtn = document.getElementById("dimensionNextBtn");
+  el.dimensionCounter = document.getElementById("dimensionCounter");
+  el.activeDimensionTitle = document.getElementById("activeDimensionTitle");
+  el.activeDimensionDescription = document.getElementById("activeDimensionDescription");
   el.hexChart = document.getElementById("hexChart");
   el.scoreBadge = document.getElementById("scoreBadge");
 }
@@ -134,11 +136,14 @@ function bindEvents() {
   el.step1NextBtn.addEventListener("click", () => goToStep(2));
 
   el.evaluatorForm.addEventListener("submit", onEvaluatorSubmit);
+  el.evalAacRelationInputs.forEach((input) => input.addEventListener("change", onAacRelationChange));
   el.step2BackBtn.addEventListener("click", () => goToStep(1));
 
   el.step3BackBtn.addEventListener("click", () => goToStep(2));
   el.evalPrevBtn.addEventListener("click", () => changeEvalItem(state.evalIndex - 1));
   el.evalNextBtn.addEventListener("click", () => changeEvalItem(state.evalIndex + 1));
+  el.dimensionPrevBtn.addEventListener("click", () => changeDimension(-1));
+  el.dimensionNextBtn.addEventListener("click", () => changeDimension(1));
 
   el.saveGuessBtn.addEventListener("click", onSaveGuess);
   el.skipGuessBtn.addEventListener("click", onSkipGuess);
@@ -239,16 +244,7 @@ function updateStepLocks() {
 
 function isProfileComplete(profile) {
   if (!profile) return false;
-  return Boolean(
-    profile.ageRange &&
-      profile.gender &&
-      profile.region &&
-      profile.primaryLanguage &&
-      profile.aacExperience &&
-      profile.context &&
-      profile.role &&
-      profile.consent,
-  );
+  return Array.isArray(profile.aacRelations) && profile.aacRelations.length > 0;
 }
 
 async function onLibraryFileChange(event) {
@@ -319,8 +315,11 @@ function loadLibraryPayload(payload, fileName) {
 
   state.previewIndex = 0;
   state.evalIndex = 0;
+  state.dimensionIndex = 0;
+  state.assessment = null;
   state.evaluations = new Map();
   loadStoredEvaluations();
+  if (!state.assessment) state.assessment = createAssessmentIdentity();
 
   renderLibrarySummary();
   renderPreview();
@@ -491,15 +490,7 @@ function onEvaluatorSubmit(event) {
   event.preventDefault();
 
   const profile = {
-    ageRange: el.evalAgeRange.value,
-    gender: el.evalGender.value,
-    region: el.evalRegion.value.trim(),
-    education: el.evalEducation.value,
-    primaryLanguage: el.evalPrimaryLanguage.value,
-    aacExperience: el.evalAacExperience.value,
-    context: el.evalContext.value,
-    role: el.evalRole.value,
-    consent: Boolean(el.evalConsent.checked),
+    aacRelations: getSelectedAacRelations(),
     savedAt: new Date().toISOString(),
   };
 
@@ -510,26 +501,76 @@ function onEvaluatorSubmit(event) {
 
   state.evaluatorProfile = profile;
   localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+  persistEvaluations();
   updateStepLocks();
   goToStep(3);
 }
 
+function getSelectedAacRelations() {
+  return el.evalAacRelationInputs.filter((input) => input.checked).map((input) => input.value);
+}
+
+function onAacRelationChange(event) {
+  const specificInputs = el.evalAacRelationInputs.filter((input) => input !== el.evalAacNoExperience);
+
+  if (event.target === el.evalAacNoExperience) {
+    if (el.evalAacNoExperience.checked) {
+      specificInputs.forEach((input) => {
+        input.checked = false;
+        input.disabled = true;
+      });
+      announce("Se seleccionó sin experiencia previa; se desactivaron las demás opciones.");
+    } else {
+      specificInputs.forEach((input) => {
+        input.disabled = false;
+      });
+    }
+    return;
+  }
+
+  if (event.target.checked && el.evalAacNoExperience.checked) {
+    el.evalAacNoExperience.checked = false;
+  }
+}
+
+function setAacRelations(relations) {
+  const selected = new Set(relations);
+  const noneSelected = selected.has("sin_experiencia");
+
+  el.evalAacRelationInputs.forEach((input) => {
+    input.checked = selected.has(input.value);
+    input.disabled = input !== el.evalAacNoExperience && noneSelected;
+  });
+}
+
+function migrateLegacyAacRelations(profile) {
+  if (Array.isArray(profile.aacRelations)) return profile.aacRelations;
+
+  const relations = [];
+  if (profile.role === "usuario_pictogramas") relations.push("persona_usuaria");
+  if (profile.role === "familiar_cuidador") relations.push("familiar_cuidador");
+  if (profile.role === "profesional_caa") relations.push("profesional_caa");
+  if (profile.role === "sin_dificultades_orales" && profile.aacExperience === "ninguna") {
+    relations.push("sin_experiencia");
+  }
+  return relations;
+}
+
 function loadEvaluatorProfile() {
-  const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
+  const raw =
+    localStorage.getItem(PROFILE_STORAGE_KEY) ||
+    LEGACY_PROFILE_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find(Boolean);
   if (!raw) return;
 
   try {
-    const profile = JSON.parse(raw);
+    const storedProfile = JSON.parse(raw);
+    const profile = {
+      aacRelations: migrateLegacyAacRelations(storedProfile),
+      savedAt: storedProfile.savedAt || null,
+    };
     state.evaluatorProfile = profile;
-    el.evalAgeRange.value = profile.ageRange || "";
-    el.evalGender.value = profile.gender || "";
-    el.evalRegion.value = profile.region || "";
-    el.evalEducation.value = profile.education || "";
-    el.evalPrimaryLanguage.value = profile.primaryLanguage || "";
-    el.evalAacExperience.value = profile.aacExperience || "";
-    el.evalContext.value = profile.context || "";
-    el.evalRole.value = profile.role || "";
-    el.evalConsent.checked = Boolean(profile.consent);
+    setAacRelations(profile.aacRelations);
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
   } catch (error) {
     console.warn("No se pudo cargar perfil de evaluador.", error);
   }
@@ -576,16 +617,16 @@ function renderCurrentEvalItem() {
   el.likertStage.classList.remove("hidden");
 
   const scores = normalizeScores(record.scores);
+  const firstUnscoredIndex = DIMENSIONS.findIndex((dimension) => normalizeScore(scores[dimension.key]) === null);
+  state.dimensionIndex = firstUnscoredIndex === -1 ? 0 : firstUnscoredIndex;
   setScoresToUI(scores);
   updateLikertPanels(scores);
   updateSaveAndNextBtn(scores);
 }
 
 function setRealPhraseVisibility(isVisible) {
-  if (el.realPhraseLabel) {
-    el.realPhraseLabel.classList.toggle("hidden", !isVisible);
-  }
-  el.realPhraseText.classList.toggle("hidden", !isVisible);
+  el.realPhraseSlot.classList.toggle("concealed", !isVisible);
+  el.realPhraseSlot.setAttribute("aria-hidden", String(!isVisible));
 }
 
 function onSaveGuess() {
@@ -647,6 +688,7 @@ function clearCurrentEvaluation() {
   if (!state.items.length) return;
   const item = state.items[state.evalIndex];
   state.evaluations.delete(item.id);
+  state.dimensionIndex = 0;
   persistEvaluations();
   renderCurrentEvalItem();
 }
@@ -654,22 +696,12 @@ function clearCurrentEvaluation() {
 function buildSliders() {
   el.slidersContainer.innerHTML = "";
 
-  DIMENSIONS.forEach((dimension) => {
+  DIMENSIONS.forEach((dimension, dimensionIndex) => {
     const meta = getDimensionMeta(dimension.key);
 
     const card = document.createElement("article");
-    card.className = "dimension-card";
-
-    const metaCol = document.createElement("div");
-    metaCol.className = "dimension-meta";
-
-    const title = document.createElement("strong");
-    title.textContent = meta.name;
-
-    const description = document.createElement("p");
-    description.textContent = meta.description;
-
-    metaCol.append(title, description);
+    card.className = "dimension-card hidden";
+    card.dataset.dimensionIndex = String(dimensionIndex);
 
     const scale = document.createElement("div");
     scale.className = "radio-scale";
@@ -697,9 +729,32 @@ function buildSliders() {
       scale.append(option);
     }
 
-    card.append(metaCol, scale);
+    card.append(scale);
     el.slidersContainer.append(card);
   });
+}
+
+function changeDimension(offset) {
+  const nextIndex = state.dimensionIndex + offset;
+  if (nextIndex < 0 || nextIndex >= DIMENSIONS.length) return;
+  state.dimensionIndex = nextIndex;
+  renderActiveDimension(readScoresFromUI());
+  el.activeDimensionTitle.focus({ preventScroll: true });
+}
+
+function renderActiveDimension(scores) {
+  const dimension = DIMENSIONS[state.dimensionIndex];
+  const meta = getDimensionMeta(dimension.key);
+  const cards = Array.from(el.slidersContainer.querySelectorAll(".dimension-card"));
+
+  cards.forEach((card, index) => card.classList.toggle("hidden", index !== state.dimensionIndex));
+  el.dimensionCounter.textContent = `Dimensión ${state.dimensionIndex + 1} de ${DIMENSIONS.length}`;
+  el.activeDimensionTitle.textContent = meta.name;
+  el.activeDimensionDescription.textContent = meta.description;
+  el.activeDimensionTitle.tabIndex = -1;
+  el.dimensionPrevBtn.disabled = state.dimensionIndex === 0;
+  el.dimensionNextBtn.disabled = state.dimensionIndex === DIMENSIONS.length - 1;
+  renderRubricDetails(scores);
 }
 
 function onDimensionScoreChange() {
@@ -737,54 +792,55 @@ function updateLikertPanels(scores) {
   syncRadioSelectionStyles();
 
   drawHexChart(scores);
-  renderRubricDetails(scores);
+  renderActiveDimension(scores);
 
   const avg = averageScore(scores);
   if (avg === null) {
     el.scoreBadge.textContent = "PICTOS Index —";
     el.scoreBadge.style.backgroundColor = "#6b7280";
+    el.scoreBadge.style.color = getContrastingTextColor("#6b7280");
     return;
   }
 
   const rounded = normalizeScore(Math.round(avg));
+  const badgeColor = getScaleMeta(rounded).color;
   el.scoreBadge.textContent = `PICTOS Index ${avg.toFixed(2)}`;
-  el.scoreBadge.style.backgroundColor = getScaleMeta(rounded).color;
+  el.scoreBadge.style.backgroundColor = badgeColor;
+  el.scoreBadge.style.color = getContrastingTextColor(badgeColor);
+}
+
+function getContrastingTextColor(backgroundColor) {
+  const hex = String(backgroundColor).trim().replace(/^#/, "");
+  const normalized = hex.length === 3 ? hex.split("").map((value) => value + value).join("") : hex;
+  if (!/^[0-9a-f]{6}$/i.test(normalized)) return "#ffffff";
+
+  const channels = normalized.match(/.{2}/g).map((value) => Number.parseInt(value, 16) / 255);
+  const linear = channels.map((value) => (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4));
+  const luminance = 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+  const darkContrast = (luminance + 0.05) / 0.05;
+  const lightContrast = 1.05 / (luminance + 0.05);
+  return darkContrast >= lightContrast ? "#0b0613" : "#ffffff";
 }
 
 function renderRubricDetails(scores) {
   el.rubricDetails.innerHTML = "";
+  const dimension = DIMENSIONS[state.dimensionIndex];
+  const score = normalizeScore(scores[dimension.key]);
+  const meta = getDimensionMeta(dimension.key);
+  const card = document.createElement("article");
+  card.className = "rubric-item";
 
-  const avg = averageScore(scores);
-  const ratedCount = countRatedDimensions(scores);
-  const summaryScale = avg === null ? null : getScaleMeta(normalizeScore(Math.round(avg)));
-
-  const summary = document.createElement("article");
-  summary.className = "rubric-item summary";
-  if (avg === null) {
-    summary.innerHTML = `<h4>Promedio no disponible</h4><p>Sin evaluar en ninguna dimensión (0/6).</p>`;
+  if (score === null) {
+    card.innerHTML = `<h4>${escapeHtml(meta.name)} · Sin evaluar</h4><p>Selecciona una nota para ver qué significa en esta dimensión.</p>`;
   } else {
-    summary.innerHTML = `<h4>Promedio ${avg.toFixed(2)} (${escapeHtml(summaryScale.label)})</h4><p>${escapeHtml(summaryScale.general)} · ${ratedCount}/6 dimensiones evaluadas.</p>`;
+    const scaleMeta = getScaleMeta(score);
+    const rubricText = getDimensionLevelText(dimension.key, score);
+    card.innerHTML = `
+      <h4>${escapeHtml(meta.name)} · ${score}/5 (${escapeHtml(scaleMeta.label)})</h4>
+      <p>${escapeHtml(rubricText)}</p>
+    `;
   }
-  el.rubricDetails.append(summary);
-
-  DIMENSIONS.forEach((dimension) => {
-    const score = normalizeScore(scores[dimension.key]);
-    const meta = getDimensionMeta(dimension.key);
-
-    const card = document.createElement("article");
-    card.className = "rubric-item";
-    if (score === null) {
-      card.innerHTML = `<h4>${escapeHtml(meta.name)} · Sin evaluar</h4><p>Sin evaluar.</p>`;
-    } else {
-      const scaleMeta = getScaleMeta(score);
-      const rubricText = getDimensionLevelText(dimension.key, score);
-      card.innerHTML = `
-        <h4>${escapeHtml(meta.name)} · ${score}/5 (${escapeHtml(scaleMeta.label)})</h4>
-        <p>${escapeHtml(rubricText)}</p>
-      `;
-    }
-    el.rubricDetails.append(card);
-  });
+  el.rubricDetails.append(card);
 }
 
 function drawHexChart(scores) {
@@ -1011,8 +1067,13 @@ function buildLibraryStorageKey(payload, items) {
 function persistEvaluations() {
   if (!state.library) return;
   const key = LIBRARY_STORAGE_PREFIX + state.library.key;
+  if (!state.assessment) state.assessment = createAssessmentIdentity();
+  if (!state.assessment.completedAt && state.items.length > 0 && countCompletedItems() === state.items.length) {
+    state.assessment.completedAt = new Date().toISOString();
+  }
   const payload = {
     savedAt: new Date().toISOString(),
+    assessment: state.assessment,
     evaluations: Array.from(state.evaluations.values()),
   };
   localStorage.setItem(key, JSON.stringify(payload));
@@ -1026,6 +1087,7 @@ function loadStoredEvaluations() {
 
   try {
     const parsed = JSON.parse(raw);
+    if (isValidAssessmentIdentity(parsed.assessment)) state.assessment = parsed.assessment;
     const map = new Map();
     if (Array.isArray(parsed.evaluations)) {
       parsed.evaluations.forEach((record) => {
@@ -1037,6 +1099,22 @@ function loadStoredEvaluations() {
   } catch (error) {
     console.warn("No se pudieron recuperar evaluaciones guardadas.", error);
   }
+}
+
+function createAssessmentIdentity() {
+  const id =
+    typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `eval-${Date.now().toString(36)}-${crypto.getRandomValues(new Uint32Array(2)).join("-")}`;
+  return {
+    id,
+    startedAt: new Date().toISOString(),
+    completedAt: null,
+  };
+}
+
+function isValidAssessmentIdentity(value) {
+  return Boolean(value && typeof value.id === "string" && value.id && typeof value.startedAt === "string");
 }
 
 function countCompletedItems() {
@@ -1082,8 +1160,9 @@ function exportEvaluationJson() {
   });
 
   const payload = {
-    schemaVersion: "pictos-index-library-evaluation-1.2.0",
+    schemaVersion: "pictos-index-library-evaluation-1.3.0",
     exportedAt: new Date().toISOString(),
+    evaluation: state.assessment || createAssessmentIdentity(),
     library: state.library,
     evaluator: state.evaluatorProfile,
     summary: buildSummary(),

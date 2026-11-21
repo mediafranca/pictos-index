@@ -70,8 +70,8 @@
           <h2 id="howTitle">Cómo funciona</h2>
           <ol class="how-grid">
             <li><span>1</span><strong>Carga una biblioteca</strong><p>Usa un archivo exportado desde PICTOS.net o prueba con la biblioteca de ejemplo.</p></li>
-            <li><span>2</span><strong>Describe a quien evalúa</strong><p>El contexto permite interpretar los resultados sin convertirlos en una verdad universal.</p></li>
-            <li><span>3</span><strong>Evalúa cada pictograma</strong><p>Primero registra qué comunica; después valora sus seis dimensiones en una escala de 1 a 5.</p></li>
+            <li><span>2</span><strong>Indica tu relación con la CAA</strong><p>Una respuesta breve permite interpretar desde qué experiencia se realiza la evaluación.</p></li>
+            <li><span>3</span><strong>Evalúa cada pictograma</strong><p>Primero registra qué comunica; después recorre sus seis dimensiones, una por una, en una escala de 1 a 5.</p></li>
           </ol>
         </section>
 
@@ -159,99 +159,40 @@
 
       <section id="step2" class="screen hidden" aria-labelledby="step2Title">
         <p class="step-kicker">Paso 2 de 3</p>
-        <h2 id="step2Title" tabindex="-1">Describe el contexto de evaluación</h2>
-        <p class="muted">Estos datos ayudan a interpretar resultados diversos. Los campos obligatorios están marcados por el navegador.</p>
+        <h2 id="step2Title" tabindex="-1">Cuéntanos tu relación con la CAA</h2>
+        <p class="muted">Puedes marcar más de una opción.</p>
 
         <form id="evaluatorForm" class="evaluator-grid">
-          <label>
-            Edad (rango)
-            <select id="evalAgeRange" name="ageRange" required>
-              <option value="">Seleccionar</option>
-              <option value="menor_18">Menor de 18</option>
-              <option value="18_29">18-29</option>
-              <option value="30_44">30-44</option>
-              <option value="45_59">45-59</option>
-              <option value="60_mas">60 o más</option>
-              <option value="prefiere_no_decir">Prefiere no decir</option>
-            </select>
-          </label>
+          <fieldset class="relation-fieldset full-width">
+            <legend class="sr-only">Relación o experiencia con la CAA</legend>
+            <div class="relation-options">
+              <label class="relation-option">
+                <input name="aacRelations" type="checkbox" value="persona_usuaria" />
+                Uso CAA o pictogramas para comunicarme
+              </label>
+              <label class="relation-option">
+                <input name="aacRelations" type="checkbox" value="familiar_cuidador" />
+                Soy familiar o cuidador/a de una persona usuaria de CAA
+              </label>
+              <label class="relation-option">
+                <input name="aacRelations" type="checkbox" value="profesional_caa" />
+                Trabajo profesionalmente con CAA
+              </label>
+              <label class="relation-option">
+                <input name="aacRelations" type="checkbox" value="investigacion_diseno" />
+                Investigo o diseño recursos de CAA
+              </label>
+              <label class="relation-option relation-none">
+                <input id="evalAacNoExperience" name="aacRelations" type="checkbox" value="sin_experiencia" />
+                No tengo relación ni experiencia previa con la CAA
+              </label>
+            </div>
+          </fieldset>
 
-          <label>
-            Género
-            <select id="evalGender" name="gender" required>
-              <option value="">Seleccionar</option>
-              <option value="mujer">Mujer</option>
-              <option value="hombre">Hombre</option>
-              <option value="no_binario">No binario</option>
-              <option value="prefiere_no_decir">Prefiere no decir</option>
-            </select>
-          </label>
-
-          <label>
-            País / región
-            <input id="evalRegion" name="region" type="text" maxlength="120" required />
-          </label>
-
-          <label>
-            Nivel educativo
-            <select id="evalEducation" name="education">
-              <option value="">No especifica</option>
-              <option value="basica">Educación básica</option>
-              <option value="media">Educación media</option>
-              <option value="tecnica">Técnica</option>
-              <option value="universitaria">Universitaria</option>
-              <option value="postgrado">Postgrado</option>
-            </select>
-          </label>
-
-          <label>
-            Idioma principal
-            <select id="evalPrimaryLanguage" name="primaryLanguage" required>
-              <option value="">Seleccionar</option>
-              <option value="es">Español</option>
-              <option value="en">Inglés</option>
-              <option value="otro">Otro</option>
-            </select>
-          </label>
-
-          <label>
-            Experiencia en CAA
-            <select id="evalAacExperience" name="aacExperience" required>
-              <option value="">Seleccionar</option>
-              <option value="ninguna">Ninguna</option>
-              <option value="basica">Básica (&lt;1 año)</option>
-              <option value="intermedia">Intermedia (1-3 años)</option>
-              <option value="avanzada">Avanzada (4+ años)</option>
-            </select>
-          </label>
-
-          <label>
-            Contexto de evaluación
-            <select id="evalContext" name="context" required>
-              <option value="">Seleccionar</option>
-              <option value="investigacion">Investigación</option>
-              <option value="clinico">Clínico / terapéutico</option>
-              <option value="educativo">Educativo</option>
-              <option value="familiar">Familiar / hogar</option>
-              <option value="otro">Otro</option>
-            </select>
-          </label>
-
-          <label>
-            Rol
-            <select id="evalRole" name="role" required>
-              <option value="">Seleccionar</option>
-              <option value="usuario_pictogramas">Persona con dificultades de comunicación oral (usuario de pictogramas)</option>
-              <option value="sin_dificultades_orales">Persona sin dificultades de comunicación oral</option>
-              <option value="familiar_cuidador">Familiar o cuidador de persona con dificultades de comunicación</option>
-              <option value="profesional_caa">Profesional CAA</option>
-            </select>
-          </label>
-
-          <label class="consent-row full-width">
-            <input id="evalConsent" name="consent" type="checkbox" required />
-            Acepto el uso de estos datos de forma anonimizada para análisis de calidad pictográfica.
-          </label>
+          <p class="data-notice full-width">
+            <strong>Tus datos permanecen en este navegador.</strong>
+            Sólo se incluirán en el archivo que decidas exportar; no se envían automáticamente.
+          </p>
         </form>
       </section>
 
@@ -279,15 +220,17 @@
           </div>
         </div>
 
-        <p id="realPhraseLabel" class="real-phrase-label">Frase real de origen:</p>
-        <p id="realPhraseText" class="real-phrase"></p>
+        <div id="realPhraseSlot" class="phrase-slot concealed" aria-hidden="true">
+          <p id="realPhraseLabel" class="real-phrase-label">Frase real de origen:</p>
+          <p id="realPhraseText" class="real-phrase"></p>
+        </div>
 
-        <div id="interpretationStage" class="pragmatic-layout">
-          <div class="stage-image-card">
+        <div id="interpretationStage" class="evaluation-workspace">
+          <div class="stage-image-card workspace-panel">
             <img id="pragmaticImage" alt="Pictograma actual" class="stage-image" />
           </div>
 
-          <div class="stage-input-card">
+          <div class="stage-input-card workspace-panel">
             <p class="eyebrow">Primera impresión</p>
             <label>
               ¿Qué comunica este pictograma?
@@ -302,29 +245,40 @@
         </div>
 
         <div id="likertStage" class="dimension-layout hidden">
-          <div class="top-two-col">
-            <div class="stage-image-card">
+          <div class="evaluation-workspace">
+            <div class="stage-image-card workspace-panel">
               <img id="dimensionImage" alt="Pictograma para evaluación" class="stage-image" />
             </div>
 
-            <aside class="sliders-panel">
-              <h3 class="right-title">Valora cada dimensión</h3>
-              <p class="scale-hint"><span>1 · No funciona</span><span>5 · Excelente</span></p>
-              <div id="slidersContainer" class="sliders-column"></div>
-              <div class="screen-actions tight">
-                <button id="editGuessBtn" class="secondary-btn" type="button">Volver a comprensión pragmática</button>
-                <button id="clearEvalBtn" class="secondary-btn" type="button">Limpiar este ítem</button>
-              </div>
-            </aside>
-          </div>
-
-          <div class="bottom-two-col">
-            <div class="chart-box">
+            <div class="chart-box workspace-panel">
               <canvas id="hexChart" width="360" height="320"></canvas>
               <div id="scoreBadge" class="score-badge">PICTOS Index 0.00</div>
             </div>
+          </div>
 
-            <div id="rubricDetails" class="rubric-details"></div>
+          <section class="dimension-step" aria-labelledby="activeDimensionTitle">
+            <div class="dimension-step-head">
+              <button id="dimensionPrevBtn" type="button" class="arrow-btn" aria-label="Dimensión anterior">◀</button>
+              <div class="dimension-heading">
+                <p id="dimensionCounter" class="eyebrow">Dimensión 1 de 6</p>
+                <h3 id="activeDimensionTitle" class="right-title"></h3>
+                <p id="activeDimensionDescription" class="dimension-description"></p>
+              </div>
+              <button id="dimensionNextBtn" type="button" class="arrow-btn" aria-label="Dimensión siguiente">▶</button>
+            </div>
+
+            <div class="dimension-response">
+              <div>
+                <p class="scale-hint"><span>1 · No funciona</span><span>5 · Excelente</span></p>
+                <div id="slidersContainer" class="sliders-column"></div>
+              </div>
+              <div id="rubricDetails" class="rubric-details" aria-live="polite"></div>
+            </div>
+          </section>
+
+          <div class="screen-actions tight">
+            <button id="editGuessBtn" class="secondary-btn" type="button">Volver a comprensión pragmática</button>
+            <button id="clearEvalBtn" class="secondary-btn" type="button">Limpiar este ítem</button>
           </div>
         </div>
       </section>

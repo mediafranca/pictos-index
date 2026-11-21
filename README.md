@@ -38,8 +38,8 @@ No hay dependencias que instalar: el servidor local usa únicamente Node.js.
 ## Recorrido
 
 1. **Cargar una biblioteca.** Acepta un archivo JSON exportado por PICTOS o una de las tres bibliotecas breves incluidas como ejemplo.
-2. **Describir la evaluación.** Registra datos sociodemográficos, experiencia en CAA, contexto, rol y consentimiento anonimizado.
-3. **Evaluar los pictogramas.** Recoge primero una interpretación abierta y luego las seis valoraciones de la rúbrica.
+2. **Describir la relación con la CAA.** Permite marcar una o varias relaciones, o indicar que no existe experiencia previa.
+3. **Evaluar los pictogramas.** Recoge primero una interpretación abierta y luego recorre las seis dimensiones, una por una, mostrando la rúbrica de cada nota.
 4. **Exportar el resultado.** Descarga un JSON con el perfil de la persona evaluadora, el progreso, los promedios y el detalle por pictograma.
 
 El avance se guarda localmente en el navegador. La interfaz también ofrece navegación por teclado, gestión de foco, avisos para tecnologías de asistencia y adaptación a pantallas pequeñas.
@@ -67,10 +67,11 @@ Las tres bibliotecas de [`examples/`](examples/) contienen las mismas diez frase
 
 La fuente de verdad de la escala está en [`data/rubric-scale-descriptions.json`](data/rubric-scale-descriptions.json). La documentación ampliada vive en [`docs/rubric.md`](docs/rubric.md).
 
-La exportación usa el schema `pictos-index-library-evaluation-1.2.0` e incluye:
+La exportación usa el schema `pictos-index-library-evaluation-1.3.0` e incluye:
 
 - metadatos de la biblioteca;
-- perfil anonimizado de la persona evaluadora;
+- relación de la persona evaluadora con la CAA;
+- identificador UUID y marcas temporales propias de la evaluación;
 - avance y promedios globales y por dimensión;
 - comprensión pragmática, puntajes y promedio de cada pictograma.
 
