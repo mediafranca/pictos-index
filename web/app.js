@@ -50,6 +50,8 @@ function bindElements() {
   el.stepBtn3 = document.getElementById("stepBtn3");
 
   el.step1 = document.getElementById("step1");
+  el.step1Title = document.getElementById("step1Title");
+  el.step1Instruction = document.getElementById("step1Instruction");
   el.step2 = document.getElementById("step2");
   el.step3 = document.getElementById("step3");
   el.step1Nav = document.getElementById("step1Nav");
@@ -57,6 +59,12 @@ function bindElements() {
   el.step3Nav = document.getElementById("step3Nav");
 
   el.libraryFileInput = document.getElementById("libraryFileInput");
+  el.libraryLoader = document.getElementById("libraryLoader");
+  el.libraryLoaded = document.getElementById("libraryLoaded");
+  el.loadedLibraryName = document.getElementById("loadedLibraryName");
+  el.loadedLibraryFile = document.getElementById("loadedLibraryFile");
+  el.libraryHighlights = document.getElementById("libraryHighlights");
+  el.replaceLibraryBtn = document.getElementById("replaceLibraryBtn");
   el.sampleLibraryButtons = Array.from(document.querySelectorAll("[data-sample-path]"));
   el.libraryStatus = document.getElementById("libraryStatus");
   el.librarySummary = document.getElementById("librarySummary");
@@ -128,6 +136,7 @@ function bindEvents() {
   });
 
   el.libraryFileInput.addEventListener("change", onLibraryFileChange);
+  el.replaceLibraryBtn.addEventListener("click", () => el.libraryFileInput.click());
   el.sampleLibraryButtons.forEach((button) => {
     button.addEventListener("click", () => onLoadSampleLibrary(button));
   });
@@ -440,7 +449,28 @@ function utf8ToBase64(value) {
 function renderLibrarySummary() {
   if (!state.library) return;
 
-  el.libraryStatus.textContent = `Biblioteca cargada con ${state.items.length} elementos.`;
+  el.libraryStatus.textContent = `Biblioteca importada correctamente: ${state.items.length} pictogramas listos para evaluar.`;
+  el.libraryStatus.classList.add("sr-only");
+  el.step1Title.textContent = "Biblioteca lista";
+  el.step1Instruction.textContent = "Comprueba una muestra y los datos esenciales antes de comenzar la evaluación.";
+  el.step1NextBtn.textContent = "Usar esta biblioteca";
+  el.libraryLoader.classList.add("hidden");
+  el.libraryLoaded.classList.remove("hidden");
+  el.loadedLibraryName.textContent = state.library.name || "Biblioteca sin nombre";
+  el.loadedLibraryFile.textContent = state.library.fileName;
+
+  const imageFormatsLabel = Object.entries(state.library.imageFormats)
+    .map(([format, count]) => `${count} ${format}`)
+    .join(" · ");
+  const highlights = [
+    ["Pictogramas", String(state.items.length)],
+    ["Imágenes", imageFormatsLabel],
+    ["Modelo", state.library.model || "No informado"],
+    ["Formato", state.library.schemaVersion ? `PICTOS v${state.library.schemaVersion}` : "Legado"],
+  ];
+  el.libraryHighlights.innerHTML = highlights
+    .map(([label, value]) => `<div class="library-highlight"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`)
+    .join("");
 
   const rows = [
     ["Biblioteca", state.library.name || "Sin nombre"],
@@ -450,7 +480,7 @@ function renderLibrarySummary() {
     ["Aplicación", state.library.version],
     ["Modelo", state.library.model || "No informado"],
     ["Elementos", String(state.items.length)],
-    ["Imágenes", Object.entries(state.library.imageFormats).map(([format, count]) => `${count} ${format}`).join(" · ")],
+    ["Imágenes", imageFormatsLabel],
     ["Autor", state.library.author || "No informado"],
     ["Timestamp", state.library.timestamp || "No informado"],
   ];

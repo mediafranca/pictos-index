@@ -100,11 +100,11 @@
       <section id="step1" class="screen" aria-labelledby="step1Title">
         <p class="step-kicker">Paso 1 de 3</p>
         <h2 id="step1Title" tabindex="-1">Carga la biblioteca</h2>
-        <p class="muted">
+        <p id="step1Instruction" class="muted">
           Selecciona un archivo JSON exportado desde PICTOS.net. El instrumento admite imágenes raster y SVG del formato actual.
         </p>
 
-        <div class="step1-grid">
+        <div id="libraryLoader" class="library-loader">
           <div class="step1-left">
             <div class="load-row">
               <label class="file-field" for="libraryFileInput">
@@ -136,11 +136,24 @@
               </div>
             </div>
 
-            <p id="libraryStatus" class="status-text">Aún no hay biblioteca cargada.</p>
-            <div id="librarySummary" class="summary-card hidden"></div>
           </div>
+        </div>
 
-          <div id="libraryPreview" class="library-preview hidden">
+        <p id="libraryStatus" class="status-text" role="status">Aún no hay biblioteca cargada.</p>
+
+        <div id="libraryLoaded" class="library-loaded hidden">
+          <header class="import-success">
+            <div class="success-mark" aria-hidden="true">✓</div>
+            <div class="import-success-copy">
+              <p class="eyebrow">Importación correcta</p>
+              <h3 id="loadedLibraryName">Biblioteca lista para evaluar</h3>
+              <p id="loadedLibraryFile" class="muted"></p>
+            </div>
+            <button id="replaceLibraryBtn" class="secondary-btn" type="button">Cambiar biblioteca</button>
+          </header>
+
+          <div class="library-review">
+            <div id="libraryPreview" class="library-preview hidden">
             <button id="previewPrevBtn" type="button" class="arrow-btn" aria-label="Pictograma anterior">◀</button>
 
             <figure class="preview-figure">
@@ -149,6 +162,16 @@
             </figure>
 
             <button id="previewNextBtn" type="button" class="arrow-btn" aria-label="Siguiente pictograma">▶</button>
+            </div>
+
+            <div class="library-confirmation">
+              <div id="libraryHighlights" class="library-highlights"></div>
+              <p class="confirmation-copy">Revisa una muestra y confirma que corresponde a la biblioteca que quieres evaluar.</p>
+              <details class="library-details">
+                <summary>Ver detalles de importación</summary>
+                <div id="librarySummary" class="summary-card"></div>
+              </details>
+            </div>
           </div>
         </div>
       </section>
@@ -206,18 +229,7 @@
         <h2 id="step3Title" tabindex="-1">Evalúa los pictogramas</h2>
 
         <div class="eval-topbar">
-          <div class="item-nav">
-            <button id="evalPrevBtn" type="button" class="arrow-btn" aria-label="Anterior">◀</button>
-            <span id="evalCounter" class="counter">0 / 0</span>
-            <button id="evalNextBtn" type="button" class="arrow-btn" aria-label="Siguiente">▶</button>
-          </div>
-
-          <div class="eval-top-right">
-            <div id="evalProgress" class="muted small"></div>
-            <button id="exportJsonBtn" type="button" class="icon-btn" title="Exportar evaluación JSON" aria-label="Exportar evaluación JSON">
-              <img src="./web/assets/download.svg" alt="" aria-hidden="true" class="icon-svg" />
-            </button>
-          </div>
+          <div id="evalProgress" class="muted small"></div>
         </div>
 
         <div id="realPhraseSlot" class="phrase-slot concealed" aria-hidden="true">
@@ -285,10 +297,21 @@
 
       <div id="step3Nav" class="moment-nav hidden">
         <button id="step3BackBtn" class="secondary-btn" type="button">Volver al paso 2</button>
-        <button id="saveAndNextBtn" class="primary-btn" type="button" disabled>
-          Guardar evaluación y pasar a la siguiente
-          <span id="saveAndNextCounter"></span>
-        </button>
+        <div class="evaluation-footer-actions">
+          <div class="item-nav footer-item-nav" aria-label="Navegación entre pictogramas">
+            <button id="evalPrevBtn" type="button" class="arrow-btn" aria-label="Pictograma anterior">◀</button>
+            <span id="evalCounter" class="counter">0 / 0</span>
+            <button id="evalNextBtn" type="button" class="arrow-btn" aria-label="Pictograma siguiente">▶</button>
+          </div>
+          <button id="exportJsonBtn" type="button" class="secondary-btn export-btn">
+            <img src="./web/assets/download.svg" alt="" aria-hidden="true" class="icon-svg" />
+            Exportar evaluación completa
+          </button>
+          <button id="saveAndNextBtn" class="primary-btn" type="button" disabled>
+            Guardar evaluación y pasar a la siguiente
+            <span id="saveAndNextCounter"></span>
+          </button>
+        </div>
       </div>
       </section>
       <div id="statusRegion" class="sr-only" role="status" aria-live="polite"></div>
