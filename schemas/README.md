@@ -1,6 +1,6 @@
-# Schemas ICAP
+# Schemas PICTOS Index
 
-Este directorio contiene definiciones JSON Schema para validar estructuras de datos en el framework ICAP.
+Este directorio contiene definiciones JSON Schema para validar estructuras de datos en el framework PICTOS Index.
 
 ## Schema Disponible
 
@@ -8,7 +8,7 @@ Este directorio contiene definiciones JSON Schema para validar estructuras de da
 
 **Archivo:** [rubric-descriptions.schema.json](rubric-descriptions.schema.json)
 
-Define la estructura para las descripciones de la rúbrica ICAP, incluyendo:
+Define la estructura para las descripciones de la rúbrica PICTOS Index, incluyendo:
 
 * Escala general (niveles 1-5)
 * 6 dimensiones de evaluación (Claridad, Reconocibilidad, Transparencia Semántica, Adecuación Pragmática, Adecuación Cultural, Accesibilidad Cognitiva)
@@ -43,7 +43,7 @@ npm install -g ajv-cli
 ajv validate -s schemas/rubric-descriptions.schema.json -d data/rubric-scale-descriptions.json
 ```
 
-## Dimensiones de Evaluación ICAP
+## Dimensiones de Evaluación PICTOS Index
 
 | Dimensión | Descripción |
 |-----------|-------------|

@@ -1,4 +1,4 @@
-# Ejemplos ICAP
+# Ejemplos PICTOS Index
 
 Este directorio contiene herramientas interactivas y ejemplos de referencia para el Índice de Calidad Pictográfica.
 
@@ -8,7 +8,7 @@ Este directorio contiene herramientas interactivas y ejemplos de referencia para
 
 **[hexagonal-rating-gradient.html](hexagonal-rating-gradient.html)**
 
-Herramienta principal para evaluar pictogramas usando las 6 dimensiones ICAP.
+Herramienta principal para evaluar pictogramas usando las 6 dimensiones PICTOS Index.
 
 **Características:**
 
@@ -31,7 +31,7 @@ Herramienta principal para evaluar pictogramas usando las 6 dimensiones ICAP.
 
 **[metadata-visualizer.html](metadata-visualizer.html)**
 
-Herramienta para extraer y visualizar metadatos ICAP embebidos en archivos SVG.
+Herramienta para extraer y visualizar metadatos PICTOS Index embebidos en archivos SVG.
 
 **Características:**
 
@@ -44,20 +44,20 @@ Herramienta para extraer y visualizar metadatos ICAP embebidos en archivos SVG.
 **Uso:**
 
 1. Abrir el archivo HTML en un navegador
-2. Arrastrar un SVG con metadatos ICAP
+2. Arrastrar un SVG con metadatos PICTOS Index
 3. Ver visualización automática de la evaluación
 
 ## Ejemplo Canónico
 
 **[toy-example/](toy-example/)**
 
-Ejemplo completo del flujo de trabajo ICAP para la frase **"Voy a hacer mi cama"**.
+Ejemplo completo del flujo de trabajo PICTOS Index para la frase **"Voy a hacer mi cama"**.
 
 Incluye:
 
 * Análisis semántico completo (Frame Semantics + NSM)
 * Estructura visual jerárquica
-* Pictograma SVG con metadatos ICAP embebidos
+* Pictograma SVG con metadatos PICTOS Index embebidos
 * Evaluación completa con puntajes perfectos (5.0/5.0)
 
 Ver [docs/canonical-example.md](../docs/canonical-example.md) para documentación detallada.

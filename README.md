@@ -1,6 +1,6 @@
-# ICAP: Evaluación de Calidad Pictográfica (CAA)
+# PICTOS Index: Evaluación de Calidad Pictográfica (CAA)
 
-ICAP es una herramienta para evaluar **bibliotecas completas de pictogramas** exportadas desde [pictos.net](https://pictos.net), usando una rúbrica Likert de 6 dimensiones y visualización hexagonal.
+PICTOS Index es una herramienta para evaluar **bibliotecas completas de pictogramas** exportadas desde [pictos.net](https://pictos.net), usando una rúbrica Likert de 6 dimensiones y visualización hexagonal.
 
 La aplicación principal está en [`index.html`](index.html) y está pensada para publicarse en GitHub Pages desde la rama `main`.
 
@@ -15,7 +15,8 @@ La aplicación principal está en [`index.html`](index.html) y está pensada par
 ## Ejecución local
 
 ```bash
-cd /Users/hspencer/Sites/ICAP
+git clone https://github.com/mediafranca/pictos-index.git
+cd pictos-index
 python3 -m http.server 4173
 ```
 
@@ -26,7 +27,7 @@ Abrir: `http://localhost:4173`
 ### Paso 1. Cargar biblioteca
 
 - Carga manual de JSON exportado desde pictos.net.
-- Botón para cargar ejemplo: `examples/icap_50_v1_graph_2026-02-11.json`.
+- Botón para cargar ejemplo: `examples/pictos-index-50-v1-graph-2026-02-11.json`.
 - Resumen de metadatos en tabla (`key` a la derecha, `value` a la izquierda).
 - Navegación horizontal de pictogramas con flechas.
 
@@ -70,7 +71,7 @@ Antes de mostrar sliders:
   - Derecha: puntaje por dimensión + texto de la rúbrica para ese nivel
 - Navegación por ítems y exportación JSON desde botón de ícono en la parte superior derecha.
 
-## Dimensiones ICAP
+## Dimensiones PICTOS Index
 
 1. Claridad
 2. Reconocibilidad
@@ -111,7 +112,7 @@ El export incluye:
   - `scores` por dimensión
   - `average`
 
-Schema de export actual: `icap-library-evaluation-1.2.0`.
+Schema de export actual: `pictos-index-library-evaluation-1.2.0`.
 
 ## Publicación en GitHub Pages (rama `main`)
 
@@ -136,7 +137,7 @@ web/
 data/
   rubric-scale-descriptions.json
 examples/
-  icap_50_v1_graph_2026-02-11.json
+  pictos-index-50-v1-graph-2026-02-11.json
 frases.json
 docs/
   rubric.md

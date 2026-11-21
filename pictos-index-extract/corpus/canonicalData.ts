@@ -1,13 +1,13 @@
 /**
- * ICAP-50 Corpus
+ * PICTOS Index 50 Corpus
  *
- * Extraído de pictos-net para su uso independiente en el repositorio MediaFranca/ICAP.
- * Fuente original: https://mediafranca.github.io/ICAP/frases.json
+ * Extraído de pictos-net para su uso independiente en el repositorio MediaFranca/pictos-index.
+ * Fuente original: https://mediafranca.net/pictos-index/frases.json
  *
  * Este módulo contiene:
- * - ICAPPhrase / ICAPCorpus: interfaces del corpus externo
- * - fetchICAPModule(): carga el corpus desde el endpoint de GitHub Pages
- * - ICAP_MODULE_FALLBACK: corpus estático de respaldo (50 frases, 8 categorías)
+ * - PictosIndexPhrase / PictosIndexCorpus: interfaces del corpus externo
+ * - fetchPictosIndexModule(): carga el corpus desde el endpoint de GitHub Pages
+ * - PICTOS_INDEX_MODULE_FALLBACK: corpus estático de respaldo (50 frases, 8 categorías)
  */
 
 // Adapter type - en integración real, importar desde el tipo de RowData del repo destino
@@ -30,9 +30,9 @@ export interface GraphModule {
 }
 
 /**
- * ICAP Phrase structure from external JSON
+ * PICTOS Index Phrase structure from external JSON
  */
-interface ICAPPhrase {
+interface PictosIndexPhrase {
   id: string;
   category: string;
   phrase_es: string;
@@ -42,34 +42,34 @@ interface ICAPPhrase {
 }
 
 /**
- * ICAP Corpus structure from external JSON
+ * PICTOS Index Corpus structure from external JSON
  */
-interface ICAPCorpus {
+interface PictosIndexCorpus {
   project: string;
   corpus_name: string;
   version: string;
   description: string;
-  phrases: ICAPPhrase[];
+  phrases: PictosIndexPhrase[];
 }
 
 /**
- * ICAP endpoint URL (GitHub Pages)
+ * PICTOS Index endpoint URL (GitHub Pages)
  */
-const ICAP_ENDPOINT = 'https://mediafranca.github.io/ICAP/frases.json';
+const PICTOS_INDEX_ENDPOINT = 'https://mediafranca.net/pictos-index/frases.json';
 
 /**
- * Fetch ICAP phrases from external endpoint
- * Returns the full ICAP-50 corpus (50 phrases across 8 categories)
+ * Fetch PICTOS Index phrases from external endpoint
+ * Returns the full PICTOS Index 50 corpus (50 phrases across 8 categories)
  */
-export async function fetchICAPModule(): Promise<GraphModule> {
+export async function fetchPictosIndexModule(): Promise<GraphModule> {
   try {
-    const response = await fetch(ICAP_ENDPOINT);
+    const response = await fetch(PICTOS_INDEX_ENDPOINT);
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch ICAP module: ${response.status}`);
+      throw new Error(`Failed to fetch PICTOS Index module: ${response.status}`);
     }
 
-    const corpus: ICAPCorpus = await response.json();
+    const corpus: PictosIndexCorpus = await response.json();
 
     const data: RowDataPartial[] = corpus.phrases.map((phrase) => ({
       id: phrase.id,
@@ -81,27 +81,27 @@ export async function fetchICAPModule(): Promise<GraphModule> {
     }));
 
     return {
-      id: "icap-50",
+      id: "pictos-index-50",
       namespace: "mediafranca.graph.dataset",
       version: corpus.version,
       description: corpus.description,
       data
     };
   } catch (error) {
-    console.error('Error fetching ICAP module:', error);
+    console.error('Error fetching PICTOS Index module:', error);
     throw error;
   }
 }
 
 /**
- * Fallback: Static ICAP-50 base corpus (for offline usage)
- * Source: schemas/ICAP/frases.json v2.0.0
+ * Fallback: Static PICTOS Index 50 base corpus (for offline usage)
+ * Source: frases.json v2.0.0
  */
-export const ICAP_MODULE_FALLBACK: GraphModule = {
-  id: "icap-50-base",
+export const PICTOS_INDEX_MODULE_FALLBACK: GraphModule = {
+  id: "pictos-index-50-base",
   namespace: "mediafranca.graph.dataset",
   version: "2.0.0",
-  description: "Corpus Base ICAP-50 para evaluación de pictogramas en CAA (50 frases base - FALLBACK)",
+  description: "Corpus base PICTOS Index 50 para evaluación de pictogramas en CAA (50 frases base - FALLBACK)",
   data: [
     // SOLICITAR (6 frases)
     { "id": "SOL-01", "UTTERANCE": "Quiero ir al baño", "status": "idle", "nluStatus": "idle", "visualStatus": "idle", "bitmapStatus": "idle" },

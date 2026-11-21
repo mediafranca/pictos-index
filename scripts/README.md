@@ -1,12 +1,12 @@
-# Scripts ICAP
+# Scripts PICTOS Index
 
-Este directorio contiene scripts de automatización para el workflow de evaluación ICAP.
+Este directorio contiene scripts de automatización para el workflow de evaluación PICTOS Index.
 
 ## Scripts Disponibles
 
 ### 1. compile-evaluation-text.js
 
-Compila evaluaciones ICAP a partir de puntajes numéricos, generando texto narrativo automático usando la rúbrica centralizada.
+Compila evaluaciones PICTOS Index a partir de puntajes numéricos, generando texto narrativo automático usando la rúbrica centralizada.
 
 **Uso:**
 
@@ -33,7 +33,7 @@ node scripts/compile-evaluation-text.js --case req-001_v1.0.0_default-v1_01
 
 **Salida:**
 
-* Puntaje ICAP compuesto (promedio)
+* Puntaje PICTOS Index compuesto (promedio)
 * Evaluación general
 * Párrafos narrativos para cada dimensión
 * Texto compilado completo
@@ -64,7 +64,7 @@ node scripts/generate-report.js --corpus frases.json --format json
 
 **Salida:**
 
-* Puntajes ICAP agregados por modelo/versión
+* Puntajes PICTOS Index agregados por modelo/versión
 * Estadísticas por dimensión
 * Identificación de fortalezas y debilidades
 * Comparación entre modelos
@@ -94,4 +94,4 @@ Esto asegura que las evaluaciones usen descripciones consistentes y actualizadas
 
 ---
 
-**Ver también:** [README principal](../README.md) para documentación completa del framework ICAP
+**Ver también:** [README principal](../README.md) para documentación completa del framework PICTOS Index

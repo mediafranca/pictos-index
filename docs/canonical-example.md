@@ -10,7 +10,7 @@ This document illustrates the complete chain of thought from initial utterance t
 1. Utterance → Semantic Analysis
 2. Semantic Analysis → Visual Structure
 3. Visual Structure → SVG Pictogram
-4. SVG Pictogram → ICAP Evaluation
+4. SVG Pictogram → PICTOS Index Evaluation
 5. Evaluation → Embedded Metadata (SSOT)
 
 ## Modular Architecture
@@ -29,7 +29,7 @@ Este ejemplo integra componentes de tres repositorios modulares del ecosistema *
   * Accesibilidad (ARIA, roles semánticos)
   * Chain of thought completo
 
-* **ICAP** (este repositorio) - Define la evaluación de calidad (Step 4)
+* **PICTOS Index** (este repositorio) - Define la evaluación de calidad (Step 4)
   * 6 dimensiones de evaluación
   * Rúbrica centralizada
   * Puntajes y decisiones

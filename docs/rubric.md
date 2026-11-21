@@ -1,4 +1,4 @@
-# ICAP Evaluation Rubric
+# PICTOS Index Evaluation Rubric
 
 This rubric provides operational definitions and anchoring examples for each evaluation dimension.
 

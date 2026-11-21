@@ -8,9 +8,9 @@ const DIMENSIONS = [
 ];
 
 const AXIS_COLORS = ["#2563eb", "#0d9488", "#d97706", "#9333ea", "#e11d48", "#16a34a"];
-const ICAP50_LIBRARY_PATH = "./examples/icap_50_v1_graph_2026-02-11.json";
-const PROFILE_STORAGE_KEY = "icap:evaluator-profile:v3";
-const LIBRARY_STORAGE_PREFIX = "icap:library-evals:v3:";
+const PICTOS_INDEX_50_LIBRARY_PATH = "./examples/pictos-index-50-v1-graph-2026-02-11.json";
+const PROFILE_STORAGE_KEY = "pictos-index:evaluator-profile:v3";
+const LIBRARY_STORAGE_PREFIX = "pictos-index:library-evals:v3:";
 
 const state = {
   rubric: null,
@@ -49,7 +49,7 @@ function bindElements() {
   el.step3Nav = document.getElementById("step3Nav");
 
   el.libraryFileInput = document.getElementById("libraryFileInput");
-  el.loadICAP50Btn = document.getElementById("loadICAP50Btn");
+  el.loadPictosIndex50Btn = document.getElementById("loadPictosIndex50Btn");
   el.libraryStatus = document.getElementById("libraryStatus");
   el.librarySummary = document.getElementById("librarySummary");
   el.libraryPreview = document.getElementById("libraryPreview");
@@ -111,7 +111,7 @@ function bindEvents() {
   });
 
   el.libraryFileInput.addEventListener("change", onLibraryFileChange);
-  el.loadICAP50Btn.addEventListener("click", onLoadICAP50Click);
+  el.loadPictosIndex50Btn.addEventListener("click", onLoadPictosIndex50Click);
   el.previewPrevBtn.addEventListener("click", () => changePreviewIndex(state.previewIndex - 1));
   el.previewNextBtn.addEventListener("click", () => changePreviewIndex(state.previewIndex + 1));
   el.step1NextBtn.addEventListener("click", () => goToStep(2));
@@ -223,15 +223,15 @@ async function onLibraryFileChange(event) {
   }
 }
 
-async function onLoadICAP50Click() {
+async function onLoadPictosIndex50Click() {
   try {
-    const response = await fetch(ICAP50_LIBRARY_PATH);
+    const response = await fetch(PICTOS_INDEX_50_LIBRARY_PATH);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const payload = await response.json();
-    loadLibraryPayload(payload, "icap_50_v1_graph_2026-02-11.json");
+    loadLibraryPayload(payload, "pictos-index-50-v1-graph-2026-02-11.json");
   } catch (error) {
     console.error(error);
-    alert("No se pudo cargar la biblioteca ICAP-50 de ejemplo.");
+    alert("No se pudo cargar la biblioteca PICTOS Index 50 de ejemplo.");
   }
 }
 
@@ -605,13 +605,13 @@ function updateLikertPanels(scores) {
 
   const avg = averageScore(scores);
   if (avg === null) {
-    el.scoreBadge.textContent = "ICAP —";
+    el.scoreBadge.textContent = "PICTOS Index —";
     el.scoreBadge.style.backgroundColor = "#6b7280";
     return;
   }
 
   const rounded = normalizeScore(Math.round(avg));
-  el.scoreBadge.textContent = `ICAP ${avg.toFixed(2)}`;
+  el.scoreBadge.textContent = `PICTOS Index ${avg.toFixed(2)}`;
   el.scoreBadge.style.backgroundColor = getScaleMeta(rounded).color;
 }
 
@@ -945,7 +945,7 @@ function exportEvaluationJson() {
   });
 
   const payload = {
-    schemaVersion: "icap-library-evaluation-1.2.0",
+    schemaVersion: "pictos-index-library-evaluation-1.2.0",
     exportedAt: new Date().toISOString(),
     library: state.library,
     evaluator: state.evaluatorProfile,
@@ -954,7 +954,7 @@ function exportEvaluationJson() {
   };
 
   const baseName = sanitizeFilename((state.library.fileName || "library").replace(/\.json$/i, ""));
-  const outName = `${baseName}_icap_eval_${new Date().toISOString().slice(0, 10)}.json`;
+  const outName = `${baseName}-pictos-index-eval-${new Date().toISOString().slice(0, 10)}.json`;
   downloadJson(payload, outName);
 }
 

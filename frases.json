@@ -1,6 +1,6 @@
 {
-  "project": "PictoNet / ICAP",
-  "corpus_name": "Corpus Expandido ICAP-CEA para Vida Independiente",
+  "project": "PictoNet / PICTOS Index",
+  "corpus_name": "Corpus expandido de PICTOS Index para CEA y vida independiente",
   "version": "2.0.0",
   "description": "Corpus de 91 frases para evaluar la calidad generativa y accesibilidad cognitiva de pictogramas en CAA. Incluye 50 frases base y 41 frases específicas para personas con CEA en transición a la vida independiente.",
   "metadata": {

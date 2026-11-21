@@ -1,7 +1,7 @@
 /**
  * getEvaluationScore
  *
- * Extraído de pictos-net para su uso independiente en el repositorio MediaFranca/ICAP.
+ * Extraído de pictos-net para su uso independiente en el repositorio MediaFranca/pictos-index.
  * Calcula puntaje total, promedio y color de visualización a partir de EvaluationMetrics.
  */
 

@@ -1,8 +1,8 @@
 /**
  * HexagonChart Component
  *
- * Extraído de pictos-net para su uso independiente en el repositorio MediaFranca/ICAP.
- * Visualización hexagonal de las 6 dimensiones ICAP en escala Likert 1-5.
+ * Extraído de pictos-net para su uso independiente en el repositorio MediaFranca/pictos-index.
+ * Visualización hexagonal de las 6 dimensiones PICTOS Index en escala Likert 1-5.
  *
  * Dependencias: React, useMemo
  * Tipo: EvaluationMetrics (importar desde ../types)
@@ -16,7 +16,7 @@ interface HexagonChartProps {
   size?: number;
 }
 
-// Axis order aligned with official ICAP schema (mediafranca/ICAP)
+// Axis order aligned with official PICTOS Index schema (mediafranca/pictos-index)
 const AXES = [
   'clarity',
   'recognizability',
@@ -103,7 +103,7 @@ export const HexagonChart: React.FC<HexagonChartProps> = ({ metrics, size = 180 
       </svg>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="text-center">
-          <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">ICAP</div>
+          <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">PICTOS Index</div>
           <div className="text-2xl font-bold text-violet-950 leading-none">{average}</div>
         </div>
       </div>
