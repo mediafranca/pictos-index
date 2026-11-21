@@ -228,10 +228,6 @@
         <p class="step-kicker">Paso 3 de 3</p>
         <h2 id="step3Title" tabindex="-1">Evalúa los pictogramas</h2>
 
-        <div class="eval-topbar">
-          <div id="evalProgress" class="muted small"></div>
-        </div>
-
         <div id="realPhraseSlot" class="phrase-slot concealed" aria-hidden="true">
           <p id="realPhraseLabel" class="real-phrase-label">Frase real de origen:</p>
           <p id="realPhraseText" class="real-phrase"></p>
@@ -293,25 +289,29 @@
             <button id="clearEvalBtn" class="secondary-btn" type="button">Limpiar este ítem</button>
           </div>
         </div>
-      </section>
 
-      <div id="step3Nav" class="moment-nav hidden">
-        <button id="step3BackBtn" class="secondary-btn" type="button">Volver al paso 2</button>
-        <div class="evaluation-footer-actions">
-          <div class="item-nav footer-item-nav" aria-label="Navegación entre pictogramas">
+        <div class="evaluation-bottom-bar">
+          <div class="item-nav" aria-label="Navegación entre pictogramas">
             <button id="evalPrevBtn" type="button" class="arrow-btn" aria-label="Pictograma anterior">◀</button>
             <span id="evalCounter" class="counter">0 / 0</span>
             <button id="evalNextBtn" type="button" class="arrow-btn" aria-label="Pictograma siguiente">▶</button>
           </div>
-          <button id="exportJsonBtn" type="button" class="secondary-btn export-btn">
-            <img src="./web/assets/download.svg" alt="" aria-hidden="true" class="icon-svg" />
-            Exportar evaluación completa
-          </button>
-          <button id="saveAndNextBtn" class="primary-btn" type="button" disabled>
-            Guardar evaluación y pasar a la siguiente
-            <span id="saveAndNextCounter"></span>
-          </button>
+          <div class="evaluation-bottom-status">
+            <div id="evalProgress" class="muted small"></div>
+            <button id="exportJsonBtn" type="button" class="download-link">
+              <img src="./web/assets/download.svg" alt="" aria-hidden="true" class="icon-svg" />
+              <span id="exportJsonLabel">Descargar evaluación parcial</span>
+            </button>
+          </div>
         </div>
+      </section>
+
+      <div id="step3Nav" class="moment-nav hidden">
+        <button id="step3BackBtn" class="secondary-btn" type="button">Volver al paso 2</button>
+        <button id="saveAndNextBtn" class="primary-btn" type="button" disabled>
+          Guardar evaluación y pasar a la siguiente
+          <span id="saveAndNextCounter"></span>
+        </button>
       </div>
       </section>
       <div id="statusRegion" class="sr-only" role="status" aria-live="polite"></div>

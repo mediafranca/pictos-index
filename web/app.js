@@ -86,6 +86,7 @@ function bindElements() {
   el.evalCounter = document.getElementById("evalCounter");
   el.evalProgress = document.getElementById("evalProgress");
   el.exportJsonBtn = document.getElementById("exportJsonBtn");
+  el.exportJsonLabel = document.getElementById("exportJsonLabel");
 
   el.realPhraseLabel = document.getElementById("realPhraseLabel");
   el.realPhraseText = document.getElementById("realPhraseText");
@@ -626,8 +627,7 @@ function renderCurrentEvalItem() {
   el.evalPrevBtn.disabled = state.evalIndex === 0;
   el.evalNextBtn.disabled = state.evalIndex === state.items.length - 1;
 
-  const completed = countCompletedItems();
-  el.evalProgress.textContent = `${completed} evaluados de ${state.items.length}`;
+  updateEvaluationStatus();
 
   const hasGuess = Boolean(record.guess && record.guess.trim());
   const skipped = Boolean(record.guessSkipped);
@@ -801,6 +801,20 @@ function onDimensionScoreChange() {
   persistEvaluations();
   updateLikertPanels(scores);
   updateSaveAndNextBtn(scores);
+  updateEvaluationStatus();
+}
+
+function updateEvaluationStatus() {
+  const completed = countCompletedItems();
+  const isComplete = state.items.length > 0 && completed === state.items.length;
+  el.evalProgress.textContent = `${completed} evaluados de ${state.items.length}`;
+  el.exportJsonLabel.textContent = isComplete
+    ? "Descargar evaluación completa"
+    : "Descargar evaluación parcial";
+  el.exportJsonBtn.setAttribute(
+    "aria-label",
+    isComplete ? "Descargar evaluación completa" : "Descargar evaluación parcial",
+  );
 }
 
 function updateSaveAndNextBtn(scores) {
@@ -1200,7 +1214,8 @@ function exportEvaluationJson() {
   };
 
   const baseName = sanitizeFilename((state.library.fileName || "library").replace(/\.json$/i, ""));
-  const outName = `${baseName}-pictos-index-eval-${new Date().toISOString().slice(0, 10)}.json`;
+  const completion = countCompletedItems() === state.items.length ? "complete" : "partial";
+  const outName = `${baseName}-pictos-index-eval-${completion}-${new Date().toISOString().slice(0, 10)}.json`;
   downloadJson(payload, outName);
 }
 
