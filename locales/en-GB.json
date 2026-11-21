@@ -49,6 +49,23 @@
     "title": "Working is the beginning, not the whole horizon.",
     "body": "The index brings together communicative effectiveness, accessibility, cultural belonging and formal quality. A clear image that misrepresents, excludes or impoverishes experience still needs work."
   },
+  "about": {
+    "eyebrow": "About the PICTOS Index",
+    "title": "Look carefully before you communicate.",
+    "whatTitle": "What it is",
+    "whatBody": "An open instrument for judging whether a pictogram communicates: whether it is clear to see, whether it is recognised, whether it says what the phrase means, whether it works in a real conversation, whether it belongs to its culture and whether it is accessible to every mind. Generative models produce pictograms in abundance; the index returns judgement to the people who use them, support others with them and design them.",
+    "originTitle": "Where it comes from",
+    "originBefore": "It grew out of the doctoral research of",
+    "originAfter": "in design for Augmentative and Alternative Communication at Auckland University of Technology (AUT). It is the companion to PICTOS.net: one creates pictograms from an understanding of what someone wants to say; the other asks whether they succeed. It updates and replaces VCSCI, its first formulation as an index of visual communicability and semantic correspondence.",
+    "custodyTitle": "Who it belongs to",
+    "custodyBefore": "It is in the custody of",
+    "custodyAfter": ", an initiative from Valparaíso that creates, gathers and looks after open tools for human communication. The code is published under the Apache 2.0 licence and the rubric under CC BY 4.0, so that anyone can study, use and improve it.",
+    "reposTitle": "Related repositories",
+    "repoNet": "Generative pictograms with semantic reasoning",
+    "repoNlu": "Understanding contract, based on NSM and FrameNet",
+    "repoComposition": "Visual composition contract",
+    "repoSvg": "Semantic SVG with accessibility metadata"
+  },
   "app": {
     "eyebrow": "Instrument",
     "title": "Evaluate a library",

@@ -49,6 +49,23 @@
     "title": "Funcionar es el comienzo, no el horizonte completo.",
     "body": "El índice reúne eficacia comunicativa, accesibilidad, pertenencia cultural y calidad formal. Una imagen clara que falsea, excluye o empobrece la experiencia sigue necesitando trabajo."
   },
+  "about": {
+    "eyebrow": "Acerca del PICTOS Index",
+    "title": "Mirar con cuidado antes de comunicar.",
+    "whatTitle": "Qué es",
+    "whatBody": "Un instrumento abierto para evaluar si un pictograma comunica: si se ve con claridad, si se reconoce, si dice lo que la frase quiere decir, si sirve en una conversación real, si pertenece a su cultura y si es accesible para todas las mentes. Los modelos generativos producen pictogramas en abundancia; el índice devuelve el juicio a las personas que los usan, los acompañan y los diseñan.",
+    "originTitle": "De dónde viene",
+    "originBefore": "Nace en la investigación doctoral de",
+    "originAfter": "en diseño para la Comunicación Aumentativa y Alternativa, en Auckland University of Technology (AUT). Acompaña a PICTOS.net: uno crea pictogramas desde la comprensión de lo que se quiere decir; el otro pregunta si lo logra. Actualiza y reemplaza a VCSCI, su primera formulación como índice de comunicabilidad visual y correspondencia semántica.",
+    "custodyTitle": "A quién pertenece",
+    "custodyBefore": "Está bajo la custodia de",
+    "custodyAfter": ", iniciativa de Valparaíso que crea, reúne y cuida herramientas abiertas para la comunicación humana. El código se publica con licencia Apache 2.0 y la rúbrica con CC BY 4.0, para que cualquiera pueda estudiarla, usarla y mejorarla.",
+    "reposTitle": "Repositorios relacionados",
+    "repoNet": "Pictogramas generativos con razonamiento semántico",
+    "repoNlu": "Contrato de comprensión, basado en NSM y FrameNet",
+    "repoComposition": "Contrato de composición visual",
+    "repoSvg": "SVG semántico con metadatos de accesibilidad"
+  },
   "app": {
     "eyebrow": "Instrumento",
     "title": "Evaluar una librería",
