@@ -1,21 +1,29 @@
-# PICTOS Index: Evaluación de Calidad Pictográfica (CAA)
+<p align="center">
+  <img src="web/assets/pictos-iso.svg" width="56" height="56" alt="Símbolo de PICTOS" />
+</p>
 
-PICTOS Index es una herramienta para evaluar **bibliotecas completas de pictogramas** exportadas desde [pictos.net](https://pictos.net), usando una rúbrica Likert de 6 dimensiones y visualización hexagonal.
+<h1 align="center">PICTOS Index</h1>
 
-La aplicación principal está en [`index.html`](index.html) y está pensada para publicarse en GitHub Pages desde la rama `main`.
+<p align="center">
+  Instrumento para evaluar la calidad comunicativa de bibliotecas pictográficas.
+</p>
 
-## Estado actual del evaluador
+PICTOS Index permite revisar bibliotecas exportadas desde [pictos.net](https://pictos.net) mediante seis dimensiones complementarias. Todo el proceso ocurre en el navegador: los archivos cargados y el avance de la evaluación permanecen en el dispositivo de quien evalúa.
 
-- Portada breve que explica propósito, recorrido y tratamiento local de los datos.
-- Lenguaje visual hermano de PICTOS.net en variante oscura, con superficies de pictogramas blancas para no alterar la muestra.
-- Flujo guiado en **3 pasos**.
-- Entrada por `library dump` JSON.
-- Compatible con exportaciones PICTOS `schemaVersion: 3` y con archivos legados.
-- Admite imágenes raster (`row.bitmap`) y vectoriales (`row.rawSvg` o `row.structuredSvg`).
-- Rúbrica 1-5 por dimensión + gráfico hexagonal + explicación dinámica por puntaje.
-- Navegación por teclado, foco gestionado entre pasos, región de estado para tecnologías de asistencia y diseño responsive.
+## Qué evalúa
 
-## Ejecución local
+1. **Claridad**
+2. **Reconocibilidad**
+3. **Transparencia semántica**
+4. **Adecuación pragmática**
+5. **Adecuación cultural**
+6. **Accesibilidad cognitiva**
+
+Cada pictograma recibe una valoración de 1 a 5 por dimensión. El instrumento muestra el perfil resultante en un gráfico hexagonal y acompaña cada puntaje con la descripción correspondiente de la rúbrica.
+
+## Probarlo en local
+
+Requiere una versión reciente de [Node.js](https://nodejs.org/).
 
 ```bash
 git clone https://github.com/mediafranca/pictos-index.git
@@ -23,128 +31,67 @@ cd pictos-index
 npm run dev
 ```
 
-Abrir: `http://localhost:4191`
+Luego abre [http://localhost:4191](http://localhost:4191).
 
-## Flujo de evaluación (UI)
+No hay dependencias que instalar: el servidor local usa únicamente Node.js.
 
-### Paso 1. Cargar biblioteca
+## Recorrido
 
-- Carga manual de JSON exportado desde pictos.net.
-- Tres bibliotecas breves de ejemplo con las mismas 10 frases: raster, Recraft Vector y Recraft Pro Vector.
-- Resumen de metadatos en tabla (`key` a la derecha, `value` a la izquierda).
-- Navegación horizontal de pictogramas con flechas.
+1. **Cargar una biblioteca.** Acepta un archivo JSON exportado por PICTOS o una de las tres bibliotecas breves incluidas como ejemplo.
+2. **Describir la evaluación.** Registra datos sociodemográficos, experiencia en CAA, contexto, rol y consentimiento anonimizado.
+3. **Evaluar los pictogramas.** Recoge primero una interpretación abierta y luego las seis valoraciones de la rúbrica.
+4. **Exportar el resultado.** Descarga un JSON con el perfil de la persona evaluadora, el progreso, los promedios y el detalle por pictograma.
 
-### Paso 2. Datos socio-demográficos
+El avance se guarda localmente en el navegador. La interfaz también ofrece navegación por teclado, gestión de foco, avisos para tecnologías de asistencia y adaptación a pantallas pequeñas.
 
-Se capturan una sola vez y se guardan en `localStorage`:
+## Formatos compatibles
 
-- Edad (rango)
-- Género
-- País / región
-- Nivel educativo (opcional)
-- Idioma principal
-- Experiencia en CAA
-- Contexto de evaluación
-- Rol:
-  - Persona con dificultades de comunicación oral (usuario de pictogramas)
-  - Persona sin dificultades de comunicación oral
-  - Familiar o cuidador de persona con dificultades de comunicación
-  - Profesional CAA
-- Consentimiento anonimizado
+El evaluador lee `payload.rows[]` de exportaciones PICTOS `schemaVersion: 3` y de archivos legados. Identifica cada pictograma mediante `row.id` o `row.sourceRowId` y obtiene su frase desde `row.UTTERANCE` o un campo equivalente.
 
-### Paso 3. Evaluación
+Admite:
 
-#### 3.1 Comprensión pragmática (previa)
+- imágenes raster desde `row.bitmap` como JPEG, PNG o WebP, en URL de datos, Base64 plano o URL HTTP(S);
+- SVG desde `row.rawSvg` o `row.structuredSvg`.
 
-Antes de mostrar sliders:
+Antes de mostrarlos, los SVG se aíslan como recursos de imagen y se limpian de elementos ejecutables y referencias externas.
 
-- Se muestra el pictograma en foco.
-- Pregunta abierta: **"¿Qué comunica este pictograma?"**
-- Opciones:
-  - Confirmar evaluación pragmática
-  - Omitir comprensión pragmática
+## Ejemplos incluidos
 
-#### 3.2 Evaluación por dimensiones
+Las tres bibliotecas de [`examples/`](examples/) contienen las mismas diez frases y permiten comparar representaciones distintas:
 
-- Pictograma a la izquierda.
-- Sliders Likert (1-5) agrupados a la derecha.
-- Cada dimensión tiene botón `?` con tooltip de definición.
-- Zona inferior en 2 columnas:
-  - Izquierda: gráfico hexagonal (CLA, REC, SEM, PRA, CUL, COG)
-  - Derecha: puntaje por dimensión + texto de la rúbrica para ese nivel
-- Navegación por ítems y exportación JSON desde botón de ícono en la parte superior derecha.
+- **Raster:** 10 imágenes bitmap;
+- **Recraft Vector:** 7 SVG y 3 bitmap;
+- **Recraft Pro Vector:** 10 SVG.
 
-## Dimensiones PICTOS Index
+## Rúbrica y exportación
 
-1. Claridad
-2. Reconocibilidad
-3. Transparencia semántica
-4. Adecuación pragmática
-5. Adecuación cultural
-6. Accesibilidad cognitiva
+La fuente de verdad de la escala está en [`data/rubric-scale-descriptions.json`](data/rubric-scale-descriptions.json). La documentación ampliada vive en [`docs/rubric.md`](docs/rubric.md).
 
-Fuente de verdad de la rúbrica: [`data/rubric-scale-descriptions.json`](data/rubric-scale-descriptions.json)
+La exportación usa el schema `pictos-index-library-evaluation-1.2.0` e incluye:
 
-## Formato de entrada esperado
+- metadatos de la biblioteca;
+- perfil anonimizado de la persona evaluadora;
+- avance y promedios globales y por dimensión;
+- comprensión pragmática, puntajes y promedio de cada pictograma.
 
-El evaluador consume `payload.rows[]` y toma:
-
-- `row.id` o `row.sourceRowId`
-- `row.UTTERANCE` (o equivalentes)
-- `row.bitmap` (imagen raster), o
-- `row.structuredSvg` / `row.rawSvg` (imagen vectorial)
-
-Las imágenes raster soportan:
-
-- `data:image/jpeg;base64,...`
-- `data:image/png;base64,...`
-- `data:image/webp;base64,...`
-- Base64 plano (se interpreta como JPEG)
-- URL `http(s)`
-
-Los SVG se analizan, se retiran elementos ejecutables y referencias externas, y se muestran como recursos de imagen aislados.
-
-## Exportación JSON
-
-El export incluye:
-
-- `library` (metadatos base)
-- `evaluator` (perfil socio-demográfico)
-- `summary` (avance, promedios globales y por dimensión)
-- `items[]` con:
-  - `comprension_pragmatica` (respondida/omitida/pendiente + texto)
-  - `scores` por dimensión
-  - `average`
-
-Schema de export actual: `pictos-index-library-evaluation-1.2.0`.
-
-## Publicación en GitHub Pages (rama `main`)
-
-### Opción simple (sin workflow)
-
-1. Ir a `Settings > Pages` del repositorio.
-2. En **Build and deployment** elegir:
-   - **Source**: `Deploy from a branch`
-   - **Branch**: `main`
-   - **Folder**: `/ (root)`
-3. Guardar.
-
-Con esto, cada push a `main` publica automáticamente.
-
-## Estructura relevante
+## Estructura del repositorio
 
 ```text
-index.html
-web/
-  app.js
-  styles.css
-data/
-  rubric-scale-descriptions.json
-examples/
-  index-ex00-graph-2026-11-21.json
-  index-ex01-graph-2026-11-21.json
-  index-ex02-graph-2026-11-21.json
-frases.json
-docs/
-  rubric.md
+index.html             Interfaz principal
+web/                   Lógica, estilos y recursos gráficos
+data/                  Descripciones canónicas de la rúbrica
+examples/              Bibliotecas breves para probar el instrumento
+docs/                   Documentación de la rúbrica
+schemas/                Schemas de los datos
+scripts/                Servidor local y utilidades
 ```
+
+## Publicación
+
+El sitio es estático y puede publicarse directamente con GitHub Pages desde la raíz de la rama `main`.
+
+1. Abre **Settings → Pages** en el repositorio.
+2. Elige **Deploy from a branch**.
+3. Selecciona la rama `main` y la carpeta `/ (root)`.
+
+Cada push posterior a `main` actualizará el sitio publicado.
