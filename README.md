@@ -1,3 +1,5 @@
+**For English speakers:** this document is in Spanish. See [the English README](./README_en.md).
+
 <p align="center">
   <img src="web/assets/pictos-iso.svg" width="56" height="56" alt="Símbolo de PICTOS" />
 </p>
@@ -12,6 +14,12 @@ PICTOS Index permite revisar bibliotecas exportadas desde [pictos.net](https://p
 
 > [!WARNING]
 > **Prototipo en construcción.** El índice, la rúbrica y los resultados son experimentales. No sustituyen estudios de comprensión, validación con personas usuarias ni una evaluación profesional de accesibilidad. Sus puntajes no deben interpretarse como certificación de una biblioteca pictográfica.
+
+## Acerca del índice
+
+PICTOS Index nace en la investigación doctoral de [Herbert Spencer](https://herbertspencer.net/cc) en diseño para la Comunicación Aumentativa y Alternativa, en Auckland University of Technology (AUT). Acompaña a [PICTOS.net](https://pictos.net): uno crea pictogramas desde la comprensión de lo que se quiere decir; el otro pregunta si lo logra. Los modelos generativos producen pictogramas en abundancia; el índice devuelve el juicio a las personas que los usan, los acompañan y los diseñan. Actualiza y reemplaza a VCSCI (*Visual Communicability and Semantic Correspondence Index*), su primera formulación.
+
+El proyecto está bajo la custodia de [MediaFranca](https://mediafranca.net), iniciativa de Valparaíso que crea, reúne y cuida herramientas abiertas para la comunicación humana.
 
 ## Qué evalúa
 
@@ -60,7 +68,7 @@ npm run validate-i18n
 1. **Cargar una biblioteca.** Acepta un archivo JSON exportado por PICTOS o una de las tres bibliotecas breves incluidas como ejemplo.
 2. **Describir la relación con la CAA.** Permite marcar una o varias relaciones, o indicar que no existe experiencia previa.
 3. **Evaluar los pictogramas.** Recoge primero una interpretación abierta y luego recorre las seis dimensiones, una por una, mostrando la rúbrica de cada nota.
-4. **Evaluar la biblioteca.** Presenta todos los pictogramas, primero sin etiquetas y luego con ellas, y registra coherencia formal y gramática visual como resultados separados.
+4. **Evaluar la biblioteca.** Presenta todos los pictogramas en una retícula, con las etiquetas ocultas por defecto y un interruptor para mostrarlas, y registra coherencia formal y gramática visual como resultados separados.
 5. **Exportar el resultado.** Descarga dos representaciones complementarias:
    - un **informe PDF** con el resumen de la biblioteca y una página por pictograma, donde aparecen la imagen, el gráfico, sus seis notas y su PICTOS Index;
    - un **JSON de datos** con el perfil de la persona evaluadora, el progreso, los promedios, el detalle por pictograma y la evaluación separada de la biblioteca.
@@ -101,6 +109,15 @@ La exportación usa el schema `pictos-index-library-evaluation-1.4.0` e incluye:
 
 El PDF se genera localmente con [jsPDF](https://github.com/parallax/jsPDF), cuya distribución UMD se conserva en `web/vendor/`. Las imágenes y evaluaciones no se envían a un servicio externo para producir el informe.
 
+## Proyectos relacionados
+
+| Repositorio | Descripción |
+|---|---|
+| [pictos-net](https://github.com/mediafranca/pictos-net) | Pictogramas generativos con razonamiento semántico ([pictos.net](https://pictos.net)) |
+| [pictos-nlu-schema](https://github.com/mediafranca/pictos-nlu-schema) | Contrato de comprensión, basado en NSM y FrameNet |
+| [pictos-composition-schema](https://github.com/mediafranca/pictos-composition-schema) | Contrato de composición visual |
+| [pictos-svg-schema](https://github.com/mediafranca/pictos-svg-schema) | SVG semántico con metadatos de accesibilidad |
+
 ## Estructura del repositorio
 
 ```text
@@ -109,9 +126,10 @@ web/                   Lógica, estilos, recursos gráficos y dependencia PDF ve
 locales/               Catálogos paralelos es-419 / en-GB
 data/                  Descripciones canónicas de la rúbrica
 examples/              Bibliotecas breves para probar el instrumento
-docs/                   Documentación de la rúbrica
-schemas/                Schemas de los datos
-scripts/                Servidor local y utilidades
+docs/                  Documentación de la rúbrica
+schemas/               Schemas de los datos
+specs/                 Especificación Allium del evaluador
+scripts/               Servidor local y utilidades
 ```
 
 ## Publicación
@@ -123,3 +141,12 @@ El sitio es estático y puede publicarse directamente con GitHub Pages desde la 
 3. Selecciona la rama `main` y la carpeta `/ (root)`.
 
 Cada push posterior a `main` actualizará el sitio publicado.
+
+## Citar
+
+```
+Spencer, H. (2026). PICTOS Index: evaluación de calidad pictográfica para la CAA.
+https://github.com/mediafranca/pictos-index
+```
+
+*Licencia: Apache 2.0 (código) · CC BY 4.0 (rúbrica y documentación de investigación) · CC0 (bibliotecas de ejemplo). Detalle en [LICENSE](LICENSE).*
