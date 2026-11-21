@@ -1100,13 +1100,11 @@ function ensureRecord(itemId) {
   return record;
 }
 
+// No average over partial data: the PICTOS Index needs all six dimensions.
 function averageScore(scores) {
-  const ratedValues = DIMENSIONS.map((dimension) => normalizeScore(scores ? scores[dimension.key] : null)).filter(
-    (value) => value !== null,
-  );
-  if (!ratedValues.length) return null;
-  const total = ratedValues.reduce((acc, value) => acc + value, 0);
-  return total / ratedValues.length;
+  if (!hasAllDimensionsScored(scores)) return null;
+  const total = DIMENSIONS.reduce((acc, dimension) => acc + normalizeScore(scores[dimension.key]), 0);
+  return total / DIMENSIONS.length;
 }
 
 function normalizeScore(value) {
@@ -1417,9 +1415,17 @@ function countCompletedItems() {
   let count = 0;
   state.items.forEach((item) => {
     const record = state.evaluations.get(item.id);
-    if (record && hasAllDimensionsScored(record.scores)) count += 1;
+    if (isRecordComplete(record)) count += 1;
   });
   return count;
+}
+
+// A pending interpretation (never answered, or skipped and reopened) leaves the
+// pictogram incomplete, whatever its ratings.
+function isRecordComplete(record) {
+  if (!record) return false;
+  const interpreted = record.guessSkipped || Boolean(record.guess && record.guess.trim());
+  return interpreted && hasAllDimensionsScored(record.scores);
 }
 
 function exportEvaluationJson() {
@@ -1455,13 +1461,7 @@ function buildExportPayload() {
         respuesta: record && record.guess ? record.guess : "",
       },
       scores: record && record.scores ? normalizeScores(record.scores) : null,
-      average:
-        record && record.scores
-          ? (() => {
-              const avg = averageScore(record.scores);
-              return avg === null ? null : Number(avg.toFixed(3));
-            })()
-          : null,
+      average: isRecordComplete(record) ? Number(averageScore(record.scores).toFixed(3)) : null,
       updatedAt: record ? record.updatedAt : null,
     };
   });
@@ -1736,31 +1736,19 @@ function formatPdfDate(value) {
 }
 
 function buildSummary() {
-  const evaluatedRecords = Array.from(state.evaluations.values()).filter(
-    (record) => record && countRatedDimensions(record.scores) > 0,
-  );
   const completedItems = countCompletedItems();
+  const allComplete = state.items.length > 0 && completedItems === state.items.length;
+  // No average over partial data: library averages need every pictogram complete.
+  const records = allComplete ? state.items.map((item) => state.evaluations.get(item.id)) : [];
+  const mean = (values) => (values.length
+    ? Number((values.reduce((acc, value) => acc + value, 0) / values.length).toFixed(3))
+    : null);
+
   const dimensionAverages = {};
-
   DIMENSIONS.forEach((dimension) => {
-    const values = evaluatedRecords
-      .map((record) => normalizeScore(record.scores ? record.scores[dimension.key] : null))
-      .filter((value) => value !== null);
-    if (!values.length) {
-      dimensionAverages[dimension.key] = null;
-      return;
-    }
-    const sum = values.reduce((acc, value) => acc + value, 0);
-    dimensionAverages[dimension.key] = Number((sum / values.length).toFixed(3));
+    dimensionAverages[dimension.key] = mean(records.map((record) => normalizeScore(record.scores[dimension.key])));
   });
-
-  const overallValues = evaluatedRecords
-    .map((record) => averageScore(record.scores))
-    .filter((value) => value !== null);
-  const overall =
-    overallValues.length > 0
-      ? Number((overallValues.reduce((acc, value) => acc + value, 0) / overallValues.length).toFixed(3))
-      : null;
+  const overall = mean(records.map((record) => averageScore(record.scores)));
 
   return {
     totalItems: state.items.length,
