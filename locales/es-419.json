@@ -62,8 +62,11 @@
   "library": {
     "title": "Carga la librería",
     "instruction": "Selecciona un archivo JSON exportado desde PICTOS.net. El instrumento admite imágenes raster y SVG del formato actual.",
+    "instructionBefore": "Selecciona un archivo JSON exportado desde",
+    "instructionAfter": "El instrumento admite imágenes raster y SVG del formato actual.",
     "uploadTitle": "Cargar un archivo propio",
     "uploadHint": "Formato JSON exportado desde PICTOS.net.",
+    "uploadHintBefore": "Formato JSON exportado desde",
     "samplesTitle": "O prueba con una librería breve",
     "samplesBody": "Las tres contienen las mismas 10 frases producidas con modelos distintos.",
     "example00": "Ejemplo 00",
@@ -197,14 +200,37 @@
     "separateTitle": "Resultado separado.",
     "separateBody": "Coherencia y gramática no se promedian con el PICTOS Index.",
     "back": "Volver a los pictogramas",
-    "download": "Descargar evaluación completa"
+    "download": "Descargar evaluación completa",
+    "downloadPdf": "Descargar informe PDF",
+    "downloadJson": "Descargar datos JSON",
+    "generatingPdf": "Generando PDF…"
   },
   "alerts": {
     "invalidJson": "No se pudo leer el JSON de la librería.",
     "sampleLoad": "No se pudo cargar la librería de ejemplo.",
     "noImages": "El archivo no contiene imágenes compatibles en row.bitmap, row.rawSvg o row.structuredSvg.",
     "loadFirst": "Primero carga una librería.",
-    "profileFirst": "Primero completa los datos del evaluador."
+    "profileFirst": "Primero completa los datos del evaluador.",
+    "completeForPdf": "Completa todos los pictogramas, la coherencia formal y la gramática visual antes de generar el PDF.",
+    "pdfUnavailable": "El generador de PDF no está disponible.",
+    "pdfError": "No se pudo generar el informe PDF. Inténtalo nuevamente."
+  },
+  "pdf": {
+    "documentTitle": "Informe PICTOS Index · {library}",
+    "documentSubject": "Evaluación experimental de calidad pictográfica",
+    "eyebrow": "Informe de evaluación",
+    "title": "PICTOS Index",
+    "overallScore": "PICTOS Index promedio",
+    "completedItems": "{completed} de {total} pictogramas evaluados",
+    "exportedAt": "Generado: {date}",
+    "locale": "Idioma de la evaluación: {locale}",
+    "prototypeNote": "Este índice es un prototipo en construcción. Sus resultados son experimentales y no sustituyen estudios de comprensión ni validación con personas usuarias.",
+    "separateNote": "Coherencia y gramática describen la biblioteca y permanecen separadas del promedio PICTOS Index.",
+    "itemCounter": "Pictograma {current} de {total}",
+    "interpretation": "Interpretación registrada",
+    "interpretationSkipped": "Omitida",
+    "category": "Categoría",
+    "footer": "PICTOS Index · Prototipo experimental"
   },
   "status": { "step": "Momento {step} de 4" },
   "rubric": {

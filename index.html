@@ -116,8 +116,10 @@
       <section id="step1" class="screen" aria-labelledby="step1Title">
         <p class="step-kicker" data-i18n="status.step" data-i18n-vars='{"step":1}'>Momento 1 de 4</p>
         <h2 id="step1Title" tabindex="-1" data-i18n="library.title">Carga la librería</h2>
-        <p id="step1Instruction" class="muted" data-i18n="library.instruction">
-          Selecciona un archivo JSON exportado desde PICTOS.net. El instrumento admite imágenes raster y SVG del formato actual.
+        <p id="step1Instruction" class="muted">
+          <span data-i18n="library.instructionBefore">Selecciona un archivo JSON exportado desde</span>
+          <a class="inline-link" href="https://pictos.net" target="_blank" rel="noopener noreferrer">PICTOS.net</a>.
+          <span data-i18n="library.instructionAfter">El instrumento admite imágenes raster y SVG del formato actual.</span>
         </p>
 
         <div id="libraryLoader" class="library-loader">
@@ -125,7 +127,7 @@
             <div class="load-row">
               <label class="file-field" for="libraryFileInput">
                 <strong data-i18n="library.uploadTitle">Cargar un archivo propio</strong>
-                <span data-i18n="library.uploadHint">Formato JSON exportado desde PICTOS.net.</span>
+                <span><span data-i18n="library.uploadHintBefore">Formato JSON exportado desde</span> <a class="inline-link" href="https://pictos.net" target="_blank" rel="noopener noreferrer">PICTOS.net</a>.</span>
               </label>
               <input id="libraryFileInput" type="file" accept=".json,application/json" />
 
@@ -369,12 +371,16 @@
 
       <div id="step4Nav" class="moment-nav hidden">
         <button id="step4BackBtn" class="secondary-btn" type="button" data-i18n="audit.back">Volver a los pictogramas</button>
-        <button id="auditExportBtn" class="primary-btn" type="button" data-i18n="audit.download">Descargar evaluación completa</button>
+        <div class="final-downloads">
+          <button id="auditPdfBtn" class="primary-btn" type="button" data-i18n="audit.downloadPdf">Descargar informe PDF</button>
+          <button id="auditExportBtn" class="secondary-btn" type="button" data-i18n="audit.downloadJson">Descargar datos JSON</button>
+        </div>
       </div>
       </section>
       <div id="statusRegion" class="sr-only" role="status" aria-live="polite"></div>
     </main>
 
+    <script src="./web/vendor/jspdf.umd.min.js"></script>
     <script type="module" src="./web/app.js"></script>
   </body>
 </html>

@@ -61,7 +61,9 @@ npm run validate-i18n
 2. **Describir la relación con la CAA.** Permite marcar una o varias relaciones, o indicar que no existe experiencia previa.
 3. **Evaluar los pictogramas.** Recoge primero una interpretación abierta y luego recorre las seis dimensiones, una por una, mostrando la rúbrica de cada nota.
 4. **Evaluar la biblioteca.** Presenta todos los pictogramas, primero sin etiquetas y luego con ellas, y registra coherencia formal y gramática visual como resultados separados.
-5. **Exportar el resultado.** Descarga un JSON con el perfil de la persona evaluadora, el progreso, los promedios, el detalle por pictograma y la evaluación separada de la biblioteca.
+5. **Exportar el resultado.** Descarga dos representaciones complementarias:
+   - un **informe PDF** con el resumen de la biblioteca y una página por pictograma, donde aparecen la imagen, el gráfico, sus seis notas y su PICTOS Index;
+   - un **JSON de datos** con el perfil de la persona evaluadora, el progreso, los promedios, el detalle por pictograma y la evaluación separada de la biblioteca.
 
 El avance se guarda localmente en el navegador. La interfaz también ofrece navegación por teclado, gestión de foco, avisos para tecnologías de asistencia y adaptación a pantallas pequeñas.
 
@@ -97,11 +99,13 @@ La exportación usa el schema `pictos-index-library-evaluation-1.4.0` e incluye:
 - comprensión pragmática, puntajes y promedio de cada pictograma.
 - coherencia formal y gramática visual de la biblioteca, marcadas explícitamente como excluidas del promedio PICTOS Index.
 
+El PDF se genera localmente con [jsPDF](https://github.com/parallax/jsPDF), cuya distribución UMD se conserva en `web/vendor/`. Las imágenes y evaluaciones no se envían a un servicio externo para producir el informe.
+
 ## Estructura del repositorio
 
 ```text
 index.html             Interfaz principal
-web/                   Lógica, estilos y recursos gráficos
+web/                   Lógica, estilos, recursos gráficos y dependencia PDF vendorizada
 locales/               Catálogos paralelos es-419 / en-GB
 data/                  Descripciones canónicas de la rúbrica
 examples/              Bibliotecas breves para probar el instrumento

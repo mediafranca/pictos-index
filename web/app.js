@@ -139,6 +139,7 @@ function bindElements() {
   el.grammarDescription = document.getElementById("grammarDescription");
   el.step4BackBtn = document.getElementById("step4BackBtn");
   el.auditExportBtn = document.getElementById("auditExportBtn");
+  el.auditPdfBtn = document.getElementById("auditPdfBtn");
 }
 
 function bindEvents() {
@@ -191,6 +192,7 @@ function bindEvents() {
 
   el.exportJsonBtn.addEventListener("click", exportEvaluationJson);
   el.auditExportBtn.addEventListener("click", exportEvaluationJson);
+  el.auditPdfBtn.addEventListener("click", exportEvaluationPdf);
   el.auditOrderInputs.forEach((input) => input.addEventListener("change", renderAuditGrid));
   el.auditLabelsToggle.addEventListener("change", renderAuditGrid);
   document.addEventListener("keydown", onEvaluationKeydown);
@@ -977,7 +979,10 @@ function renderRubricDetails(scores) {
 }
 
 function drawHexChart(scores) {
-  const canvas = el.hexChart;
+  drawHexChartOnCanvas(el.hexChart, scores);
+}
+
+function drawHexChartOnCanvas(canvas, scores) {
   const ctx = canvas.getContext("2d");
 
   const width = canvas.width;
@@ -1268,6 +1273,7 @@ function isLibraryAssessmentComplete() {
 
 function updateAuditState() {
   if (el.auditExportBtn) el.auditExportBtn.disabled = !isLibraryAssessmentComplete();
+  if (el.auditPdfBtn) el.auditPdfBtn.disabled = !isLibraryAssessmentComplete();
 }
 
 function polarPoint(cx, cy, radius, index, total) {
@@ -1427,6 +1433,16 @@ function exportEvaluationJson() {
     return;
   }
 
+  const payload = buildExportPayload();
+  const baseName = sanitizeFilename((state.library.fileName || "library").replace(/\.json$/i, ""));
+  const completion = countCompletedItems() === state.items.length && isLibraryAssessmentComplete()
+    ? "complete"
+    : "partial";
+  const outName = `${baseName}-pictos-index-eval-${completion}-${new Date().toISOString().slice(0, 10)}.json`;
+  downloadJson(payload, outName);
+}
+
+function buildExportPayload() {
   const items = state.items.map((item, index) => {
     const record = state.evaluations.get(item.id) || null;
     return {
@@ -1469,12 +1485,254 @@ function exportEvaluationJson() {
     items,
   };
 
-  const baseName = sanitizeFilename((state.library.fileName || "library").replace(/\.json$/i, ""));
-  const completion = countCompletedItems() === state.items.length && isLibraryAssessmentComplete()
-    ? "complete"
-    : "partial";
-  const outName = `${baseName}-pictos-index-eval-${completion}-${new Date().toISOString().slice(0, 10)}.json`;
-  downloadJson(payload, outName);
+  return payload;
+}
+
+async function exportEvaluationPdf() {
+  if (!state.library || !state.items.length) {
+    alert(t("alerts.loadFirst"));
+    return;
+  }
+
+  if (countCompletedItems() !== state.items.length || !isLibraryAssessmentComplete()) {
+    alert(t("alerts.completeForPdf"));
+    return;
+  }
+
+  const PdfDocument = window.jspdf?.jsPDF;
+  if (!PdfDocument) {
+    alert(t("alerts.pdfUnavailable"));
+    return;
+  }
+
+  el.auditPdfBtn.disabled = true;
+  el.auditPdfBtn.textContent = t("audit.generatingPdf");
+
+  try {
+    const payload = buildExportPayload();
+    const pdf = new PdfDocument({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
+    pdf.setProperties({
+      title: t("pdf.documentTitle", { library: state.library.name || t("library.untitled") }),
+      subject: t("pdf.documentSubject"),
+      author: "PICTOS Index",
+      creator: "PICTOS Index",
+    });
+
+    drawPdfCover(pdf, payload);
+    for (let index = 0; index < state.items.length; index += 1) {
+      pdf.addPage("a4", "landscape");
+      await drawPdfItemPage(pdf, state.items[index], index, payload);
+    }
+
+    const totalPages = state.items.length + 1;
+    for (let page = 1; page <= totalPages; page += 1) {
+      pdf.setPage(page);
+      drawPdfFooter(pdf, page, totalPages);
+    }
+
+    const baseName = sanitizeFilename((state.library.fileName || "library").replace(/\.json$/i, ""));
+    pdf.save(`${baseName}-pictos-index-report-${new Date().toISOString().slice(0, 10)}.pdf`);
+  } catch (error) {
+    console.error("No se pudo generar el informe PDF.", error);
+    alert(t("alerts.pdfError"));
+  } finally {
+    el.auditPdfBtn.textContent = t("audit.downloadPdf");
+    updateAuditState();
+  }
+}
+
+function drawPdfCover(pdf, payload) {
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const summary = payload.summary;
+  const libraryScores = payload.libraryAssessment.scores;
+
+  pdf.setFillColor(15, 8, 25);
+  pdf.rect(0, 0, pageWidth, pageHeight, "F");
+  pdf.setTextColor(183, 148, 255);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(11);
+  pdf.text(t("pdf.eyebrow").toUpperCase(), 18, 21);
+
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFontSize(30);
+  pdf.text(t("pdf.title"), 18, 39);
+  pdf.setFontSize(17);
+  const libraryName = state.library.name || t("library.untitled");
+  pdf.text(pdf.splitTextToSize(libraryName, 255), 18, 52);
+
+  const cardY = 78;
+  const cardWidth = 80;
+  drawPdfScoreCard(pdf, 18, cardY, cardWidth, t("pdf.overallScore"), summary.overallAverage);
+  drawPdfScoreCard(pdf, 108, cardY, cardWidth, t("audit.coherenceTitle"), libraryScores.coherence);
+  drawPdfScoreCard(pdf, 198, cardY, cardWidth, t("audit.grammarTitle"), libraryScores.grammar);
+
+  pdf.setFont("helvetica", "normal");
+  pdf.setTextColor(216, 207, 227);
+  pdf.setFontSize(10);
+  pdf.text(t("pdf.completedItems", { completed: summary.completedItems, total: summary.totalItems }), 18, 132);
+  pdf.text(t("pdf.exportedAt", { date: formatPdfDate(payload.exportedAt) }), 18, 140);
+  pdf.text(t("pdf.locale", { locale: payload.uiLocale }), 18, 148);
+
+  pdf.setFillColor(42, 25, 61);
+  pdf.roundedRect(18, 160, 260, 25, 3, 3, "F");
+  pdf.setTextColor(255, 223, 94);
+  pdf.setFont("helvetica", "bold");
+  pdf.text(t("prototype.title"), 25, 171);
+  pdf.setTextColor(234, 228, 241);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(9);
+  pdf.text(pdf.splitTextToSize(t("pdf.prototypeNote"), 185), 25, 178);
+  pdf.setTextColor(183, 148, 255);
+  pdf.text(pdf.splitTextToSize(t("pdf.separateNote"), 58), 214, 171);
+}
+
+async function drawPdfItemPage(pdf, item, index, payload) {
+  const record = state.evaluations.get(item.id);
+  const scores = normalizeScores(record?.scores);
+  const average = averageScore(scores);
+  const pageWidth = pdf.internal.pageSize.getWidth();
+
+  pdf.setFillColor(249, 247, 252);
+  pdf.rect(0, 0, pageWidth, pdf.internal.pageSize.getHeight(), "F");
+  pdf.setTextColor(73, 45, 103);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(10);
+  pdf.text(t("pdf.itemCounter", { current: index + 1, total: state.items.length }).toUpperCase(), 16, 17);
+  pdf.setTextColor(20, 13, 31);
+  pdf.setFontSize(18);
+  pdf.text(pdf.splitTextToSize(item.utterance, 205), 16, 29);
+
+  pdf.setFillColor(255, 223, 94);
+  pdf.roundedRect(244, 14, 37, 18, 4, 4, "F");
+  pdf.setTextColor(20, 13, 31);
+  pdf.setFontSize(8);
+  pdf.text("PICTOS Index", 262.5, 21, { align: "center" });
+  pdf.setFontSize(14);
+  pdf.text(formatPdfScore(average), 262.5, 28, { align: "center" });
+
+  pdf.setFillColor(255, 255, 255);
+  pdf.setDrawColor(224, 217, 232);
+  pdf.roundedRect(16, 43, 122, 104, 3, 3, "FD");
+  const pictogram = await rasterizeImageForPdf(item.imageSrc, t("evaluation.imageFallback"));
+  pdf.addImage(pictogram, "PNG", 22, 49, 110, 92, undefined, "FAST");
+
+  pdf.setFillColor(20, 11, 32);
+  pdf.roundedRect(148, 43, 133, 104, 3, 3, "F");
+  const chart = createPdfChart(scores);
+  pdf.addImage(chart, "PNG", 158, 48, 113, 94, undefined, "FAST");
+
+  const interpretation = record?.guess
+    ? record.guess
+    : t("pdf.interpretationSkipped");
+  pdf.setTextColor(87, 75, 101);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(8.5);
+  pdf.text(pdf.splitTextToSize(`${t("pdf.interpretation")}: ${interpretation}`, 265), 16, 156);
+
+  DIMENSIONS.forEach((dimension, dimensionIndex) => {
+    const column = dimensionIndex % 3;
+    const row = Math.floor(dimensionIndex / 3);
+    const x = 16 + column * 90;
+    const y = 166 + row * 15;
+    pdf.setFillColor(239, 234, 245);
+    pdf.roundedRect(x, y, 84, 11, 2, 2, "F");
+    pdf.setTextColor(73, 45, 103);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(8);
+    pdf.text(`${dimension.code} · ${getDimensionMeta(dimension.key).name}`, x + 4, y + 4.8, { maxWidth: 65 });
+    pdf.setTextColor(20, 13, 31);
+    pdf.setFontSize(11);
+    pdf.text(String(scores[dimension.key]), x + 77, y + 7.2, { align: "right" });
+  });
+
+  pdf.setTextColor(87, 75, 101);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(7.5);
+  const category = item.category ? item.category.replaceAll("_", " ") : t("audit.unknownCategory");
+  pdf.text(`${t("pdf.category")}: ${category}`, 16, 201);
+  pdf.text(
+    `${t("audit.coherenceTitle")}: ${payload.libraryAssessment.scores.coherence}/5 · ${t("audit.grammarTitle")}: ${payload.libraryAssessment.scores.grammar}/5`,
+    281,
+    201,
+    { align: "right" },
+  );
+}
+
+function drawPdfScoreCard(pdf, x, y, width, label, value) {
+  pdf.setFillColor(42, 25, 61);
+  pdf.roundedRect(x, y, width, 38, 4, 4, "F");
+  pdf.setTextColor(216, 207, 227);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(9);
+  pdf.text(pdf.splitTextToSize(label, width - 12), x + 6, y + 10);
+  pdf.setTextColor(255, 223, 94);
+  pdf.setFontSize(22);
+  pdf.text(formatPdfScore(value), x + 6, y + 29);
+  pdf.setTextColor(216, 207, 227);
+  pdf.setFontSize(9);
+  pdf.text("/ 5", x + width - 7, y + 29, { align: "right" });
+}
+
+function drawPdfFooter(pdf, page, totalPages) {
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  pdf.setDrawColor(207, 197, 218);
+  pdf.line(16, pageHeight - 7, pageWidth - 16, pageHeight - 7);
+  pdf.setTextColor(115, 101, 128);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(7);
+  pdf.text(t("pdf.footer"), 16, pageHeight - 3);
+  pdf.text(`${page} / ${totalPages}`, pageWidth - 16, pageHeight - 3, { align: "right" });
+}
+
+function createPdfChart(scores) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 360;
+  canvas.height = 320;
+  drawHexChartOnCanvas(canvas, scores);
+  return canvas.toDataURL("image/png");
+}
+
+async function rasterizeImageForPdf(source, fallbackLabel) {
+  const fallback = createPlaceholder(fallbackLabel);
+  try {
+    return await rasterizeImageSource(source || fallback);
+  } catch {
+    return rasterizeImageSource(fallback);
+  }
+}
+
+async function rasterizeImageSource(source) {
+  const image = new Image();
+  image.decoding = "async";
+  if (/^https?:/i.test(source)) image.crossOrigin = "anonymous";
+  image.src = source;
+  await image.decode();
+  if (!image.naturalWidth || !image.naturalHeight) throw new Error("Imagen sin dimensiones");
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 1100;
+  canvas.height = 920;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const scale = Math.min(canvas.width / image.naturalWidth, canvas.height / image.naturalHeight);
+  const width = image.naturalWidth * scale;
+  const height = image.naturalHeight * scale;
+  ctx.drawImage(image, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+  return canvas.toDataURL("image/png");
+}
+
+function formatPdfScore(value) {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric.toFixed(2) : "-";
+}
+
+function formatPdfDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value || "");
+  return new Intl.DateTimeFormat(getLocale(), { dateStyle: "medium", timeStyle: "short" }).format(date);
 }
 
 function buildSummary() {
