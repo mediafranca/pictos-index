@@ -886,7 +886,9 @@ function onDimensionScoreChange() {
   updateEvaluationStatus();
   updateStepLocks();
 
-  if (completedLastDimension) advanceToNextPictogram();
+  // Completing the sixth dimension reveals the profile and average; leave time to read
+  // them and hand the next step to the person instead of advancing automatically.
+  if (completedLastDimension) el.evalNextBtn.focus({ preventScroll: true });
 }
 
 function updateEvaluationStatus() {
@@ -911,6 +913,7 @@ function updatePictogramNavigation(scores) {
   const allScored = hasAllDimensionsScored(scores);
   const isLast = state.evalIndex >= state.items.length - 1;
   el.evalNextBtn.disabled = !allScored;
+  el.evalNextBtn.classList.toggle("ready", allScored);
   el.evalNextLabel.textContent = isLast
     ? t("evaluation.save", { current: state.evalIndex + 1, total: state.items.length })
     : t("evaluation.itemNext");

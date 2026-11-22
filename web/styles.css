@@ -396,6 +396,8 @@ textarea { min-height: 9rem; resize: vertical; }
   border-radius: inherit; cursor: pointer;
 }
 .radio-option.active { border-color: var(--violet-bright); background: var(--violet); color: var(--bg-deep); }
+.pictogram-nav-btn.ready { border-color: var(--violet-bright); background: var(--violet); color: var(--bg-deep); animation: ready-pulse 1.6s ease-out 2; }
+@keyframes ready-pulse { from { box-shadow: 0 0 0 0 rgb(157 107 255 / .55); } to { box-shadow: 0 0 0 12px rgb(157 107 255 / 0); } }
 .arrow-btn.ready { border-color: var(--violet-bright); background: var(--violet); color: var(--bg-deep); box-shadow: 0 0 0 3px rgb(157 107 255 / .18); }
 .chart-box { position: relative; display: grid; place-items: center; }
 .chart-box canvas { width: min(100%, 22rem); height: auto; }
@@ -496,7 +498,7 @@ textarea { min-height: 9rem; resize: vertical; }
   .eval-top-right { width: 100%; justify-content: space-between; }
 }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation: none !important; }
 }
 @media (prefers-contrast: more) {
   :root { --muted: #d5ccdf; --line: #72558f; --line-strong: #b794ff; }
