@@ -104,7 +104,7 @@ The export uses the `pictos-index-library-evaluation-1.4.0` schema and includes:
 - the evaluator's relationship with AAC;
 - a UUID and timestamps for the evaluation;
 - progress, and overall and per-dimension averages;
-- each pictogram's pragmatic comprehension, scores and average;
+- each pictogram's spontaneous interpretation, scores and average;
 - the library's formal coherence and visual grammar, explicitly marked as excluded from the PICTOS Index average.
 
 The PDF is generated locally with [jsPDF](https://github.com/parallax/jsPDF), whose UMD build is kept in `web/vendor/`. Images and evaluations are not sent to any external service to produce the report.

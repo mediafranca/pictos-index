@@ -104,7 +104,7 @@ La exportación usa el schema `pictos-index-library-evaluation-1.4.0` e incluye:
 - relación de la persona evaluadora con la CAA;
 - identificador UUID y marcas temporales propias de la evaluación;
 - avance y promedios globales y por dimensión;
-- comprensión pragmática, puntajes y promedio de cada pictograma.
+- interpretación espontánea, puntajes y promedio de cada pictograma.
 - coherencia formal y gramática visual de la biblioteca, marcadas explícitamente como excluidas del promedio PICTOS Index.
 
 El PDF se genera localmente con [jsPDF](https://github.com/parallax/jsPDF), cuya distribución UMD se conserva en `web/vendor/`. Las imágenes y evaluaciones no se envían a un servicio externo para producir el informe.

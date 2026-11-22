@@ -50,7 +50,7 @@
           <div class="hero-copy">
             <p class="eyebrow" data-i18n="home.eyebrow">Comunicación Aumentativa y Alternativa</p>
             <h1 id="homeTitle" tabindex="-1" data-i18n="home.title">Un índice de calidad pictográfica</h1>
-            <p class="hero-lead" data-i18n="home.lead">PICTOS Index evalúa cada pictograma en sí mismo, según seis dimensiones, y también como parte de una librería curada para la CAA, atendiendo a la coherencia formal y la gramática visual del conjunto. Las valoraciones de cada pictograma se sintetizan en un índice numérico.</p>
+            <p class="hero-lead" data-i18n="home.lead">PICTOS Index evalúa cada pictograma en sí mismo, según seis dimensiones, y también como parte de una librería curada para la CAA, atendiendo a la coherencia formal y la gramática visual del conjunto. El resultado es un perfil por pictograma; el promedio que hoy se calcula es provisional y no está validado.</p>
             <p class="prototype-notice" role="note">
               <strong data-i18n="prototype.title">Prototipo en construcción</strong>
               <span data-i18n="prototype.body">El índice y sus resultados son experimentales. No sustituyen estudios de comprensión, validación con personas usuarias ni una evaluación profesional de accesibilidad.</span>
@@ -62,8 +62,8 @@
             <p class="privacy-note" data-i18n="home.privacy">Los datos de la evaluación se almacenan en este navegador y sólo se exportan cuando quien evalúa lo decide.</p>
           </div>
 
-          <div class="index-orbit" aria-label="Las seis dimensiones de evaluación por pictograma; al centro, el índice que las sintetiza" data-i18n-aria-label="a11y.dimensions">
-            <div class="orbit-center"><svg class="orbit-eye" viewBox="13.6 12.5 19.6 13.6" aria-hidden="true"><path d="M23.41 13.143c-6.4 0-9.199 6.4-9.199 6.4s2.8 6.4 9.2 6.4 9.199-6.4 9.199-6.4-2.8-6.4-9.2-6.4Z" fill="#fff"/><circle cx="23.392" cy="19.223" r="3.1" fill="#1f053f"/></svg><span data-i18n="home.indexLabel">índice</span></div>
+          <div class="index-orbit" aria-label="Las seis dimensiones de evaluación por pictograma; en conjunto, forman el perfil del pictograma" data-i18n-aria-label="a11y.dimensions">
+            <div class="orbit-center"><svg class="orbit-eye" viewBox="13.6 12.5 19.6 13.6" aria-hidden="true"><path d="M23.41 13.143c-6.4 0-9.199 6.4-9.199 6.4s2.8 6.4 9.2 6.4 9.199-6.4 9.199-6.4-2.8-6.4-9.2-6.4Z" fill="#fff"/><circle cx="23.392" cy="19.223" r="3.1" fill="#1f053f"/></svg><span data-i18n="home.indexLabel">perfil</span></div>
             <span class="orbit-item orbit-1" data-i18n="home.clarity">Claridad</span>
             <span class="orbit-item orbit-2" data-i18n="home.recognition">Reconocimiento</span>
             <span class="orbit-item orbit-3" data-i18n="home.use">Uso</span>
@@ -79,7 +79,7 @@
           <ol class="how-grid">
             <li><span>1</span><strong data-i18n="how.loadTitle">Cargar la librería</strong><p data-i18n="how.loadBody">Se importa una librería exportada desde PICTOS.net o una de las librerías de ejemplo.</p></li>
             <li><span>2</span><strong data-i18n="how.relationTitle">Declarar la posición de quien evalúa</strong><p data-i18n="how.relationBody">Se registra la relación de quien evalúa con la CAA, para interpretar cada juicio según la experiencia desde la que se emite.</p></li>
-            <li><span>3</span><strong data-i18n="how.evaluateTitle">Evaluar cada pictograma</strong><p data-i18n="how.evaluateBody">Antes de conocer la frase de origen, se registra cómo se interpreta el pictograma. Luego se califican sus seis dimensiones en una escala ordinal de 1 a 5.</p></li>
+            <li><span>3</span><strong data-i18n="how.evaluateTitle">Evaluar cada pictograma</strong><p data-i18n="how.evaluateBody">Antes de conocer la frase de origen, se registra cómo se interpreta el pictograma. Luego se califican sus seis dimensiones en una escala de 1 a 5.</p></li>
             <li><span>4</span><strong data-i18n="how.auditTitle">Evaluar la librería como conjunto</strong><p data-i18n="how.auditBody">Se examina la librería completa y se valoran por separado su coherencia formal y su gramática visual, que se informan junto al índice sin promediarse con él.</p></li>
           </ol>
         </section>
@@ -293,8 +293,8 @@
             </label>
             <p class="field-hint" data-i18n="evaluation.hint">Responde antes de ver la frase de origen. No hay respuestas que debas adivinar.</p>
             <div class="pragmatic-actions">
-              <button id="skipGuessBtn" type="button" class="secondary-btn" data-i18n="evaluation.skip">Omitir comprensión pragmática</button>
-              <button id="saveGuessBtn" type="button" class="primary-btn" data-i18n="evaluation.confirm">Confirmar evaluación pragmática</button>
+              <button id="skipGuessBtn" type="button" class="secondary-btn" data-i18n="evaluation.skip">Omitir la interpretación</button>
+              <button id="saveGuessBtn" type="button" class="primary-btn" data-i18n="evaluation.confirm">Confirmar la interpretación</button>
             </div>
           </div>
         </div>
@@ -332,7 +332,7 @@
           </section>
 
           <div class="screen-actions tight">
-            <button id="editGuessBtn" class="secondary-btn" type="button" data-i18n="evaluation.editGuess">Volver a comprensión pragmática</button>
+            <button id="editGuessBtn" class="secondary-btn" type="button" data-i18n="evaluation.editGuess">Volver a la interpretación</button>
             <button id="clearEvalBtn" class="secondary-btn" type="button" data-i18n="evaluation.clear">Limpiar este ítem</button>
           </div>
         </div>

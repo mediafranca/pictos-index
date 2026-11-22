@@ -1,14 +1,10 @@
 # PICTOS Index Evaluation Rubric
 
-This rubric provides operational definitions and anchoring examples for each evaluation dimension.
+This rubric provides working definitions for each evaluation dimension.
 
-## Purpose
+## Status
 
-The rubric ensures:
-- Consistency across evaluators
-- Reduced subjective variation
-- Clear operational definitions
-- Citable standards for research
+This is a prototype instrument. The dimensions, the scale and the anchors have not been validated: there are no reliability, dimensionality or criterion-validity studies yet, and anchored examples are still to be built. Ratings must not be read as certification or as evidence that a pictogram is suitable for AAC. The literature behind each dimension, and the limits of the current design, are documented in [foundations.md](foundations.md).
 
 ## Rating Scale
 
@@ -16,11 +12,11 @@ All dimensions use a 5-point scale:
 
 | Score | Label | General Description |
 |-------|-------|---------------------|
-| **5** | Excelente | No necesita mejoras. Listo para uso inmediato. |
-| **4** | Bien | Funciona bien, pero se puede mejorar. Mejoras menores opcionales. |
-| **3** | Funciona | Funciona pero requiere mejoras. Cumple mínimo para AAC. |
-| **2** | Insuficiente | No apto para público general. Necesita mejoras significativas. |
-| **1** | No funcional | No funciona. Necesita repensarse completamente desde cero. |
+| **5** | Excelente | La cualidad evaluada está plenamente presente; no se observan problemas. |
+| **4** | Bien | La cualidad evaluada está presente, con problemas menores. |
+| **3** | Funciona | La cualidad evaluada está presente de forma parcial; hay problemas visibles. |
+| **2** | Insuficiente | La cualidad evaluada está presente sólo de forma limitada; predominan los problemas. |
+| **1** | No funcional | La cualidad evaluada está ausente o gravemente comprometida. |
 
 **Nota**: Cada dimensión tiene descripciones específicas para cada nivel. Las definiciones operacionales completas están disponibles en [data/rubric-scale-descriptions.json](../data/rubric-scale-descriptions.json), que puede ser consultado programáticamente por interfaces de evaluación y scripts de análisis.
 
@@ -55,6 +51,8 @@ Quick reference:
 ## Dimension 2: Recognizability
 
 **Definition**: The ease with which a viewer can identify what the pictogram represents without additional context or explanation.
+
+**Caveat**: in the current instrument this dimension is rated *after* the source phrase is revealed. Strictly, it therefore measures translucency (the perceived relation between symbol and known referent), not transparency (identifying the referent without knowing it). See [foundations.md](foundations.md).
 
 ### Operational Criteria
 
@@ -166,7 +164,6 @@ Quick reference:
 - Cognitive load (easy to process)
 - Memory demands (recognizable without memorization)
 - Attention requirements (captures and holds attention)
-- ISO/IEC 24751 compliance
 
 ### Scale Descriptions
 
@@ -187,16 +184,14 @@ Quick reference:
 ### Before Rating
 
 1. Read all dimension definitions
-2. Review anchoring examples
-3. Participate in calibration session if available
-4. Clarify any questions with research team
+2. Participate in a calibration session if available
+3. Clarify any questions with the research team
 
 ### During Rating
 
 1. View pictogram at standard size
 2. Rate each dimension independently
-3. Use anchors as reference points
-4. Be consistent across all pictograms
+3. Be consistent across all pictograms
 
 ### After Rating
 
@@ -208,7 +203,8 @@ Quick reference:
 
 ## References
 
-- **ISO/IEC 24751**: Information technology — Individualized adaptability and accessibility in e-learning, education and training
-- **WCAG 2.1**: Web Content Accessibility Guidelines
-- **Light & McNaughton (2014)**: The Changing Face of Augmentative and Alternative Communication
-- **Fuller & Lloyd (1991)**: Translucency: An Important Characteristic of Symbols (on semantic transparency)
+See [foundations.md](foundations.md) for the full, verified reference list and the role each source plays.
+
+- Fuller, D. R., & Lloyd, L. L. (1991). Toward a common usage of iconicity terminology. *Augmentative and Alternative Communication*, 7(3), 215–220. https://doi.org/10.1080/07434619112331275913
+- Light, J., & McNaughton, D. (2014). Communicative competence for individuals who require augmentative and alternative communication: A new definition for a new era of communication? *Augmentative and Alternative Communication*, 30(1), 1–18. https://doi.org/10.3109/07434618.2014.885080
+- ISO 9186-1. Graphical symbols — Test methods — Part 1: Method for testing comprehensibility.

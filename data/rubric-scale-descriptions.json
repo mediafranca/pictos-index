@@ -1,41 +1,41 @@
 {
   "$schema": "../schemas/rubric-descriptions.schema.json",
   "version": "1.0.0",
-  "description": "Operational definitions for VCSCI evaluation rubric scale levels across all dimensions",
+  "description": "Operational definitions for PICTOS Index rubric scale levels across all dimensions",
   "scale": {
     "5": {
       "label_es": "Excelente",
       "label_en": "Excellent",
-      "general_es": "No necesita mejoras. Listo para uso inmediato.",
-      "general_en": "No improvements needed. Ready for immediate use.",
+      "general_es": "La cualidad evaluada está plenamente presente; no se observan problemas.",
+      "general_en": "The assessed quality is fully present; no problems are observed.",
       "color": "#16a34a"
     },
     "4": {
       "label_es": "Bien",
       "label_en": "Good",
-      "general_es": "Funciona bien, pero se puede mejorar. Mejoras menores opcionales.",
-      "general_en": "Works well, but can be improved. Minor improvements optional.",
+      "general_es": "La cualidad evaluada está presente, con problemas menores.",
+      "general_en": "The assessed quality is present, with minor problems.",
       "color": "#84cc16"
     },
     "3": {
       "label_es": "Funciona",
       "label_en": "Works",
-      "general_es": "Funciona pero requiere mejoras. Cumple mínimo para AAC.",
-      "general_en": "Works but requires improvements. Meets minimum for AAC.",
+      "general_es": "La cualidad evaluada está presente de forma parcial; hay problemas visibles.",
+      "general_en": "The assessed quality is partly present; problems are visible.",
       "color": "#ffd93d"
     },
     "2": {
       "label_es": "Insuficiente",
       "label_en": "Insufficient",
-      "general_es": "No apto para público general. Necesita mejoras significativas.",
-      "general_en": "Not suitable for general public. Needs significant improvements.",
+      "general_es": "La cualidad evaluada está presente sólo de forma limitada; predominan los problemas.",
+      "general_en": "The assessed quality is only marginally present; problems predominate.",
       "color": "#ea580c"
     },
     "1": {
       "label_es": "No funcional",
       "label_en": "Not Functional",
-      "general_es": "No funciona. Necesita repensarse completamente desde cero.",
-      "general_en": "Does not work. Needs to be completely rethought from scratch.",
+      "general_es": "La cualidad evaluada está ausente o gravemente comprometida.",
+      "general_en": "The assessed quality is absent or severely compromised.",
       "color": "#dc2626"
     }
   },
@@ -187,8 +187,8 @@
       "description_en": "Cognitive accessibility is how easily people with different cognitive abilities can understand and use the pictogram.",
       "levels": {
         "5": {
-          "text_es": "El pictograma es extremadamente simple y claro para procesamiento cognitivo. Requiere carga cognitiva mínima. Es inmediatamente procesable sin esfuerzo. Capta la atención sin ser distractor. Cumple completamente con estándares de accesibilidad ISO/IEC 24751. Utiliza 2-3 formas simples y audaces con alto contraste. Permite reconocimiento instantáneo sin necesidad de memorización.",
-          "text_en": "The pictogram is extremely simple and clear for cognitive processing. Requires minimal cognitive load. Immediately processable without effort. Captures attention without being distracting. Fully compliant with ISO/IEC 24751 accessibility standards. Uses 2-3 bold, simple shapes with high contrast. Allows instant recognition without need for memorization."
+          "text_es": "El pictograma es extremadamente simple y claro para procesamiento cognitivo. Requiere carga cognitiva mínima. Es inmediatamente procesable sin esfuerzo. Capta la atención sin ser distractor. Utiliza 2-3 formas simples y audaces con alto contraste. Permite reconocimiento instantáneo sin necesidad de memorización.",
+          "text_en": "The pictogram is extremely simple and clear for cognitive processing. Requires minimal cognitive load. Immediately processable without effort. Captures attention without being distracting. Uses 2-3 bold, simple shapes with high contrast. Allows instant recognition without need for memorization."
         },
         "4": {
           "text_es": "El pictograma es muy accesible cognitivamente. La carga cognitiva es baja. Es procesable con esfuerzo mínimo. Mantiene bien la atención sin distraer. Cumple con estándares de accesibilidad con alto nivel. Es simple con detalles mínimos bien integrados. El reconocimiento es rápido y no requiere memorización significativa. Apropiado para amplio rango de capacidades cognitivas.",

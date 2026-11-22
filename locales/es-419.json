@@ -15,13 +15,13 @@
     "siteLink": "Ir a PICTOS.net",
     "instrument": "Instrumento de evaluación",
     "steps": "Pasos",
-    "dimensions": "Las seis dimensiones de evaluación por pictograma; al centro, el índice que las sintetiza"
+    "dimensions": "Las seis dimensiones de evaluación por pictograma; en conjunto, forman el perfil del pictograma"
   },
   "home": {
-    "indexLabel": "índice",
+    "indexLabel": "perfil",
     "eyebrow": "Comunicación Aumentativa y Alternativa",
     "title": "Un índice de calidad pictográfica",
-    "lead": "PICTOS Index evalúa cada pictograma en sí mismo, según seis dimensiones, y también como parte de una librería curada para la CAA, atendiendo a la coherencia formal y la gramática visual del conjunto. Las valoraciones de cada pictograma se sintetizan en un índice numérico.",
+    "lead": "PICTOS Index evalúa cada pictograma en sí mismo, según seis dimensiones, y también como parte de una librería curada para la CAA, atendiendo a la coherencia formal y la gramática visual del conjunto. El resultado es un perfil por pictograma; el promedio que hoy se calcula es provisional y no está validado.",
     "start": "Iniciar una evaluación",
     "howLink": "Ver el procedimiento",
     "privacy": "Los datos de la evaluación se almacenan en este navegador y sólo se exportan cuando quien evalúa lo decide.",
@@ -40,7 +40,7 @@
     "relationTitle": "Declarar la posición de quien evalúa",
     "relationBody": "Se registra la relación de quien evalúa con la CAA, para interpretar cada juicio según la experiencia desde la que se emite.",
     "evaluateTitle": "Evaluar cada pictograma",
-    "evaluateBody": "Antes de conocer la frase de origen, se registra cómo se interpreta el pictograma. Luego se califican sus seis dimensiones en una escala ordinal de 1 a 5.",
+    "evaluateBody": "Antes de conocer la frase de origen, se registra cómo se interpreta el pictograma. Luego se califican sus seis dimensiones en una escala de 1 a 5.",
     "auditTitle": "Evaluar la librería como conjunto",
     "auditBody": "Se examina la librería completa y se valoran por separado su coherencia formal y su gramática visual, que se informan junto al índice sin promediarse con él."
   },
@@ -150,8 +150,8 @@
     "question": "¿Qué comunica este pictograma?",
     "placeholder": "Escribe lo que entiendes que comunica...",
     "hint": "Responde antes de ver la frase de origen. No hay respuestas que debas adivinar.",
-    "skip": "Omitir comprensión pragmática",
-    "confirm": "Confirmar evaluación pragmática",
+    "skip": "Omitir la interpretación",
+    "confirm": "Confirmar la interpretación",
     "imageAlt": "Pictograma actual",
     "dimensionImageAlt": "Pictograma para evaluación",
     "dimensionPrevious": "Dimensión anterior",
@@ -162,7 +162,7 @@
     "rated": "Evaluaste: {label}",
     "scoreLabel": "{score} de 5: {label}",
     "rubricEmpty": "La explicación de la nota aparecerá aquí.",
-    "editGuess": "Volver a comprensión pragmática",
+    "editGuess": "Volver a la interpretación",
     "clear": "Limpiar este ítem",
     "itemNavigation": "Navegación entre pictogramas",
     "itemPrevious": "Pictograma anterior",
@@ -260,11 +260,11 @@
       "cognitive_accessibility": { "name": "Accesibilidad cognitiva", "description": "La accesibilidad cognitiva es la facilidad con que personas con distintas capacidades cognitivas pueden comprender y usar el pictograma." }
     },
     "scale": {
-      "1": { "label": "No funcional", "general": "No funciona y requiere rediseño." },
-      "2": { "label": "Insuficiente", "general": "Presenta problemas relevantes." },
-      "3": { "label": "Funciona", "general": "Funciona, con mejoras pendientes." },
-      "4": { "label": "Bien", "general": "Cumple bien, con mejoras menores." },
-      "5": { "label": "Excelente", "general": "No requiere mejoras." }
+      "1": { "label": "No funcional", "general": "Cualidad ausente o gravemente comprometida." },
+      "2": { "label": "Insuficiente", "general": "Cualidad presente sólo de forma limitada." },
+      "3": { "label": "Funciona", "general": "Cualidad presente de forma parcial." },
+      "4": { "label": "Bien", "general": "Cualidad presente, con problemas menores." },
+      "5": { "label": "Excelente", "general": "Cualidad plenamente presente." }
     }
   }
 }

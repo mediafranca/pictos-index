@@ -15,13 +15,13 @@
     "siteLink": "Go to PICTOS.net",
     "instrument": "Evaluation instrument",
     "steps": "Steps",
-    "dimensions": "The six per-pictogram evaluation dimensions; at the centre, the index that synthesises them"
+    "dimensions": "The six per-pictogram evaluation dimensions; together, they form the pictogram's profile"
   },
   "home": {
-    "indexLabel": "index",
+    "indexLabel": "profile",
     "eyebrow": "Augmentative and Alternative Communication",
     "title": "An index of pictographic quality",
-    "lead": "PICTOS Index evaluates each pictogram in its own right, across six dimensions, and as part of a curated AAC library, attending to the formal coherence and visual grammar of the set. The ratings for each pictogram are synthesised into a numerical index.",
+    "lead": "PICTOS Index evaluates each pictogram in its own right, across six dimensions, and as part of a curated AAC library, attending to the formal coherence and visual grammar of the set. The result is a profile for each pictogram; the average currently computed is provisional and has not been validated.",
     "start": "Begin an evaluation",
     "howLink": "See the procedure",
     "privacy": "Evaluation data are stored in this browser and exported only when the evaluator chooses.",
@@ -40,7 +40,7 @@
     "relationTitle": "State the evaluator's position",
     "relationBody": "The evaluator's relationship with AAC is recorded, so that each judgement can be interpreted in light of the experience from which it is made.",
     "evaluateTitle": "Evaluate each pictogram",
-    "evaluateBody": "Before the source phrase is shown, the evaluator records how they interpret the pictogram. Its six dimensions are then rated on an ordinal scale from 1 to 5.",
+    "evaluateBody": "Before the source phrase is shown, the evaluator records how they interpret the pictogram. Its six dimensions are then rated on a scale from 1 to 5.",
     "auditTitle": "Evaluate the library as a whole",
     "auditBody": "The complete library is examined and its formal coherence and visual grammar are rated separately; they are reported alongside the index, not averaged into it."
   },
@@ -150,8 +150,8 @@
     "question": "What does this pictogram communicate?",
     "placeholder": "Write what you understand it to communicate...",
     "hint": "Respond before viewing the source phrase. There is no answer you are expected to guess.",
-    "skip": "Skip pragmatic comprehension",
-    "confirm": "Confirm pragmatic evaluation",
+    "skip": "Skip the interpretation",
+    "confirm": "Confirm the interpretation",
     "imageAlt": "Current pictogram",
     "dimensionImageAlt": "Pictogram being evaluated",
     "dimensionPrevious": "Previous dimension",
@@ -162,7 +162,7 @@
     "rated": "You rated: {label}",
     "scoreLabel": "{score} out of 5: {label}",
     "rubricEmpty": "The explanation for the score will appear here.",
-    "editGuess": "Return to pragmatic comprehension",
+    "editGuess": "Return to the interpretation",
     "clear": "Clear this item",
     "itemNavigation": "Pictogram navigation",
     "itemPrevious": "Previous pictogram",
@@ -260,11 +260,11 @@
       "cognitive_accessibility": { "name": "Cognitive accessibility", "description": "Cognitive accessibility is how easily people with different cognitive abilities can understand and use the pictogram." }
     },
     "scale": {
-      "1": { "label": "Not functional", "general": "Does not work and requires redesign." },
-      "2": { "label": "Insufficient", "general": "Has significant problems." },
-      "3": { "label": "Works", "general": "Works, with improvements still needed." },
-      "4": { "label": "Good", "general": "Works well, with minor improvements possible." },
-      "5": { "label": "Excellent", "general": "No improvements are required." }
+      "1": { "label": "Not functional", "general": "Quality absent or severely compromised." },
+      "2": { "label": "Insufficient", "general": "Quality only marginally present." },
+      "3": { "label": "Works", "general": "Quality partly present." },
+      "4": { "label": "Good", "general": "Quality present, with minor problems." },
+      "5": { "label": "Excellent", "general": "Quality fully present." }
     }
   }
 }

@@ -56,11 +56,11 @@ ajv validate -s schemas/rubric-descriptions.schema.json -d data/rubric-scale-des
 
 Cada dimensión se evalúa en escala 1-5:
 
-* **5 - Excelente:** Sin mejoras necesarias
-* **4 - Bien:** Funciona bien, mejoras menores opcionales
-* **3 - Funciona:** Aceptable, cumple mínimo AAC
-* **2 - Insuficiente:** Requiere mejoras significativas
-* **1 - No funcional:** Requiere rediseño completo
+* **5 - Excelente:** cualidad plenamente presente
+* **4 - Bien:** presente, con problemas menores
+* **3 - Funciona:** presente de forma parcial
+* **2 - Insuficiente:** presente sólo de forma limitada
+* **1 - No funcional:** ausente o gravemente comprometida
 
 ## Versionado
 
