@@ -133,7 +133,7 @@ button:disabled { cursor: not-allowed; opacity: .42; transform: none !important;
   border-radius: 50%; background: var(--surface-raised); box-shadow: 0 0 60px rgb(124 58 237 / .35);
   transform: translate(-50%, -50%);
 }
-.orbit-center strong { font-size: 3.2rem; line-height: 1; }
+.orbit-eye { width: 4.6rem; margin: 0 auto .35rem; }
 .orbit-center span { color: var(--muted); font-size: .7rem; }
 .orbit-item {
   position: absolute; z-index: 3; padding: .42rem .7rem; border: 1px solid var(--line-strong);
@@ -486,7 +486,7 @@ textarea { min-height: 9rem; resize: vertical; }
   .hero h1 { font-size: clamp(2.55rem, 15vw, 4.1rem); }
   .index-orbit { width: 19rem; max-width: 100%; }
   .orbit-center { width: 6.5rem; }
-  .orbit-center strong { font-size: 2.4rem; }
+  .orbit-eye { width: 3.4rem; }
   .orbit-item { font-size: .6rem; }
   .library-preview { grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem; padding: .5rem; }
   .import-success { grid-template-columns: auto minmax(0, 1fr); }

@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "PICTOS Index · Pictogram quality",
-    "description": "PICTOS Index is an instrument for evaluating the communicative quality of pictogram libraries."
+    "description": "PICTOS Index is an instrument for evaluating the quality of pictograms and pictogram libraries for Augmentative and Alternative Communication."
   },
   "language": { "label": "Interface language" },
   "prototype": {
@@ -15,16 +15,16 @@
     "siteLink": "Go to PICTOS.net",
     "instrument": "Evaluation instrument",
     "steps": "Steps",
-    "dimensions": "The six dimensions of the index"
+    "dimensions": "The six per-pictogram evaluation dimensions; at the centre, the index that synthesises them"
   },
   "home": {
-    "eyebrow": "Pictogram quality index",
-    "title": "Does this pictogram communicate well?",
-    "lead": "PICTOS Index helps evaluate a complete library from six complementary perspectives: clarity, recognition, meaning, use, culture and cognitive accessibility.",
-    "start": "Start an evaluation",
-    "howLink": "See how it works",
-    "privacy": "The evaluation is stored in this browser and downloaded only when you choose.",
-    "dimensions": "dimensions",
+    "indexLabel": "index",
+    "eyebrow": "Augmentative and Alternative Communication",
+    "title": "An index of pictographic quality",
+    "lead": "PICTOS Index evaluates each pictogram in its own right, across six dimensions, and as part of a curated AAC library, attending to the formal coherence and visual grammar of the set. The ratings for each pictogram are synthesised into a numerical index.",
+    "start": "Begin an evaluation",
+    "howLink": "See the procedure",
+    "privacy": "Evaluation data are stored in this browser and exported only when the evaluator chooses.",
     "clarity": "Clarity",
     "recognition": "Recognition",
     "use": "Use",
@@ -33,33 +33,33 @@
     "meaning": "Meaning"
   },
   "how": {
-    "eyebrow": "A short, traceable journey",
-    "title": "How it works",
-    "loadTitle": "Load a library",
-    "loadBody": "Use a file exported from PICTOS.net or try the sample library.",
-    "relationTitle": "Describe your relationship with AAC",
-    "relationBody": "A brief answer helps interpret the experience from which the evaluation is made.",
+    "eyebrow": "Procedure",
+    "title": "Four stages of evaluation",
+    "loadTitle": "Load the library",
+    "loadBody": "Import a library exported from PICTOS.net or one of the sample libraries.",
+    "relationTitle": "State the evaluator's position",
+    "relationBody": "The evaluator's relationship with AAC is recorded, so that each judgement can be interpreted in light of the experience from which it is made.",
     "evaluateTitle": "Evaluate each pictogram",
-    "evaluateBody": "First record what it communicates; then review its six dimensions, one at a time, on a scale from 1 to 5.",
-    "auditTitle": "Evaluate the library",
-    "auditBody": "View the complete set and rate its formal coherence and visual grammar separately."
+    "evaluateBody": "Before the source phrase is shown, the evaluator records how they interpret the pictogram. Its six dimensions are then rated on an ordinal scale from 1 to 5.",
+    "auditTitle": "Evaluate the library as a whole",
+    "auditBody": "The complete library is examined and its formal coherence and visual grammar are rated separately; they are reported alongside the index, not averaged into it."
   },
   "principles": {
-    "eyebrow": "Good, beautiful and true",
-    "title": "Working is the beginning, not the whole horizon.",
-    "body": "The index brings together communicative effectiveness, accessibility, cultural belonging and formal quality. A clear image that misrepresents, excludes or impoverishes experience still needs work."
+    "eyebrow": "Rationale",
+    "title": "Legibility is necessary, but not sufficient.",
+    "body": "A pictogram may be easily recognised and still misrepresent its referent, exclude some of its users or sit outside their cultural context. The index therefore integrates communicative effectiveness, cognitive accessibility, cultural adequacy and formal quality, and examines each pictogram both in isolation and within the system to which it belongs."
   },
   "about": {
     "eyebrow": "About the PICTOS Index",
-    "title": "Look carefully before you communicate.",
+    "title": "An open instrument for pictographic evaluation",
     "whatTitle": "What it is",
-    "whatBody": "An open instrument for judging whether a pictogram communicates: whether it is clear to see, whether it is recognised, whether it says what the phrase means, whether it works in a real conversation, whether it belongs to its culture and whether it is accessible to every mind. Generative models produce pictograms in abundance; the index returns judgement to the people who use them, support others with them and design them.",
-    "originTitle": "Where it comes from",
-    "originBefore": "It grew out of the doctoral research of",
-    "originAfter": "in design for Augmentative and Alternative Communication at Auckland University of Technology (AUT). It is the companion to PICTOS.net: one creates pictograms from an understanding of what someone wants to say; the other asks whether they succeed. It updates and replaces VCSCI, its first formulation as an index of visual communicability and semantic correspondence.",
-    "custodyTitle": "Who it belongs to",
+    "whatBody": "An open instrument for evaluating pictograms and pictogram libraries for AAC. It combines a free interpretation task, a six-dimension rubric for each pictogram and an assessment of the set. As generative models produce pictograms in growing numbers, it places judgement about their quality with the people who use them, support their use or design them.",
+    "originTitle": "Origin",
+    "originBefore": "It originates in the doctoral research of",
+    "originAfter": "on design for Augmentative and Alternative Communication at Auckland University of Technology (AUT). It is the evaluative counterpart to PICTOS.net: the latter generates pictograms from a semantic analysis of the utterance; PICTOS Index examines whether the result communicates what it intends. It updates and replaces VCSCI, its first formulation as an index of visual communicability and semantic correspondence.",
+    "custodyTitle": "Custody and licensing",
     "custodyBefore": "It is in the custody of",
-    "custodyAfter": ", an initiative from Valparaíso that creates, gathers and looks after open tools for human communication. The code is published under the Apache 2.0 licence and the rubric under CC BY 4.0, so that anyone can study, use and improve it.",
+    "custodyAfter": ", a Valparaíso-based initiative dedicated to developing and safeguarding open tools for human communication. The code is distributed under the Apache 2.0 licence and the rubric under CC BY 4.0, permitting their study, use, replication and modification.",
     "reposTitle": "Related repositories",
     "repoNet": "Generative pictograms with semantic reasoning",
     "repoNlu": "Understanding contract, based on NSM and FrameNet",

@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "PICTOS Index · Calidad pictográfica",
-    "description": "PICTOS Index es un instrumento para evaluar la calidad comunicativa de librerías pictográficas."
+    "description": "PICTOS Index es un instrumento para evaluar la calidad de pictogramas y de librerías pictográficas destinadas a la Comunicación Aumentativa y Alternativa."
   },
   "language": { "label": "Idioma de la interfaz" },
   "prototype": {
@@ -15,16 +15,16 @@
     "siteLink": "Ir a PICTOS.net",
     "instrument": "Instrumento de evaluación",
     "steps": "Pasos",
-    "dimensions": "Las seis dimensiones del índice"
+    "dimensions": "Las seis dimensiones de evaluación por pictograma; al centro, el índice que las sintetiza"
   },
   "home": {
-    "eyebrow": "Índice de calidad pictográfica",
-    "title": "¿Este pictograma comunica bien?",
-    "lead": "PICTOS Index ayuda a evaluar una librería completa desde seis miradas complementarias: claridad, reconocimiento, significado, uso, cultura y accesibilidad cognitiva.",
-    "start": "Comenzar una evaluación",
-    "howLink": "Ver cómo funciona",
-    "privacy": "La evaluación se guarda en este navegador y sólo se descarga cuando tú lo decides.",
-    "dimensions": "dimensiones",
+    "indexLabel": "índice",
+    "eyebrow": "Comunicación Aumentativa y Alternativa",
+    "title": "Un índice de calidad pictográfica",
+    "lead": "PICTOS Index evalúa cada pictograma en sí mismo, según seis dimensiones, y también como parte de una librería curada para la CAA, atendiendo a la coherencia formal y la gramática visual del conjunto. Las valoraciones de cada pictograma se sintetizan en un índice numérico.",
+    "start": "Iniciar una evaluación",
+    "howLink": "Ver el procedimiento",
+    "privacy": "Los datos de la evaluación se almacenan en este navegador y sólo se exportan cuando quien evalúa lo decide.",
     "clarity": "Claridad",
     "recognition": "Reconocimiento",
     "use": "Uso",
@@ -33,33 +33,33 @@
     "meaning": "Significado"
   },
   "how": {
-    "eyebrow": "Un recorrido breve y trazable",
-    "title": "Cómo funciona",
-    "loadTitle": "Carga una librería",
-    "loadBody": "Usa un archivo exportado desde PICTOS.net o prueba con la librería de ejemplo.",
-    "relationTitle": "Indica tu relación con la CAA",
-    "relationBody": "Una respuesta breve permite interpretar desde qué experiencia se realiza la evaluación.",
-    "evaluateTitle": "Evalúa cada pictograma",
-    "evaluateBody": "Primero registra qué comunica; después recorre sus seis dimensiones, una por una, en una escala de 1 a 5.",
-    "auditTitle": "Evalúa la biblioteca",
-    "auditBody": "Observa el conjunto completo y valora por separado su coherencia formal y su gramática visual."
+    "eyebrow": "Procedimiento",
+    "title": "Cuatro etapas de evaluación",
+    "loadTitle": "Cargar la librería",
+    "loadBody": "Se importa una librería exportada desde PICTOS.net o una de las librerías de ejemplo.",
+    "relationTitle": "Declarar la posición de quien evalúa",
+    "relationBody": "Se registra la relación de quien evalúa con la CAA, para interpretar cada juicio según la experiencia desde la que se emite.",
+    "evaluateTitle": "Evaluar cada pictograma",
+    "evaluateBody": "Antes de conocer la frase de origen, se registra cómo se interpreta el pictograma. Luego se califican sus seis dimensiones en una escala ordinal de 1 a 5.",
+    "auditTitle": "Evaluar la librería como conjunto",
+    "auditBody": "Se examina la librería completa y se valoran por separado su coherencia formal y su gramática visual, que se informan junto al índice sin promediarse con él."
   },
   "principles": {
-    "eyebrow": "Bueno, bello y verdadero",
-    "title": "Funcionar es el comienzo, no el horizonte completo.",
-    "body": "El índice reúne eficacia comunicativa, accesibilidad, pertenencia cultural y calidad formal. Una imagen clara que falsea, excluye o empobrece la experiencia sigue necesitando trabajo."
+    "eyebrow": "Fundamento",
+    "title": "La legibilidad es condición necesaria, no suficiente.",
+    "body": "Un pictograma puede reconocerse con facilidad y, aun así, representar mal su referente, excluir a parte de sus usuarios o resultar ajeno a su contexto cultural. Por eso el índice integra eficacia comunicativa, accesibilidad cognitiva, pertinencia cultural y calidad formal, y examina cada pictograma tanto aislado como dentro del sistema al que pertenece."
   },
   "about": {
     "eyebrow": "Acerca del PICTOS Index",
-    "title": "Mirar con cuidado antes de comunicar.",
+    "title": "Un instrumento abierto de evaluación pictográfica",
     "whatTitle": "Qué es",
-    "whatBody": "Un instrumento abierto para evaluar si un pictograma comunica: si se ve con claridad, si se reconoce, si dice lo que la frase quiere decir, si sirve en una conversación real, si pertenece a su cultura y si es accesible para todas las mentes. Los modelos generativos producen pictogramas en abundancia; el índice devuelve el juicio a las personas que los usan, los acompañan y los diseñan.",
-    "originTitle": "De dónde viene",
-    "originBefore": "Nace en la investigación doctoral de",
-    "originAfter": "en diseño para la Comunicación Aumentativa y Alternativa, en Auckland University of Technology (AUT). Acompaña a PICTOS.net: uno crea pictogramas desde la comprensión de lo que se quiere decir; el otro pregunta si lo logra. Actualiza y reemplaza a VCSCI, su primera formulación como índice de comunicabilidad visual y correspondencia semántica.",
-    "custodyTitle": "A quién pertenece",
+    "whatBody": "Un instrumento abierto para evaluar pictogramas y librerías pictográficas destinadas a la CAA. Combina una tarea de interpretación libre, una rúbrica de seis dimensiones por pictograma y una valoración del conjunto. Ante la creciente producción de pictogramas con modelos generativos, deja el juicio sobre su calidad en manos de las personas que los usan, acompañan su uso o los diseñan.",
+    "originTitle": "Procedencia",
+    "originBefore": "Se origina en la investigación doctoral de",
+    "originAfter": "sobre diseño para la Comunicación Aumentativa y Alternativa, en Auckland University of Technology (AUT). Es el complemento evaluativo de PICTOS.net: este genera pictogramas a partir de un análisis semántico del enunciado; PICTOS Index examina si el resultado comunica lo que se propone. Actualiza y reemplaza a VCSCI, su primera formulación como índice de comunicabilidad visual y correspondencia semántica.",
+    "custodyTitle": "Custodia y licencias",
     "custodyBefore": "Está bajo la custodia de",
-    "custodyAfter": ", iniciativa de Valparaíso que crea, reúne y cuida herramientas abiertas para la comunicación humana. El código se publica con licencia Apache 2.0 y la rúbrica con CC BY 4.0, para que cualquiera pueda estudiarla, usarla y mejorarla.",
+    "custodyAfter": ", iniciativa con sede en Valparaíso dedicada a desarrollar y resguardar herramientas abiertas para la comunicación humana. El código se distribuye bajo licencia Apache 2.0 y la rúbrica bajo CC BY 4.0, lo que permite estudiarlos, usarlos, replicarlos y modificarlos.",
     "reposTitle": "Repositorios relacionados",
     "repoNet": "Pictogramas generativos con razonamiento semántico",
     "repoNlu": "Contrato de comprensión, basado en NSM y FrameNet",

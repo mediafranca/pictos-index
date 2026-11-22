@@ -48,27 +48,22 @@
       <section id="homeScreen" class="home-screen" aria-labelledby="homeTitle">
         <div class="hero">
           <div class="hero-copy">
-            <p class="eyebrow" data-i18n="home.eyebrow">Índice de calidad pictográfica</p>
-            <h1 id="homeTitle" tabindex="-1" data-i18n="home.title">¿Este pictograma comunica bien?</h1>
-            <p class="hero-lead" data-i18n="home.lead">
-              PICTOS Index ayuda a evaluar una librería completa desde seis miradas complementarias:
-              claridad, reconocimiento, significado, uso, cultura y accesibilidad cognitiva.
-            </p>
+            <p class="eyebrow" data-i18n="home.eyebrow">Comunicación Aumentativa y Alternativa</p>
+            <h1 id="homeTitle" tabindex="-1" data-i18n="home.title">Un índice de calidad pictográfica</h1>
+            <p class="hero-lead" data-i18n="home.lead">PICTOS Index evalúa cada pictograma en sí mismo, según seis dimensiones, y también como parte de una librería curada para la CAA, atendiendo a la coherencia formal y la gramática visual del conjunto. Las valoraciones de cada pictograma se sintetizan en un índice numérico.</p>
             <p class="prototype-notice" role="note">
               <strong data-i18n="prototype.title">Prototipo en construcción</strong>
               <span data-i18n="prototype.body">El índice y sus resultados son experimentales. No sustituyen estudios de comprensión, validación con personas usuarias ni una evaluación profesional de accesibilidad.</span>
             </p>
             <div class="hero-actions">
-              <button id="startEvaluationBtn" class="primary-btn large-btn" type="button" data-i18n="home.start">
-                Comenzar una evaluación
-              </button>
-              <a class="text-link" href="#howItWorks" data-i18n="home.howLink">Ver cómo funciona</a>
+              <button id="startEvaluationBtn" class="primary-btn large-btn" type="button" data-i18n="home.start">Iniciar una evaluación</button>
+              <a class="text-link" href="#howItWorks" data-i18n="home.howLink">Ver el procedimiento</a>
             </div>
-            <p class="privacy-note" data-i18n="home.privacy">La evaluación se guarda en este navegador y sólo se descarga cuando tú lo decides.</p>
+            <p class="privacy-note" data-i18n="home.privacy">Los datos de la evaluación se almacenan en este navegador y sólo se exportan cuando quien evalúa lo decide.</p>
           </div>
 
-          <div class="index-orbit" aria-label="Las seis dimensiones del índice" data-i18n-aria-label="a11y.dimensions">
-            <div class="orbit-center"><strong>6</strong><span data-i18n="home.dimensions">dimensiones</span></div>
+          <div class="index-orbit" aria-label="Las seis dimensiones de evaluación por pictograma; al centro, el índice que las sintetiza" data-i18n-aria-label="a11y.dimensions">
+            <div class="orbit-center"><svg class="orbit-eye" viewBox="13.6 12.5 19.6 13.6" aria-hidden="true"><path d="M23.41 13.143c-6.4 0-9.199 6.4-9.199 6.4s2.8 6.4 9.2 6.4 9.199-6.4 9.199-6.4-2.8-6.4-9.2-6.4Z" fill="#fff"/><circle cx="23.392" cy="19.223" r="3.1" fill="#1f053f"/></svg><span data-i18n="home.indexLabel">índice</span></div>
             <span class="orbit-item orbit-1" data-i18n="home.clarity">Claridad</span>
             <span class="orbit-item orbit-2" data-i18n="home.recognition">Reconocimiento</span>
             <span class="orbit-item orbit-3" data-i18n="home.use">Uso</span>
@@ -79,45 +74,45 @@
         </div>
 
         <section id="howItWorks" class="how-section" aria-labelledby="howTitle">
-          <p class="eyebrow" data-i18n="how.eyebrow">Un recorrido breve y trazable</p>
-          <h2 id="howTitle" data-i18n="how.title">Cómo funciona</h2>
+          <p class="eyebrow" data-i18n="how.eyebrow">Procedimiento</p>
+          <h2 id="howTitle" data-i18n="how.title">Cuatro etapas de evaluación</h2>
           <ol class="how-grid">
-            <li><span>1</span><strong data-i18n="how.loadTitle">Carga una librería</strong><p data-i18n="how.loadBody">Usa un archivo exportado desde PICTOS.net o prueba con la librería de ejemplo.</p></li>
-            <li><span>2</span><strong data-i18n="how.relationTitle">Indica tu relación con la CAA</strong><p data-i18n="how.relationBody">Una respuesta breve permite interpretar desde qué experiencia se realiza la evaluación.</p></li>
-            <li><span>3</span><strong data-i18n="how.evaluateTitle">Evalúa cada pictograma</strong><p data-i18n="how.evaluateBody">Primero registra qué comunica; después recorre sus seis dimensiones, una por una, en una escala de 1 a 5.</p></li>
-            <li><span>4</span><strong data-i18n="how.auditTitle">Evalúa la biblioteca</strong><p data-i18n="how.auditBody">Observa el conjunto completo y valora por separado su coherencia formal y su gramática visual.</p></li>
+            <li><span>1</span><strong data-i18n="how.loadTitle">Cargar la librería</strong><p data-i18n="how.loadBody">Se importa una librería exportada desde PICTOS.net o una de las librerías de ejemplo.</p></li>
+            <li><span>2</span><strong data-i18n="how.relationTitle">Declarar la posición de quien evalúa</strong><p data-i18n="how.relationBody">Se registra la relación de quien evalúa con la CAA, para interpretar cada juicio según la experiencia desde la que se emite.</p></li>
+            <li><span>3</span><strong data-i18n="how.evaluateTitle">Evaluar cada pictograma</strong><p data-i18n="how.evaluateBody">Antes de conocer la frase de origen, se registra cómo se interpreta el pictograma. Luego se califican sus seis dimensiones en una escala ordinal de 1 a 5.</p></li>
+            <li><span>4</span><strong data-i18n="how.auditTitle">Evaluar la librería como conjunto</strong><p data-i18n="how.auditBody">Se examina la librería completa y se valoran por separado su coherencia formal y su gramática visual, que se informan junto al índice sin promediarse con él.</p></li>
           </ol>
         </section>
 
         <section class="principles" aria-labelledby="principlesTitle">
           <div>
-            <p class="eyebrow" data-i18n="principles.eyebrow">Bueno, bello y verdadero</p>
-            <h2 id="principlesTitle" data-i18n="principles.title">Funcionar es el comienzo, no el horizonte completo.</h2>
+            <p class="eyebrow" data-i18n="principles.eyebrow">Fundamento</p>
+            <h2 id="principlesTitle" data-i18n="principles.title">La legibilidad es condición necesaria, no suficiente.</h2>
           </div>
-          <p data-i18n="principles.body">El índice reúne eficacia comunicativa, accesibilidad, pertenencia cultural y calidad formal. Una imagen clara que falsea, excluye o empobrece la experiencia sigue necesitando trabajo.</p>
+          <p data-i18n="principles.body">Un pictograma puede reconocerse con facilidad y, aun así, representar mal su referente, excluir a parte de sus usuarios o resultar ajeno a su contexto cultural. Por eso el índice integra eficacia comunicativa, accesibilidad cognitiva, pertinencia cultural y calidad formal, y examina cada pictograma tanto aislado como dentro del sistema al que pertenece.</p>
         </section>
 
         <section id="about" class="about-section" aria-labelledby="aboutTitle">
           <p class="eyebrow" data-i18n="about.eyebrow">Acerca del PICTOS Index</p>
-          <h2 id="aboutTitle" data-i18n="about.title">Mirar con cuidado antes de comunicar.</h2>
+          <h2 id="aboutTitle" data-i18n="about.title">Un instrumento abierto de evaluación pictográfica</h2>
           <div class="about-grid">
             <article>
               <h3 data-i18n="about.whatTitle">Qué es</h3>
-              <p data-i18n="about.whatBody">Un instrumento abierto para evaluar si un pictograma comunica: si se ve con claridad, si se reconoce, si dice lo que la frase quiere decir, si sirve en una conversación real, si pertenece a su cultura y si es accesible para todas las mentes. Los modelos generativos producen pictogramas en abundancia; el índice devuelve el juicio a las personas que los usan, los acompañan y los diseñan.</p>
+              <p data-i18n="about.whatBody">Un instrumento abierto para evaluar pictogramas y librerías pictográficas destinadas a la CAA. Combina una tarea de interpretación libre, una rúbrica de seis dimensiones por pictograma y una valoración del conjunto. Ante la creciente producción de pictogramas con modelos generativos, deja el juicio sobre su calidad en manos de las personas que los usan, acompañan su uso o los diseñan.</p>
             </article>
             <article>
-              <h3 data-i18n="about.originTitle">De dónde viene</h3>
+              <h3 data-i18n="about.originTitle">Procedencia</h3>
               <p>
-                <span data-i18n="about.originBefore">Nace en la investigación doctoral de</span>
+                <span data-i18n="about.originBefore">Se origina en la investigación doctoral de</span>
                 <a href="https://herbertspencer.net/cc" target="_blank" rel="noopener noreferrer">Herbert Spencer</a>
-                <span data-i18n="about.originAfter">en diseño para la Comunicación Aumentativa y Alternativa, en Auckland University of Technology (AUT). Acompaña a PICTOS.net: uno crea pictogramas desde la comprensión de lo que se quiere decir; el otro pregunta si lo logra. Actualiza y reemplaza a VCSCI, su primera formulación como índice de comunicabilidad visual y correspondencia semántica.</span>
+                <span data-i18n="about.originAfter">sobre diseño para la Comunicación Aumentativa y Alternativa, en Auckland University of Technology (AUT). Es el complemento evaluativo de PICTOS.net: este genera pictogramas a partir de un análisis semántico del enunciado; PICTOS Index examina si el resultado comunica lo que se propone. Actualiza y reemplaza a VCSCI, su primera formulación como índice de comunicabilidad visual y correspondencia semántica.</span>
               </p>
             </article>
             <article>
-              <h3 data-i18n="about.custodyTitle">A quién pertenece</h3>
+              <h3 data-i18n="about.custodyTitle">Custodia y licencias</h3>
               <p>
                 <span data-i18n="about.custodyBefore">Está bajo la custodia de</span>
-                <a href="https://mediafranca.net" target="_blank" rel="noopener noreferrer">MediaFranca</a><span data-i18n="about.custodyAfter">, iniciativa de Valparaíso que crea, reúne y cuida herramientas abiertas para la comunicación humana. El código se publica con licencia Apache 2.0 y la rúbrica con CC BY 4.0, para que cualquiera pueda estudiarla, usarla y mejorarla.</span>
+                <a href="https://mediafranca.net" target="_blank" rel="noopener noreferrer">MediaFranca</a><span data-i18n="about.custodyAfter">, iniciativa con sede en Valparaíso dedicada a desarrollar y resguardar herramientas abiertas para la comunicación humana. El código se distribuye bajo licencia Apache 2.0 y la rúbrica bajo CC BY 4.0, lo que permite estudiarlos, usarlos, replicarlos y modificarlos.</span>
               </p>
             </article>
           </div>
