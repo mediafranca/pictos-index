@@ -7,9 +7,9 @@
     "label": "Interface language"
   },
   "prototype": {
-    "title": "Prototype under development",
+    "title": "Prototype under development · version {version}",
     "body": "The index and its results are experimental. They do not replace comprehension studies, validation with users or a professional accessibility assessment.",
-    "short": "Prototype under development: results are experimental."
+    "short": "Prototype under development · version {version}: results are experimental."
   },
   "a11y": {
     "skip": "Skip to content",
@@ -20,7 +20,6 @@
     "dimensions": "The six per-pictogram evaluation dimensions; together, they form the pictogram's profile"
   },
   "home": {
-    "indexLabel": "profile",
     "eyebrow": "Augmentative and Alternative Communication",
     "title": "An index of pictographic quality",
     "lead": "PICTOS Index evaluates each pictogram in its own right, across six dimensions, and as part of a curated AAC library, attending to the formal coherence and visual grammar of the set. The result is a profile for each pictogram; the average currently computed is provisional and has not been validated.",

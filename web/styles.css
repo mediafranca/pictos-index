@@ -167,9 +167,8 @@ button:disabled { cursor: not-allowed; opacity: .42; transform: none !important;
   border-radius: 50%; background: var(--surface-raised); box-shadow: 0 0 60px rgb(124 58 237 / .35);
   transform: translate(-50%, -50%);
 }
-.orbit-eye { width: 4.6rem; margin: 0 auto .35rem; overflow: visible; }
+.orbit-eye { width: 4.6rem; margin: 0 auto; overflow: visible; }
 .orbit-eye path { stroke: var(--line-strong); stroke-width: .4; }
-.orbit-center span { color: var(--muted); font-size: .7rem; }
 .orbit-item {
   position: absolute; z-index: 3; padding: .42rem .7rem; border: 1px solid var(--line-strong);
   border-radius: 999px; background: var(--panel); color: var(--ink-soft);
@@ -504,3 +503,5 @@ textarea { min-height: 9rem; resize: vertical; }
 .coord-sequence { margin: 0 0 .6rem; padding-left: 1.3rem; display: grid; gap: .35rem; line-height: 1.5; }
 .coord-links-placeholder { grid-column: 1 / -1; margin: 0; padding: 1.5rem; border: 2px dashed var(--line-strong); border-radius: var(--radius); color: var(--muted); text-align: center; }
 @media print { .site-footer { display: none; } }
+
+.brand .brand-version { color: var(--muted); font-size: .72rem; font-weight: 500; letter-spacing: 0; }

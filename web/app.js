@@ -64,6 +64,9 @@ const state = {
 
 const el = {};
 
+// The instrument version (SemVer), declared once in index.html.
+const APP_VERSION = document.querySelector('meta[name="pictos-index-version"]')?.content || null;
+
 // Theme: "system" follows the operating system; light or dark is remembered.
 // The inline script in index.html applies it before the first paint.
 const THEME_KEY = "pictos-index:theme";
@@ -82,7 +85,12 @@ async function init() {
   await initI18n();
   bindElements();
   if (PROTOCOL_FORM) markProtocolMode();
+  // Notices that name the version get it as a translation variable.
+  document.querySelectorAll("[data-i18n-version]").forEach((node) => {
+    node.dataset.i18nVars = JSON.stringify({ version: APP_VERSION });
+  });
   applyTranslations();
+  document.getElementById("appVersion").textContent = APP_VERSION;
   el.languageSelect.value = getLocale();
   bindEvents();
   state.rubric = await loadRubric();
@@ -1210,6 +1218,7 @@ function buildExportPayload() {
 
   const payload = {
     schemaVersion: "pictos-index-library-evaluation-1.5.0",
+    instrumentVersion: APP_VERSION,
     exportedAt: new Date().toISOString(),
     uiLocale: getLocale(),
     evaluation: state.assessment || createAssessmentIdentity(),
@@ -1351,7 +1360,7 @@ function drawPdfCover(pdf, payload) {
   pdf.roundedRect(18, 160, 260, 25, 3, 3, "FD");
   pdf.setTextColor(146, 64, 14);
   pdf.setFont(pdfFont, "bold");
-  pdf.text(t("prototype.title"), 25, 171);
+  pdf.text(t("prototype.title", { version: APP_VERSION }), 25, 171);
   pdf.setTextColor(...PDF_SOFT);
   pdf.setFont(pdfFont, "normal");
   pdf.setFontSize(9);

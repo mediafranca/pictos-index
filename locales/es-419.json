@@ -7,9 +7,9 @@
     "label": "Idioma de la interfaz"
   },
   "prototype": {
-    "title": "Prototipo en construcción",
+    "title": "Prototipo en construcción · versión {version}",
     "body": "El índice y sus resultados son experimentales. No sustituyen estudios de comprensión, validación con personas usuarias ni una evaluación profesional de accesibilidad.",
-    "short": "Prototipo en construcción: los resultados son experimentales."
+    "short": "Prototipo en construcción · versión {version}: los resultados son experimentales."
   },
   "a11y": {
     "skip": "Saltar al contenido",
@@ -20,7 +20,6 @@
     "dimensions": "Las seis dimensiones de evaluación por pictograma; en conjunto, forman el perfil del pictograma"
   },
   "home": {
-    "indexLabel": "perfil",
     "eyebrow": "Comunicación Aumentativa y Alternativa",
     "title": "Un índice de calidad pictográfica",
     "lead": "PICTOS Index evalúa cada pictograma en sí mismo, según seis dimensiones, y también como parte de una librería curada para la CAA, atendiendo a la coherencia formal y la gramática visual del conjunto. El resultado es un perfil por pictograma; el promedio que hoy se calcula es provisional y no está validado.",
