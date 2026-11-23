@@ -88,11 +88,13 @@ Antes de mostrarlos, los SVG se aíslan como recursos de imagen y se limpian de 
 
 ## Ejemplos incluidos
 
-Las tres bibliotecas de [`examples/`](examples/) contienen las mismas diez frases y permiten comparar representaciones distintas:
+Las tres bibliotecas de [`examples/`](examples/) declaran un contexto de uso (`config.domainContext`) y comparten el mismo estilo gráfico, de modo que el contexto es lo único que varía entre ellas:
 
-- **Raster:** 10 imágenes bitmap;
-- **Recraft Vector:** 7 SVG y 3 bitmap;
-- **Recraft Pro Vector:** 10 SVG.
+- **Almorzar en el restorán:** 18 frases;
+- **Viajar en transporte público:** 18 frases;
+- **Consulta de salud:** 18 frases.
+
+Son material de prueba del protocolo, no librerías para uso con personas.
 
 ## Rúbrica y exportación
 
@@ -149,4 +151,4 @@ Spencer, H. (2026). PICTOS Index: evaluación de calidad pictográfica para la C
 https://github.com/mediafranca/pictos-index
 ```
 
-*Licencia: Apache 2.0 (código) · CC BY 4.0 (rúbrica y documentación de investigación) · CC0 (bibliotecas de ejemplo). Detalle en [LICENSE](LICENSE).*
+*Licencia: Apache 2.0 (código) · CC BY 4.0 (rúbrica y documentación de investigación) · CC BY-SA (bibliotecas de ejemplo). Detalle en [LICENSE](LICENSE).*

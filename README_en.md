@@ -88,11 +88,13 @@ Before display, SVGs are isolated as image resources and stripped of executable 
 
 ## Bundled examples
 
-The three libraries in [`examples/`](examples/) contain the same ten phrases, so different representations can be compared:
+The three libraries in [`examples/`](examples/) each declare a context of use (`config.domainContext`) and share the same graphic style, so context is the only thing that varies between them:
 
-- **Raster:** 10 bitmap images;
-- **Recraft Vector:** 7 SVG and 3 bitmap;
-- **Recraft Pro Vector:** 10 SVG.
+- **Almorzar en el restorán** (having lunch at a restaurant): 18 phrases;
+- **Viajar en transporte público** (travelling on public transport): 18 phrases;
+- **Consulta de salud** (health appointment): 18 phrases.
+
+They are in Spanish only for now. They are test material for the protocol, not libraries for use with people.
 
 ## Rubric and export
 
@@ -149,4 +151,4 @@ Spencer, H. (2026). PICTOS Index: evaluating pictographic quality for AAC.
 https://github.com/mediafranca/pictos-index
 ```
 
-*Licence: Apache 2.0 (code) · CC BY 4.0 (rubric and research documentation) · CC0 (example libraries). Details in [LICENSE](LICENSE).*
+*Licence: Apache 2.0 (code) · CC BY 4.0 (rubric and research documentation) · CC BY-SA (example libraries). Details in [LICENSE](LICENSE).*

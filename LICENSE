@@ -27,7 +27,8 @@ limitations under the License.
 
 The example libraries in `examples/` were generated with pictos.net. Each library
 declares its license in its own metadata (`config.license`); the bundled examples
-are dedicated to the public domain under **CC0 1.0**.
+are licensed by MediaFranca under **Creative Commons Attribution-ShareAlike (CC BY-SA)**.
+Adaptations must be attributed to MediaFranca and shared under the same terms.
 
 Libraries loaded into the evaluator by its users are not stored or redistributed
 by PICTOS Index and keep the license their authors assigned.
