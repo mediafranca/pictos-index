@@ -304,6 +304,7 @@
   "done": {
     "title": "Has terminado",
     "intro": "Descarga el informe PDF o los datos JSON. Tus respuestas quedan también guardadas en este navegador.",
-    "introProtocol": "Descarga tus respuestas y envía el archivo JSON a quien coordina el panel. No hace falta nada más."
+    "introProtocol": "Envía ese archivo JSON a quien coordina el panel. No hace falta nada más. Si no lo encuentras, descárgalo de nuevo con el botón.",
+    "downloaded": "✓ Tus respuestas se descargaron en tu carpeta de descargas como «{file}»."
   }
 }

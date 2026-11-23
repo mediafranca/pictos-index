@@ -405,3 +405,4 @@ textarea { min-height: 9rem; resize: vertical; }
 #step4 .final-downloads { margin-top: 1.25rem; justify-content: flex-start; }
 .protocol-mode #auditPdfBtn { display: none; }
 @media (max-width: 960px) { .question-panel { grid-template-columns: 1fr; } }
+.done-status { margin: .75rem 0 0; padding: .8rem 1rem; border-left: 3px solid #bef264; background: var(--surface-raised); color: var(--ink); font-weight: 650; overflow-wrap: anywhere; }

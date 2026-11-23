@@ -86,7 +86,7 @@ function bindElements() {
     "questionPanel", "phraseLine", "evalImage", "guessStage", "guessText", "saveGuessBtn", "skipGuessBtn",
     "dimensionStage", "dimensionTitle", "dimensionDescription", "dimensionOptions",
     "useStage", "useScenario", "useReason", "useNextBtn", "evalBackBtn",
-    "doneIntro", "auditExportBtn", "auditPdfBtn",
+    "doneIntro", "doneStatus", "auditExportBtn", "auditPdfBtn",
   ];
   ids.forEach((id) => { el[id] = document.getElementById(id); });
   el.sampleLibraryButtons = Array.from(document.querySelectorAll("[data-sample-path]"));
@@ -789,6 +789,12 @@ function nextQuestion() {
     const pending = state.items.findIndex((candidate) => !isRecordComplete(state.evaluations.get(candidate.id)));
     if (pending === -1) {
       goToStep(4);
+      // In the protocol the JSON is what gets handed in: download it on finishing and say so.
+      if (PROTOCOL_FORM) {
+        const file = exportEvaluationJson();
+        el.doneStatus.textContent = t("done.downloaded", { file });
+        el.doneStatus.classList.remove("hidden");
+      }
       return;
     }
     state.evalIndex = pending;
@@ -1143,8 +1149,10 @@ function exportEvaluationJson() {
   const completion = countCompletedItems() === state.items.length && isLibraryAssessmentComplete()
     ? "complete"
     : "partial";
-  const outName = `${baseName}-pictos-index-eval-${completion}-${new Date().toISOString().slice(0, 10)}.json`;
+  const participant = PARTICIPANT ? `-p${PARTICIPANT}` : "";
+  const outName = `${baseName}-pictos-index-eval${participant}-${completion}-${new Date().toISOString().slice(0, 10)}.json`;
   downloadJson(payload, outName);
+  return outName;
 }
 
 function buildExportPayload() {
