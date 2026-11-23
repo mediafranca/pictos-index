@@ -25,7 +25,7 @@ for (const locale of locales.slice(1)) {
   }
 }
 
-const sourceFiles = ["index.html", "web/app.js"];
+const sourceFiles = ["index.html", "web/app.js", "web/coordination.js"];
 const usedKeys = new Set();
 for (const file of sourceFiles) {
   const source = fs.readFileSync(path.join(root, file), "utf8");

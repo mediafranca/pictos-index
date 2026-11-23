@@ -22,11 +22,13 @@ Each item gets blind interpretations from one form and ratings from the other. N
    - `https://mediafranca.net/pictos-index/?forma=A`
    - `https://mediafranca.net/pictos-index/?forma=B`
 3. Each person loads the same library file, completes both passes and the library audit, and downloads the evaluation JSON.
-4. Join the files:
+4. Open the coordination screen (`?coordinar`, also linked from the home page), choose the library and load every evaluation file. The screen shows how many evaluations each form has, any warnings and the agreement on the ratings, and downloads the aggregate report.
 
-   ```sh
-   node scripts/aggregate-protocol.mjs library.json evaluations/
-   ```
+The same steps can be run from the command line:
+
+```sh
+node scripts/aggregate-protocol.mjs library.json evaluations/
+```
 
 Without `?forma` the app keeps the individual flow, in which each pictogram is interpreted and then rated.
 
@@ -73,21 +75,18 @@ Suggested wording for publications: «Se aplicó el esquema de codificación de 
 
 ### Procedure, one spreadsheet per judge
 
-1. Generate one sheet per judge:
+Everything happens on the coordination screen. The scripts below do the same from the command line.
 
-   ```sh
-   node scripts/coding-sheets.mjs sheets aggregate.json sheets/ --judges 2
-   ```
-
-   Each `juez-N.csv` lists every answer with an opaque id, the source phrase, the answer and an empty `codigo` column. Each sheet has its own random order and shows neither the evaluator, the form nor the position. Skipped answers are left out and count as code 6.
+1. Choose the number of judges and download one sheet each (`juez-1.csv`, `juez-2.csv`, …). The screen also shows instructions for the judges, with the six codes, ready to forward. Each sheet lists every answer with an opaque id, the source phrase, the answer and an empty `codigo` column. Each sheet has its own random order and shows neither the evaluator, the form nor the position. Skipped answers are left out and count as code 6.
 2. Each judge opens their sheet in Excel or Google Sheets, writes a code from 1 to 6 in `codigo`, saves it as CSV and sends it back, without seeing the other judges' codes.
-3. Merge the sheets:
+3. Load all the returned sheets on the coordination screen. It lists problems in each sheet (missing or invalid codes), the nominal alpha between judges, the disagreements to resolve, and for each item the distribution of the codes on which all judges agree. Answers with disagreements are counted as unresolved until the judges settle them and correct their sheets. The screen downloads the coding report (JSON) and a results sheet with one row per item: half, code distribution, unresolved answers, and n and median of each sighted rating.
 
-   ```sh
-   node scripts/coding-sheets.mjs merge aggregate.json sheets/juez-1.csv sheets/juez-2.csv
-   ```
+Command line equivalent:
 
-   The report lists problems in each sheet (missing or invalid codes), the nominal alpha between judges, the disagreements to resolve, and for each item the distribution of the codes on which all judges agree. Answers with disagreements are counted as unresolved until the judges settle them and correct their sheets.
+```sh
+node scripts/coding-sheets.mjs sheets aggregate.json sheets/ --judges 2
+node scripts/coding-sheets.mjs merge aggregate.json sheets/juez-1.csv sheets/juez-2.csv
+```
 
 Codes are categories, not an interval scale: 6 is not "worse" than 5. Agreement between judges should therefore be reported with nominal alpha, and each item's result as the distribution of codes rather than a mean.
 

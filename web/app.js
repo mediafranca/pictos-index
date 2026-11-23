@@ -1,4 +1,5 @@
 import { applyTranslations, getLocale, initI18n, setLocale, t } from "./i18n.js";
+import { initCoordination, isCoordinationRequested } from "./coordination.js";
 
 const DIMENSIONS = [
   { key: "clarity", code: "CLA" },
@@ -55,6 +56,12 @@ async function init() {
   buildLibraryScales();
   loadEvaluatorProfile();
   updateStepLocks();
+  if (isCoordinationRequested()) {
+    initCoordination({ dimensionName: (key) => getDimensionMeta(key).name });
+    el.homeScreen.classList.add("hidden");
+    document.getElementById("coordinationScreen").classList.remove("hidden");
+    return;
+  }
   showHome(false);
 }
 
@@ -251,6 +258,10 @@ function onLanguageChange(event) {
 }
 
 function showHome(moveFocus = true) {
+  if (isCoordinationRequested()) {
+    window.location.search = ""; // leave the coordination screen
+    return;
+  }
   el.evaluatorShell.classList.add("hidden");
   el.homeScreen.classList.remove("hidden");
   window.scrollTo({ top: 0, behavior: "smooth" });

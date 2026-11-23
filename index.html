@@ -58,6 +58,7 @@
             <div class="hero-actions">
               <button id="startEvaluationBtn" class="primary-btn large-btn" type="button" data-i18n="home.start">Iniciar una evaluación</button>
               <a class="text-link" href="#howItWorks" data-i18n="home.howLink">Ver el procedimiento</a>
+              <a class="text-link" href="?coordinar" data-i18n="home.coordinateLink">Coordinar un panel</a>
             </div>
             <p class="privacy-note" data-i18n="home.privacy">Los datos de la evaluación se almacenan en este navegador y sólo se exportan cuando quien evalúa lo decide.</p>
           </div>
@@ -125,6 +126,71 @@
             <li><a href="https://github.com/mediafranca/pictos-svg-schema" target="_blank" rel="noopener noreferrer"><strong>pictos-svg-schema</strong><span data-i18n="about.repoSvg">SVG semántico con metadatos de accesibilidad</span></a></li>
           </ul>
         </section>
+      </section>
+
+      <section id="coordinationScreen" class="app-shell coordination hidden" aria-labelledby="coordTitle">
+        <p class="eyebrow" data-i18n="coordination.eyebrow">Protocolo experimental</p>
+        <h1 id="coordTitle" tabindex="-1" data-i18n="coordination.title">Coordinar un panel</h1>
+        <p class="hero-lead" data-i18n="coordination.lead">Cada persona evalúa en su propio navegador y descarga su evaluación. Aquí se reúnen esos archivos, se preparan las planillas para los jueces y se leen las planillas devueltas. Nada sale de este navegador.</p>
+
+        <ol class="coord-steps">
+          <li class="workspace-panel">
+            <h2 data-i18n="coordination.step1Title">1. Repartir los enlaces</h2>
+            <p data-i18n="coordination.step1Body">Envía a cada persona uno de estos enlaces, alternando las formas para que haya tantas A como B. Todas deben cargar la misma librería.</p>
+            <p><strong>A</strong> <code id="coordLinkA"></code></p>
+            <p><strong>B</strong> <code id="coordLinkB"></code></p>
+          </li>
+
+          <li class="workspace-panel">
+            <h2 data-i18n="coordination.step2Title">2. Reunir las evaluaciones</h2>
+            <label><span data-i18n="coordination.library">Librería evaluada</span>
+              <select id="coordSampleSelect">
+                <option value="" data-i18n="coordination.ownLibrary">Otra librería (cargar archivo)</option>
+                <option value="./examples/restoran-graph-2026-11-23.json">Almorzar en el restorán</option>
+                <option value="./examples/transporte-graph-2026-11-23.json">Viajar en transporte público</option>
+                <option value="./examples/salud-graph-2026-11-23.json">Consulta de salud</option>
+              </select>
+            </label>
+            <input id="coordLibraryInput" type="file" accept=".json,application/json" aria-label="Archivo de la librería" data-i18n-aria-label="coordination.libraryFile" />
+            <p id="coordLibraryName" class="muted small"></p>
+            <label><span data-i18n="coordination.evaluations">Evaluaciones descargadas por cada persona (JSON, puedes elegir varias)</span>
+              <input id="coordEvalInput" type="file" accept=".json,application/json" multiple />
+            </label>
+            <div id="coordAggregateSummary" aria-live="polite"></div>
+            <label class="coord-inline"><span data-i18n="coordination.judges">Número de jueces</span>
+              <input id="coordJudges" type="number" min="2" value="2" />
+            </label>
+            <div class="coord-actions">
+              <button id="coordSheetsBtn" class="primary-btn" type="button" disabled data-i18n="coordination.sheetsBtn">Descargar planillas para jueces (CSV)</button>
+              <button id="coordAggregateBtn" class="secondary-btn" type="button" disabled data-i18n="coordination.aggregateBtn">Descargar informe agregado (JSON)</button>
+            </div>
+            <details class="coord-instructions">
+              <summary data-i18n="coordination.instructionsTitle">Instrucciones para los jueces</summary>
+              <p data-i18n="coordination.instructionsBody">Compara cada respuesta con la frase de origen y escribe en la columna «codigo» un número del 1 al 6. No consultes los códigos de los demás jueces. Guarda el archivo en formato CSV, con el mismo nombre.</p>
+              <ol>
+                <li data-i18n="coordination.code1">Correcto: la respuesta coincide con el significado asignado.</li>
+                <li data-i18n="coordination.code2">Casi correcto: la respuesta es parecida o cercana al significado.</li>
+                <li data-i18n="coordination.code3">Dudoso: la respuesta apunta a otra interpretación o es ambigua.</li>
+                <li data-i18n="coordination.code4">Incorrecto: la respuesta no corresponde al significado.</li>
+                <li data-i18n="coordination.code5">Significado opuesto: la respuesta apunta al significado contrario.</li>
+                <li data-i18n="coordination.code6">Sin respuesta: no responde o dice que no sabe.</li>
+              </ol>
+              <p class="muted small" data-i18n="coordination.schemeSource">Esquema de seis valores de Ramírez (2018, p. 80), referido internamente como «Brugger–Frascara».</p>
+            </details>
+          </li>
+
+          <li class="workspace-panel">
+            <h2 data-i18n="coordination.step3Title">3. Reunir las planillas de los jueces</h2>
+            <label><span data-i18n="coordination.sheets">Planillas codificadas (CSV, elige todas)</span>
+              <input id="coordSheetsInput" type="file" accept=".csv,text/csv" multiple disabled />
+            </label>
+            <div id="coordCodingSummary" aria-live="polite"></div>
+            <div class="coord-actions">
+              <button id="coordResultsBtn" class="primary-btn" type="button" disabled data-i18n="coordination.resultsBtn">Descargar resultados por ítem (CSV)</button>
+              <button id="coordCodingBtn" class="secondary-btn" type="button" disabled data-i18n="coordination.codingBtn">Descargar informe de codificación (JSON)</button>
+            </div>
+          </li>
+        </ol>
       </section>
 
       <section id="evaluatorShell" class="app-shell hidden" aria-label="Instrumento de evaluación" data-i18n-aria-label="a11y.instrument">
