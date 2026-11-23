@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b0613" />
     <!-- The instrument version (SemVer): shown in the header and stamped on every export. Keep in step with package.json. -->
-    <meta name="pictos-index-version" content="4.1.0" />
+    <meta name="pictos-index-version" content="4.1.1" />
     <meta
       name="description" data-i18n-content="meta.description"
       content="PICTOS Index es un instrumento para evaluar la calidad comunicativa de librerías pictográficas."
@@ -29,6 +29,11 @@
     <link rel="stylesheet" href="./web/styles.css" />
   </head>
   <body>
+    <!-- Corner ribbon (wide screens; narrow ones show the inline ribbon instead). -->
+    <div class="corner-ribbon" role="note">
+      <span class="corner-ribbon-band" aria-hidden="true"><svg class="ribbon-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><span data-i18n="prototype.corner" data-i18n-version>Prototipo</span></span>
+      <span class="sr-only" data-i18n="prototype.short" data-i18n-version>Prototipo en construcción: los resultados son experimentales.</span>
+    </div>
     <a class="skip-link" href="#mainContent" data-i18n="a11y.skip">Saltar al contenido</a>
 
     <header class="site-header">
@@ -230,7 +235,7 @@
               <summary data-i18n="coordination.whereTitle">¿Dónde publico mi librería?</summary>
               <ul>
                 <li data-i18n="coordination.where1">La dirección tiene que entregar **el archivo JSON mismo**, no una página que lo muestre, y permitir que otra página lo lea.</li>
-                <li data-i18n="coordination.where2">**Funciona:** un repositorio de GitHub (abre el archivo y usa el botón «Raw»), un Gist de GitHub o un sitio en Netlify.</li>
+                <li data-i18n="coordination.where2">**Funciona:** un repositorio de GitHub (abre el archivo y usa el botón «Raw») o un Gist de GitHub.</li>
                 <li data-i18n="coordination.where3">**No funciona:** Google Drive, Dropbox ni OneDrive, porque muestran una vista previa en vez del archivo.</li>
                 <li data-i18n="coordination.where4">**No cambies el archivo** mientras dure el panel: si cambia, las evaluaciones ya no se pueden comparar. En GitHub, usa la dirección de un commit concreto.</li>
                 <li data-i18n="coordination.where5">Una librería pesa varios megabytes (las de ejemplo, unos 20 MB). Para evaluar desde un teléfono, conviene usar wifi.</li>

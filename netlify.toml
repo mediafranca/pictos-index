@@ -1,4 +1,0 @@
-# Static site: the app lives at the repository root and needs no build step.
-[build]
-  publish = "."
-  command = ""

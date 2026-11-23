@@ -8,7 +8,8 @@
   },
   "prototype": {
     "title": "Prototype under development · version {version}",
-    "short": "Prototype under development · version {version}: results are experimental."
+    "short": "Prototype under development · version {version}: results are experimental.",
+    "corner": "Prototype · v{version}"
   },
   "a11y": {
     "skip": "Skip to content",
@@ -272,7 +273,7 @@
     "notALibrary": "The file does not look like a library exported from PICTOS.net.",
     "whereTitle": "Where do I publish my library?",
     "where1": "The address must serve **the JSON file itself**, not a page showing it, and allow other pages to read it.",
-    "where2": "**Works:** a GitHub repository (open the file and use the “Raw” button), a GitHub Gist or a Netlify site.",
+    "where2": "**Works:** a GitHub repository (open the file and use the “Raw” button) or a GitHub Gist.",
     "where3": "**Does not work:** Google Drive, Dropbox or OneDrive, because they show a preview instead of the file.",
     "where4": "**Do not change the file** while the panel runs: if it changes, the evaluations can no longer be compared. On GitHub, use the address of a specific commit.",
     "where5": "A library is several megabytes (the sample ones, about 20 MB). To evaluate on a phone, Wi-Fi is advisable.",

@@ -66,7 +66,7 @@ Open [Coordinate a panel](https://mediafranca.net/pictos-index/?coordinar), also
 
 1. **Choose the library.** It can be one of the three samples or your own. The library must declare its **context of use** (`config.domainContext`), because the questions are answered with that situation in mind.
 2. **If it is your own library, publish it on the internet.** Each person's link carries the library's address, so the file must be readable from another page:
-   - **Works:** a GitHub repository (open the file and use the "Raw" button), a GitHub Gist or a Netlify site.
+   - **Works:** a GitHub repository (open the file and use the "Raw" button) or a GitHub Gist.
    - **Does not work:** Google Drive, Dropbox or OneDrive, because they show a preview instead of the file.
    - **Do not change the file while the panel runs.** If it changes, the halves change and the evaluations can no longer be compared. On GitHub, use the address of a specific commit.
 

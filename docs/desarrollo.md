@@ -54,10 +54,7 @@ Cada versión publicada lleva su etiqueta (`git tag -a vX.Y.Z`). La rama `v3` co
 
 ## Publicación
 
-- **GitHub Pages** publica la rama `main`, desde la raíz, en [mediafranca.net/pictos-index](https://mediafranca.net/pictos-index/).
-- **Netlify** publica la rama `protocolo-experimental` en [pictos-index-protocolo.netlify.app](https://pictos-index-protocolo.netlify.app), como vista previa (`netlify.toml`).
-
-Cada push a esas ramas actualiza su sitio.
+GitHub Pages publica la rama `main`, desde la raíz, en [mediafranca.net/pictos-index](https://mediafranca.net/pictos-index/). Cada push a `main` actualiza el sitio; el trabajo en curso se hace en otra rama y se integra a `main` al publicar una versión.
 
 ## Línea de comandos del protocolo
 

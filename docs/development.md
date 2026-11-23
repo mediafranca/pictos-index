@@ -54,10 +54,7 @@ Each published version is tagged (`git tag -a vX.Y.Z`). The `v3` branch keeps th
 
 ## Publishing
 
-- **GitHub Pages** publishes the `main` branch, from the root, at [mediafranca.net/pictos-index](https://mediafranca.net/pictos-index/).
-- **Netlify** publishes the `protocolo-experimental` branch at [pictos-index-protocolo.netlify.app](https://pictos-index-protocolo.netlify.app), as a preview (`netlify.toml`).
-
-Each push to those branches updates its site.
+GitHub Pages publishes the `main` branch, from the root, at [mediafranca.net/pictos-index](https://mediafranca.net/pictos-index/). Each push to `main` updates the site; work in progress happens on another branch and is merged into `main` when a version is released.
 
 ## Protocol command line
 

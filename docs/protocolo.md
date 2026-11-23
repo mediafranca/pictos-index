@@ -66,7 +66,7 @@ Abre [Coordinar un panel](https://mediafranca.net/pictos-index/?coordinar), tamb
 
 1. **Elige la librería.** Puede ser una de las tres de ejemplo o una propia. La librería debe declarar su **contexto de uso** (`config.domainContext`), porque las preguntas se responden pensando en esa situación.
 2. **Si es una librería propia, publícala en internet.** El enlace de cada persona lleva consigo la dirección de la librería, así que el archivo tiene que poder leerse desde otra página:
-   - **Funciona:** un repositorio de GitHub (abre el archivo y usa el botón «Raw»), un Gist de GitHub o un sitio en Netlify.
+   - **Funciona:** un repositorio de GitHub (abre el archivo y usa el botón «Raw») o un Gist de GitHub.
    - **No funciona:** Google Drive, Dropbox ni OneDrive, porque muestran una vista previa en vez del archivo.
    - **No cambies el archivo mientras dure el panel.** Si cambia, las mitades cambian y las evaluaciones dejan de ser comparables. En GitHub, usa la dirección de un commit concreto.
 
