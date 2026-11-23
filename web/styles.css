@@ -439,3 +439,10 @@ textarea { min-height: 9rem; resize: vertical; }
 .protocol-mode #auditPdfBtn { display: none; }
 @media (max-width: 960px) { .question-panel { grid-template-columns: 1fr; } }
 .done-status { margin: .75rem 0 0; padding: .8rem 1rem; border-left: 3px solid var(--ok); background: var(--surface-raised); color: var(--ink); font-weight: 650; overflow-wrap: anywhere; }
+
+/* Keyboard: a clear ring on the whole option, and the shortcuts shown only while the keyboard is in use. */
+:is(.level-option, .use-options label, .relation-option):has(:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+:is(.level-option, .use-options label, .relation-option) input:focus-visible { outline: none; }
+.key-hint { display: none; margin: 0; color: var(--muted); font-size: .78rem; }
+.question-box:has(:focus-visible) .key-hint { display: block; }
+#mainContent:focus { outline: none; }

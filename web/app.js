@@ -150,6 +150,17 @@ function bindEvents() {
   document.querySelectorAll('input[name="useAnswer"]').forEach((radio) => radio.addEventListener("change", onUseAnswerChange));
   el.useReason.addEventListener("input", onUseAnswerChange);
   el.evalNextBtn.addEventListener("click", nextQuestion);
+  el.useStage.addEventListener("keydown", (event) => {
+    const inText = event.target === el.useReason;
+    if (event.key !== "Enter" || (inText && !(event.ctrlKey || event.metaKey))) return;
+    event.preventDefault();
+    if (!el.evalNextBtn.disabled) nextQuestion();
+  });
+  el.guessText.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" || !(event.ctrlKey || event.metaKey)) return;
+    event.preventDefault();
+    if (!el.saveGuessBtn.disabled) saveGuess(false);
+  });
   el.evalBackBtn.addEventListener("click", previousQuestion);
 
   el.auditExportBtn.addEventListener("click", exportEvaluationJson);
@@ -212,7 +223,7 @@ function goToStep(step, moveFocus = true) {
   if (step === 3) enterPictograms();
 
   if (moveFocus) {
-    document.getElementById(`step${step}Title`)?.focus({ preventScroll: true });
+    if (step !== 3) document.getElementById(`step${step}Title`)?.focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 }
@@ -322,6 +333,8 @@ function loadLibraryPayload(payload, fileName) {
   renderLibrarySummary();
   updateStepLocks();
   announce(t("library.successStatus", { count: state.items.length }));
+  // The button that loaded the library is now hidden: keep the focus on this step.
+  el.step2Title.focus({ preventScroll: true });
 }
 
 // In the protocol the PDF report (six ratings per pictogram) does not apply.
@@ -522,7 +535,7 @@ function renderLibrarySummary() {
     figure.append(image);
     el.auditGrid.append(figure);
   });
-  renderSetQuestion();
+  renderSetQuestion(false);
 }
 function onEvaluatorSubmit(event) {
   event.preventDefault();
@@ -709,6 +722,7 @@ function renderCurrentEvalItem() {
       radio.checked = radio.value === record.use;
     });
     el.useReason.value = record.useReason || "";
+    (document.querySelector('input[name="useAnswer"]:checked') || document.querySelector('input[name="useAnswer"]')).focus({ preventScroll: true });
   } else {
     const meta = getDimensionMeta(question);
     el.dimensionTitle.textContent = meta.name;
@@ -725,7 +739,7 @@ function renderCurrentEvalItem() {
 
 // Five options, each with what its score means. Picking only selects; the person
 // confirms with Next (or Enter), so a slip of the pointer never skips a question.
-function renderLevelOptions(container, levels, selected, onPick, onAdvance) {
+function renderLevelOptions(container, levels, selected, onPick, onAdvance, focus = true) {
   container.innerHTML = "";
   container.onkeydown = (event) => {
     if (event.key !== "Enter" || !container.querySelector("input:checked")) return;
@@ -750,7 +764,7 @@ function renderLevelOptions(container, levels, selected, onPick, onAdvance) {
     option.append(input, number, description);
     container.append(option);
   });
-  (container.querySelector("input:checked") || container.querySelector("input"))?.focus({ preventScroll: true });
+  if (focus) (container.querySelector("input:checked") || container.querySelector("input"))?.focus({ preventScroll: true });
 }
 
 function saveRecord(item, record) {
@@ -791,6 +805,11 @@ function onUseAnswerChange() {
   el.evalNextBtn.disabled = !record.use;
 }
 
+// A new question starts at the top of the card, wherever the page was scrolled to.
+function showQuestionTop() {
+  if (el.step3.getBoundingClientRect().top < 0) el.step3.scrollIntoView({ block: "start" });
+}
+
 function nextQuestion() {
   const item = state.items[state.evalIndex];
   if (!isQuestionAnswered(state.evaluations.get(item.id), questionsFor(item)[state.qIndex])) return;
@@ -815,6 +834,7 @@ function nextQuestion() {
     state.qIndex = firstOpenQuestion(state.items[pending]);
   }
   renderCurrentEvalItem();
+  showQuestionTop();
 }
 
 // Going back never crosses from the second part of the protocol into the blind one.
@@ -831,6 +851,7 @@ function previousQuestion() {
     state.qIndex = questionsFor(state.items[state.evalIndex]).length - 1;
   }
   renderCurrentEvalItem();
+  showQuestionTop();
 }
 
 
@@ -963,7 +984,7 @@ function createEmptyLibraryAssessment() {
     updatedAt: null,
   };
 }
-function renderSetQuestion() {
+function renderSetQuestion(focus = true) {
   const dimension = LIBRARY_DIMENSIONS[state.setIndex];
   el.setQuestionTitle.textContent = t(`audit.${dimension}Title`);
   el.setQuestionBody.textContent = t(`audit.${dimension}Body`);
@@ -983,6 +1004,7 @@ function renderSetQuestion() {
       renderSetNext();
     },
     () => changeSetQuestion(1),
+    focus,
   );
 }
 

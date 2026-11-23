@@ -312,5 +312,10 @@
     "system": "System theme",
     "light": "Light",
     "dark": "Dark"
+  },
+  "keys": {
+    "choose": "Arrows: choose · Enter: next",
+    "chooseText": "Arrows: choose · Enter: next · Ctrl or ⌘ + Enter from the text",
+    "confirmText": "Ctrl or ⌘ + Enter: confirm"
   }
 }

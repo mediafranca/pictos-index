@@ -312,5 +312,10 @@
     "system": "Tema del sistema",
     "light": "Claro",
     "dark": "Oscuro"
+  },
+  "keys": {
+    "choose": "Flechas: elegir · Enter: siguiente",
+    "chooseText": "Flechas: elegir · Enter: siguiente · Ctrl o ⌘ + Enter desde el texto",
+    "confirmText": "Ctrl o ⌘ + Enter: confirmar"
   }
 }

@@ -60,7 +60,7 @@
       </div>
     </header>
 
-    <main id="mainContent">
+    <main id="mainContent" tabindex="-1">
       <section id="homeScreen" class="home-screen" aria-labelledby="homeTitle">
         <div class="hero">
           <div class="hero-copy">
@@ -320,6 +320,7 @@
             <legend id="setQuestionTitle" class="question-title"></legend>
             <p id="setQuestionBody" class="question-concept"></p>
             <div id="setOptions" class="level-options"></div>
+            <p class="key-hint" data-i18n="keys.choose">Flechas: elegir · Enter: siguiente</p>
           </fieldset>
         </div>
         <p id="libraryStatus" class="sr-only" role="status"></p>
@@ -340,7 +341,7 @@
         <div id="noticePanel" class="notice-panel hidden">
           <p id="noticeText"></p>
           <p id="noticeContext" class="muted"></p>
-          <button id="noticeBtn" class="primary-btn" type="button" data-i18n="notice.continue">Continuar</button>
+          <button id="noticeBtn" class="primary-btn" type="button" aria-describedby="noticeText noticeContext" data-i18n="notice.continue">Continuar</button>
         </div>
 
         <div id="questionPanel" class="question-panel">
@@ -356,12 +357,14 @@
               <button id="skipGuessBtn" type="button" class="secondary-btn" data-i18n="evaluation.skip">No sé qué comunica</button>
               <button id="saveGuessBtn" type="button" class="primary-btn" disabled data-i18n="evaluation.confirm">Confirmar</button>
             </div>
+            <p class="key-hint" data-i18n="keys.confirmText">Ctrl o ⌘ + Enter: confirmar</p>
           </div>
 
           <fieldset id="dimensionStage" class="question-box hidden">
             <legend id="dimensionTitle" class="question-title"></legend>
             <p id="dimensionDescription" class="question-concept"></p>
             <div id="dimensionOptions" class="level-options"></div>
+            <p class="key-hint" data-i18n="keys.choose">Flechas: elegir · Enter: siguiente</p>
           </fieldset>
 
           <div id="useStage" class="question-box hidden">
@@ -377,6 +380,7 @@
               <span data-i18n="evaluation.useReason">¿Por qué? (opcional)</span>
               <textarea id="useReason" rows="2"></textarea>
             </label>
+            <p class="key-hint" data-i18n="keys.chooseText">Flechas: elegir · Enter: siguiente · Ctrl o ⌘ + Enter desde el texto</p>
           </div>
         </div>
       </section>
