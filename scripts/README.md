@@ -1,97 +1,25 @@
-# Scripts PICTOS Index
+# Scripts
 
-Este directorio contiene scripts de automatización para el workflow de evaluación PICTOS Index.
+Utilidades de línea de comandos. Requieren Node.js 24.2 o posterior y no tienen dependencias. Ver también [docs/desarrollo.md](../docs/desarrollo.md).
 
-## Scripts Disponibles
+## En uso
 
-### 1. compile-evaluation-text.js
-
-Compila evaluaciones PICTOS Index a partir de puntajes numéricos, generando texto narrativo automático usando la rúbrica centralizada.
-
-**Uso:**
-
-```bash
-# Compilar evaluación desde puntajes
-node scripts/compile-evaluation-text.js --scores 5,4,3,4,5,4
-
-# Formato HTML
-node scripts/compile-evaluation-text.js --scores 5,4,3,4,5,4 --format html
-
-# Inglés
-node scripts/compile-evaluation-text.js --scores 5,4,3,4,5,4 --lang en
-
-# Evaluar caso específico
-node scripts/compile-evaluation-text.js --case req-001_v1.0.0_default-v1_01
-```
-
-**Parámetros:**
-
-* `--scores` - 6 puntajes separados por comas (1-5) para: Claridad, Reconocibilidad, Transparencia Semántica, Adecuación Pragmática, Adecuación Cultural, Accesibilidad Cognitiva
-* `--format` - Formato de salida: `text` (default) o `html`
-* `--lang` - Idioma: `es` (default) o `en`
-* `--case` - ID de caso para cargar puntajes desde metadata
-
-**Salida:**
-
-* Puntaje PICTOS Index compuesto (promedio)
-* Evaluación general
-* Párrafos narrativos para cada dimensión
-* Texto compilado completo
-
-### 2. generate-report.js
-
-Genera reportes de evaluación en formato markdown o JSON, agregando resultados de múltiples evaluaciones.
-
-**Uso:**
+| Script | Para qué |
+|---|---|
+| `dev-server.mjs` | Servidor local (`npm run dev`, en http://localhost:4191) |
+| `validate-i18n.mjs` | Comprueba que ambos catálogos tengan las mismas claves, que el código no use claves ausentes y que las negritas de la rúbrica existan en su texto (`npm run validate-i18n`) |
+| `aggregate-protocol.mjs` | Reúne las evaluaciones de un panel en un informe agregado |
+| `coding-sheets.mjs` | Prepara una planilla por juez y reúne las planillas codificadas |
+| `*.test.mjs` | Pruebas (`npm test`): alfa de Krippendorff contra el ejemplo publicado, agregado, planillas y versión |
 
 ```bash
-# Generar reporte desde corpus
-node scripts/generate-report.js --corpus frases.json
-
-# Especificar directorio de evaluaciones
-node scripts/generate-report.js --input evaluations/ --output report.md
-
-# Formato JSON
-node scripts/generate-report.js --corpus frases.json --format json
+node scripts/aggregate-protocol.mjs libreria.json evaluaciones/
+node scripts/coding-sheets.mjs sheets agregado.json planillas/ --judges 2
+node scripts/coding-sheets.mjs merge agregado.json planillas/juez-1.csv planillas/juez-2.csv
 ```
 
-**Parámetros:**
+La pantalla de coordinación (`?coordinar`) hace lo mismo sin línea de comandos; ver la [guía del protocolo](../docs/protocolo.md).
 
-* `--corpus` - Archivo de corpus (frases.json)
-* `--input` - Directorio con evaluaciones JSON
-* `--output` - Archivo de salida (default: stdout)
-* `--format` - Formato: `markdown` (default) o `json`
+## Históricos
 
-**Salida:**
-
-* Puntajes PICTOS Index agregados por modelo/versión
-* Estadísticas por dimensión
-* Identificación de fortalezas y debilidades
-* Comparación entre modelos
-
-## Requisitos
-
-Los scripts requieren Node.js 16+ y las siguientes dependencias:
-
-```bash
-npm install ajv
-```
-
-## Integración con Rúbrica Centralizada
-
-Ambos scripts consultan la rúbrica centralizada en:
-
-* `data/rubric-scale-descriptions.json`
-
-Esto asegura que las evaluaciones usen descripciones consistentes y actualizadas.
-
-## Flujo de Trabajo Típico
-
-1. **Evaluar pictogramas** usando la interfaz hexagonal
-2. **Exportar JSON** con evaluaciones
-3. **Compilar texto narrativo** con `compile-evaluation-text.js`
-4. **Generar reporte agregado** con `generate-report.js` para benchmark de modelos
-
----
-
-**Ver también:** [README principal](../README.md) para documentación completa del framework PICTOS Index
+`compile-evaluation-text.js` y `generate-report.js` son anteriores a la versión 4: generan texto narrativo y reportes a partir de puntajes de la evaluación individual con el formato antiguo. No forman parte del flujo actual.

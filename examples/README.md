@@ -1,67 +1,18 @@
-# Ejemplos PICTOS Index
+# Ejemplos
 
-Este directorio contiene herramientas interactivas y ejemplos de referencia para el Índice de Calidad Pictográfica.
+## Librerías de ejemplo
 
-## Herramientas Interactivas
+Tres librerías breves exportadas desde [PICTOS.net](https://pictos.net), con el mismo estilo gráfico y un contexto de uso declarado (`config.domainContext`), de modo que el contexto es lo único que varía entre ellas:
 
-### Interfaz Hexagonal con Gradientes
+| Archivo | Contexto | Pictogramas |
+|---|---|---|
+| [restoran-graph-2026-11-23.json](restoran-graph-2026-11-23.json) | Almorzar en el restorán | 18 |
+| [transporte-graph-2026-11-23.json](transporte-graph-2026-11-23.json) | Viajar en transporte público | 18 |
+| [salud-graph-2026-11-23.json](salud-graph-2026-11-23.json) | Consulta de salud | 18 |
 
-**[hexagonal-rating-gradient.html](hexagonal-rating-gradient.html)**
+Sirven para probar el instrumento y el [protocolo de panel](../docs/protocolo.md): se eligen desde la portada o desde la pantalla de coordinación, y sus enlaces de panel usan `?lib=examples/…`. Son material de prueba, no librerías para usar con personas. Cada una pesa unos 20 MB porque incluye las imágenes.
 
-Herramienta principal para evaluar pictogramas usando las 6 dimensiones PICTOS Index.
+## Otros materiales
 
-**Características:**
-
-* Visualización hexagonal con colores únicos por dimensión
-* Gradientes suaves con Canvas 2D
-* Descripciones de rúbrica en tiempo real
-* Evaluación compilada (texto narrativo automático)
-* Exportación JSON con metadatos completos
-* Tipografía Lexend para accesibilidad
-* Tema oscuro optimizado
-
-**Uso:**
-
-1. Abrir el archivo HTML en un navegador
-2. Ajustar los 6 sliders (1-5) para cada dimensión
-3. Revisar la evaluación compilada en tiempo real
-4. Exportar JSON con evaluación completa
-
-### Visualizador de Metadatos
-
-**[metadata-visualizer.html](metadata-visualizer.html)**
-
-Herramienta para extraer y visualizar metadatos PICTOS Index embebidos en archivos SVG.
-
-**Características:**
-
-* Drag & drop de archivos SVG
-* Extracción automática de metadatos
-* Visualización hexagonal de puntajes
-* Muestra cadena de pensamiento completa
-* Información de certificación y proveniencia
-
-**Uso:**
-
-1. Abrir el archivo HTML en un navegador
-2. Arrastrar un SVG con metadatos PICTOS Index
-3. Ver visualización automática de la evaluación
-
-## Ejemplo Canónico
-
-**[toy-example/](toy-example/)**
-
-Ejemplo completo del flujo de trabajo PICTOS Index para la frase **"Voy a hacer mi cama"**.
-
-Incluye:
-
-* Análisis semántico completo (Frame Semantics + NSM)
-* Estructura visual jerárquica
-* Pictograma SVG con metadatos PICTOS Index embebidos
-* Evaluación completa con puntajes perfectos (5.0/5.0)
-
-Ver [docs/canonical-example.md](../docs/canonical-example.md) para documentación detallada.
-
----
-
-**Para más información, ver el [README principal](../README.md)**
+- [metadata-visualizer.html](metadata-visualizer.html): extrae y muestra los metadatos de evaluación incrustados en un SVG.
+- [toy-example/](toy-example/): ejemplo completo de la cadena generativa para «Voy a hacer mi cama». Es **histórico**: corresponde a VCSCI, la formulación anterior a PICTOS Index 4.

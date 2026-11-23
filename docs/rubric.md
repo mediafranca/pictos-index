@@ -15,7 +15,7 @@ All dimensions use a 5-point scale:
 | **5** | Excelente | La cualidad evaluada está plenamente presente; no se observan problemas. |
 | **4** | Bien | La cualidad evaluada está presente, con problemas menores. |
 | **3** | Funciona | La cualidad evaluada está presente de forma parcial; hay problemas visibles. |
-| **2** | Insuficiente | La cualidad evaluada está presente sólo de forma limitada; predominan los problemas. |
+| **2** | Insuficiente | La cualidad evaluada está presente solo de forma limitada; predominan los problemas. |
 | **1** | No funcional | La cualidad evaluada está ausente o gravemente comprometida. |
 
 **Nota**: Cada dimensión tiene descripciones específicas para cada nivel. Las definiciones operacionales completas están disponibles en [data/rubric-scale-descriptions.json](../data/rubric-scale-descriptions.json), que puede ser consultado programáticamente por interfaces de evaluación y scripts de análisis.

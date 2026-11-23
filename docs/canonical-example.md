@@ -1,3 +1,6 @@
+> [!NOTE]
+> **Documento histórico.** Describe la cadena completa en tiempos de VCSCI, la formulación anterior a PICTOS Index 4 (interfaz hexagonal, puntaje compuesto). Para el instrumento actual, ver el [README](../README.md) y la [guía del protocolo](protocolo.md).
+
 # Canonical Example: Complete Flow from Utterance to Evaluated Pictogram
 
 This document illustrates the complete chain of thought from initial utterance to final evaluated pictogram with embedded metadata.

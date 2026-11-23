@@ -348,8 +348,11 @@ textarea { min-height: 9rem; resize: vertical; }
   .how-section { padding: 4rem 0; }
   .how-grid li { min-height: 11rem; }
   .principles { margin-bottom: 4rem; gap: 1.5rem; }
-  .stepper { grid-template-columns: 1fr; }
-  .step-pill { min-height: 2.8rem; }
+  /* Phones: the steps fit in one row; only the current one shows its name. */
+  .stepper { display: flex; gap: .4rem; }
+  .step-pill { flex: 0 0 auto; min-height: 2.6rem; padding-inline: .5rem; }
+  .step-pill.active { flex: 1 1 auto; }
+  .step-pill:not(.active) > span:last-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .screen { border-radius: var(--radius); }
   .pragmatic-actions, .moment-nav { align-items: stretch; flex-direction: column-reverse; }
   .pragmatic-actions button, .moment-nav button { width: 100%; }

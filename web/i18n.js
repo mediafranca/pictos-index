@@ -71,7 +71,7 @@ export function applyTranslations(root = document) {
     node.replaceChildren(marked(t(node.dataset.i18n, variables)));
   });
 
-  const translatedAttributes = ["aria-label", "placeholder", "title", "content", "alt"];
+  const translatedAttributes = ["aria-label", "placeholder", "title", "content", "alt", "href"];
   translatedAttributes.forEach((attribute) => {
     const dataName = `i18n${attribute.split("-").map(capitalise).join("")}`;
     root.querySelectorAll(`[data-i18n-${attribute}]`).forEach((node) => {

@@ -1,154 +1,111 @@
-**Para hispanohablantes:** la versión original de este documento está en [castellano](./README.md).
+**Castellano:** [README.md](README.md)
 
 <p align="center">
-  <img src="web/assets/pictos-iso.svg" width="56" height="56" alt="PICTOS symbol" />
+  <img src="web/assets/pictos-index-favicon.svg" width="56" height="56" alt="PICTOS Index symbol" />
 </p>
 
 <h1 align="center">PICTOS Index</h1>
 
 <p align="center">
-  An instrument for evaluating the communicative quality of pictogram libraries.
+  An open instrument for evaluating the communicative quality of pictogram libraries for AAC.
 </p>
 
-PICTOS Index reviews libraries exported from [pictos.net](https://pictos.net) across six complementary dimensions. Everything happens in the browser: the files loaded and the progress of the evaluation stay on the evaluator's device.
+<p align="center">
+  <a href="https://mediafranca.net/pictos-index/"><strong>Open PICTOS Index</strong></a> ·
+  <a href="https://mediafranca.net/pictos-index/?coordinar"><strong>Coordinate a panel</strong></a> ·
+  <a href="docs/protocol.md"><strong>Protocol guide</strong></a>
+</p>
 
 > [!WARNING]
-> **Prototype under construction.** The index, the rubric and the results are experimental. They do not replace comprehension studies, validation with users or a professional accessibility assessment. Scores must not be read as a certification of a pictogram library.
+> **Prototype under development (version 4).** The index, the rubric and the results are experimental. They do not replace comprehension studies, validation with users or a professional accessibility assessment, and their results do not certify a library.
 
-## About the index
+## What it is
 
-PICTOS Index grew out of the doctoral research of [Herbert Spencer](https://herbertspencer.net/cc) in design for Augmentative and Alternative Communication at Auckland University of Technology (AUT). It is the companion to [PICTOS.net](https://pictos.net): one creates pictograms from an understanding of what someone wants to say; the other asks whether they succeed. Generative models produce pictograms in abundance; the index returns judgement to the people who use them, support others with them and design them. It updates and replaces VCSCI (*Visual Communicability and Semantic Correspondence Index*), its first formulation.
+Generative models produce pictograms in abundance, and someone has to say whether they communicate. PICTOS Index returns that judgement to the people who use them, support their use or design them. It evaluates each pictogram on its own and as part of its library, and it separates two questions that are often confused: whether a pictogram **is understood** without knowing its phrase, and whether it **works** for saying it in a specific situation.
 
-The project is in the custody of [MediaFranca](https://mediafranca.net), an initiative from Valparaíso that creates, gathers and looks after open tools for human communication.
+Everything happens in the browser. There are no accounts, no server and no database: answers only leave the device as a file the person chooses to hand in.
 
-## What it evaluates
+## Two ways to use it
 
-1. **Clarity**
-2. **Recognisability**
-3. **Semantic transparency**
-4. **Pragmatic fit**
-5. **Cultural adequacy**
-6. **Cognitive accessibility**
+| | Individual evaluation | Panel evaluation |
+|---|---|---|
+| **What for** | Reviewing a library on your own | Studying a library with a group, with comparable results |
+| **Who** | One person | A coordinator, 8 or more evaluators and 2 or more judges |
+| **What is asked** | What each pictogram communicates, then its six quality dimensions | Depending on form A or B: what it communicates (without the phrase) or whether it works here (with the phrase) |
+| **Result** | PDF report and JSON data | Results per pictogram, with agreement between judges |
+| **How to start** | "Begin an evaluation" on the home page | "Coordinate a panel" on the home page |
 
-Each pictogram is rated from 1 to 5 on every dimension. The instrument shows the resulting profile on a hexagonal chart and pairs each score with the rubric's description for that level.
+## Evaluating with a panel
 
-Once the pictograms are done, a separate audit shows the whole library in a normalised grid and rates two properties of the set:
+The panel is how PICTOS Index is used for research. Each person answers on their phone, by scanning a QR code, and the library is split into two halves:
 
-- **formal coherence:** whether the pictograms read as members of one set;
-- **visual grammar:** whether the set applies shared, recognisable visual rules.
+| Form | Part one: without the phrase | Part two: with the phrase |
+|---|---|---|
+| **A** | half 1 → "What does it mean?" | half 2 → "Does it work here?" |
+| **B** | half 2 → "What does it mean?" | half 1 → "Does it work here?" |
 
-These two ratings describe the library and **are never added to or averaged with the PICTOS Index** of the pictograms. Analysis of confusable pairs is out of scope for this version.
+That way nobody interprets a pictogram whose phrase they have seen, and each pictogram gets blind interpretations from half the panel and use judgements from the other half. The forms are assigned by themselves: odd numbers answer A and even numbers B.
 
-## Run it locally
+The whole route:
 
-Requires a recent version of [Node.js](https://nodejs.org/).
+1. **The coordinator** chooses the library in [Coordinate a panel](https://mediafranca.net/pictos-index/?coordinar) and gets a card with a QR code for each person, ready to print.
+2. **Each person** scans their code and answers. At the end, their phone downloads a file with their answers and sends it to the coordinator.
+3. **The coordinator** loads those files and downloads a sheet for each judge.
+4. **The judges**, separately, decide whether each written interpretation got it right, with a code from 1 to 6.
+5. **The coordinator** loads the sheets and gets, for each pictogram, its comprehension rate, the agreement between judges and the "Does it work here?" answers.
 
-```bash
-git clone https://github.com/mediafranca/pictos-index.git
-cd pictos-index
-npm run dev
-```
+The **[protocol guide](docs/protocol.md)** explains it step by step, with screenshots: why there are two forms, what each role does, how to publish your own library, what counts as "understood" and which alpha to report.
 
-Then open [http://localhost:4191](http://localhost:4191).
+## How the instrument runs
 
-There are no dependencies to install: the local server uses Node.js only.
+1. **You.** The person states their relationship with Augmentative and Alternative Communication (AAC).
+2. **The set.** They see the whole library, without phrases, and rate its formal coherence and visual grammar.
+3. **Pictograms.** One question per screen. First they write what they think each pictogram communicates, without knowing its phrase. In the individual evaluation, they then see the phrase and rate six dimensions; in a panel, they answer the part their form assigns.
+4. **Submit.** They download their results. In a panel, the file downloads by itself and can be sent straight from the phone.
 
-## Languages
+Progress is saved in the browser, and the instrument can be used entirely with the keyboard.
 
-The interface and the rubric are available in Latin American Spanish (`es-419`) and British English (`en-GB`). The initial language follows the browser's preference, and the selector in the header remembers the choice locally.
+## What is measured
 
-The catalogues live in `locales/es-419.json` and `locales/en-GB.json`. Every key must exist in both files, and rubric descriptions must keep their `_es` / `_en` pairs:
+- **Six dimensions per pictogram** (individual evaluation), from 1 to 5, each level with its description: clarity, recognisability, semantic transparency, pragmatic fit, cultural adequacy and cognitive accessibility. See the [rubric](docs/rubric.md).
+- **Two properties of the set:** formal coherence and visual grammar. They are reported separately and never averaged with the pictograms.
+- **Blind comprehension** (panel): interpretations written without knowing the phrase, coded by judges.
+- **Situated usefulness** (panel): whether the pictogram works for saying its phrase in the declared context of use.
 
-```bash
-npm run validate-i18n
-```
+What grounds each dimension, and what the instrument cannot yet claim, is in [foundations](docs/foundations.md).
 
-## Walkthrough
+## Sample libraries
 
-1. **Load a library.** Accepts a JSON file exported by PICTOS or one of the three short bundled example libraries.
-2. **Describe your relationship with AAC.** One or several relationships can be chosen, or no prior experience.
-3. **Evaluate the pictograms.** First records an open interpretation, then goes through the six dimensions one by one, showing the rubric for each score.
-4. **Evaluate the library.** Shows every pictogram in a grid, with labels hidden by default and a toggle to show them, and records formal coherence and visual grammar as separate results.
-5. **Export the result.** Downloads two complementary representations:
-   - a **PDF report** with the library summary and one page per pictogram, showing the image, the chart, its six scores and its PICTOS Index;
-   - a **JSON data file** with the evaluator's profile, progress, averages, per-pictogram detail and the separate library evaluation.
+Three short libraries, in the same graphic style and with a declared context of use, are there to try the instrument and the protocol:
 
-Progress is saved locally in the browser. The interface also offers keyboard navigation, focus management, announcements for assistive technologies and adaptation to small screens.
+- **Lunch at a restaurant** (18 pictograms)
+- **Travelling by public transport** (18 pictograms)
+- **A health appointment** (18 pictograms)
 
-## Supported formats
+Their phrases are in Spanish. They are test material, not libraries for use with people.
 
-The evaluator reads `payload.rows[]` from PICTOS `schemaVersion: 3` exports and from legacy files. It identifies each pictogram by `row.id` or `row.sourceRowId` and takes its phrase from `row.UTTERANCE` or an equivalent field.
+## Documentation
 
-It accepts:
-
-- raster images from `row.bitmap` as JPEG, PNG or WebP, as a data URL, plain Base64 or an HTTP(S) URL;
-- SVG from `row.rawSvg` or `row.structuredSvg`.
-
-Before display, SVGs are isolated as image resources and stripped of executable elements and external references.
-
-## Bundled examples
-
-The three libraries in [`examples/`](examples/) each declare a context of use (`config.domainContext`) and share the same graphic style, so context is the only thing that varies between them:
-
-- **Almorzar en el restorán** (having lunch at a restaurant): 18 phrases;
-- **Viajar en transporte público** (travelling on public transport): 18 phrases;
-- **Consulta de salud** (health appointment): 18 phrases.
-
-They are in Spanish only for now. They are test material for the protocol, not libraries for use with people.
-
-## Rubric and export
-
-The source of truth for the scale is [`data/rubric-scale-descriptions.json`](data/rubric-scale-descriptions.json). Extended documentation lives in [`docs/rubric.md`](docs/rubric.md).
-
-The export uses the `pictos-index-library-evaluation-1.4.0` schema and includes:
-
-- library metadata;
-- the evaluator's relationship with AAC;
-- a UUID and timestamps for the evaluation;
-- progress, and overall and per-dimension averages;
-- each pictogram's spontaneous interpretation, scores and average;
-- the library's formal coherence and visual grammar, explicitly marked as excluded from the PICTOS Index average.
-
-The PDF is generated locally with [jsPDF](https://github.com/parallax/jsPDF), whose UMD build is kept in `web/vendor/`. Images and evaluations are not sent to any external service to produce the report.
-
-## Related projects
-
-| Repository | Description |
+| Document | Contents |
 |---|---|
-| [pictos-net](https://github.com/mediafranca/pictos-net) | Generative pictograms with semantic reasoning ([pictos.net](https://pictos.net)) |
-| [pictos-nlu-schema](https://github.com/mediafranca/pictos-nlu-schema) | Understanding contract, based on NSM and FrameNet |
-| [pictos-composition-schema](https://github.com/mediafranca/pictos-composition-schema) | Visual composition contract |
-| [pictos-svg-schema](https://github.com/mediafranca/pictos-svg-schema) | Semantic SVG with accessibility metadata |
+| [Protocol guide](docs/protocol.md) · [Castellano](docs/protocolo.md) | How to evaluate with a panel, step by step |
+| [Rubric](docs/rubric.md) | The six dimensions and their levels |
+| [Foundations](docs/foundations.md) | Literature behind each dimension and current limits |
+| [Development](docs/development.md) · [Castellano](docs/desarrollo.md) | Running locally, formats, languages, versions and publishing |
 
-## Repository structure
+## About
 
-```text
-index.html             Main interface
-web/                   Logic, styles, graphic assets and the vendored PDF dependency
-locales/               Parallel es-419 / en-GB catalogues
-data/                  Canonical rubric descriptions
-examples/              Short libraries for trying the instrument
-docs/                  Rubric documentation
-schemas/               Data schemas
-specs/                 Allium specification of the evaluator
-scripts/               Local server and utilities
-```
+PICTOS Index originates in the doctoral research of [Herbert Spencer](https://herbertspencer.net/cc) on design for AAC at Auckland University of Technology (AUT). It is the evaluative counterpart to [PICTOS.net](https://pictos.net), which generates pictograms from a phrase and its context of use, and it replaces VCSCI, its first formulation.
 
-## Publishing
+The PICTOS.net process moves through three phases, each fixed in a formal schema: [pictos-nlu-schema](https://github.com/mediafranca/pictos-nlu-schema) for understanding the communicative intent, [pictos-composition-schema](https://github.com/mediafranca/pictos-composition-schema) for the correspondence between word and image, and [pictos-svg-schema](https://github.com/mediafranca/pictos-svg-schema) for the accessible SVG that holds its whole generative lineage.
 
-The site is static and can be published directly with GitHub Pages from the root of the `main` branch.
+It is in the custody of [MediaFranca](https://mediafranca.net), a Valparaíso initiative that develops and safeguards open tools for human communication.
 
-1. Open **Settings → Pages** in the repository.
-2. Choose **Deploy from a branch**.
-3. Select the `main` branch and the `/ (root)` folder.
-
-Every later push to `main` updates the published site.
-
-## Cite
+## Citation
 
 ```
-Spencer, H. (2026). PICTOS Index: evaluating pictographic quality for AAC.
+Spencer, H. (2026). PICTOS Index: pictographic quality evaluation for AAC (version 4).
 https://github.com/mediafranca/pictos-index
 ```
 
-*Licence: Apache 2.0 (code) · CC BY 4.0 (rubric and research documentation) · CC BY-SA (example libraries). Details in [LICENSE](LICENSE).*
+*Licences: Apache 2.0 (code) · CC BY 4.0 (rubric and research documentation) · CC BY-SA (sample libraries). Details in [LICENSE](LICENSE).*

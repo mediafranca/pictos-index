@@ -1,3 +1,6 @@
+> [!NOTE]
+> **Ejemplo histórico.** Corresponde a VCSCI, la formulación anterior a PICTOS Index 4. Para el instrumento actual, ver el [README](../../README.md).
+
 # VCSCI Toy Example: Complete Chain of Thought
 
 This directory contains two complementary examples demonstrating the complete VCSCI pipeline:

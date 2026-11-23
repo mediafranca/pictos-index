@@ -1,3 +1,6 @@
+> [!NOTE]
+> **Módulo histórico.** Extracto anterior a PICTOS Index 4; la interfaz actual vive en `index.html` y `web/`. Ver el [README](../README.md).
+
 # PICTOS Index — Evaluación de Calidad Pictográfica
 
 Módulo extraído de [pictos-net](https://github.com/mediafranca/pictos-net) para integración en el repositorio independiente [mediafranca/pictos-index](https://github.com/mediafranca/pictos-index).

@@ -293,7 +293,9 @@
     "seq4": "**Cargas esos archivos** (paso 2). La pantalla prepara una planilla para cada juez, con todas las respuestas escritas, en orden aleatorio y sin nombres.",
     "seq5": "**Cada juez codifica**, por su cuenta, cada respuesta con un número del 1 al 6 y te devuelve su planilla.",
     "seq6": "**Cargas las planillas** (paso 3) y ves cuánto coinciden los jueces, qué respuestas conviene revisar juntos y los resultados de cada pictograma.",
-    "linksPlaceholder": "Aquí aparecerán las tarjetas con código QR, una por persona, en cuanto elijas la librería."
+    "linksPlaceholder": "Aquí aparecerán las tarjetas con código QR, una por persona, en cuanto elijas la librería.",
+    "guide": "Guía completa del protocolo, paso a paso",
+    "guideHref": "https://github.com/mediafranca/pictos-index/blob/main/docs/protocolo.md"
   },
   "nav": {
     "back": "← Atrás",

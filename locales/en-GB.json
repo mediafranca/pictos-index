@@ -293,7 +293,9 @@
     "seq4": "**You load those files** (step 2). The screen prepares a sheet for each judge with all the written answers, in random order and without names.",
     "seq5": "**Each judge codes**, on their own, every answer with a number from 1 to 6 and sends their sheet back.",
     "seq6": "**You load the sheets** (step 3) and see how far the judges agree, which answers are worth reviewing together and the results for each pictogram.",
-    "linksPlaceholder": "The QR code cards, one per person, will appear here as soon as you choose the library."
+    "linksPlaceholder": "The QR code cards, one per person, will appear here as soon as you choose the library.",
+    "guide": "Full protocol guide, step by step",
+    "guideHref": "https://github.com/mediafranca/pictos-index/blob/main/docs/protocol.md"
   },
   "nav": {
     "back": "← Back",
