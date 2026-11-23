@@ -9,9 +9,12 @@
     "validate-i18n": "node scripts/validate-i18n.mjs",
     "aggregate": "node scripts/aggregate-protocol.mjs",
     "coding": "node scripts/coding-sheets.mjs",
-    "test": "node --test scripts/"
+    "test": "node --test scripts/*.test.mjs"
   },
   "dependencies": {
     "jspdf": "4.2.1"
+  },
+  "engines": {
+    "node": ">=24.2"
   }
 }
