@@ -54,6 +54,18 @@ const state = {
 
 const el = {};
 
+// Theme: "system" follows the operating system; light or dark is remembered.
+// The inline script in index.html applies it before the first paint.
+const THEME_KEY = "pictos-index:theme";
+const SYSTEM_LIGHT = window.matchMedia("(prefers-color-scheme: light)");
+
+function applyTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  const light = saved ? saved === "light" : SYSTEM_LIGHT.matches;
+  document.documentElement.dataset.theme = light ? "light" : "dark";
+  document.querySelector('meta[name="theme-color"]').content = light ? "#faf8fd" : "#0b0613";
+}
+
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
@@ -76,7 +88,7 @@ async function init() {
 }
 function bindElements() {
   const ids = [
-    "homeScreen", "evaluatorShell", "startEvaluationBtn", "brandHome", "statusRegion", "languageSelect",
+    "homeScreen", "evaluatorShell", "startEvaluationBtn", "brandHome", "statusRegion", "languageSelect", "themeSelect",
     "stepBtn1", "stepBtn2", "stepBtn3", "stepBtn4", "step1", "step2", "step3", "step4",
     "step1Nav", "step2Nav", "step3Nav", "step2Title", "step2NextBtn", "setBackBtn",
     "evaluatorForm", "evalAacNoExperience",
@@ -94,6 +106,14 @@ function bindElements() {
 }
 function bindEvents() {
   el.languageSelect.addEventListener("change", onLanguageChange);
+  el.themeSelect.value = localStorage.getItem(THEME_KEY) || "system";
+  el.themeSelect.addEventListener("change", () => {
+    if (el.themeSelect.value === "system") localStorage.removeItem(THEME_KEY);
+    else localStorage.setItem(THEME_KEY, el.themeSelect.value);
+    applyTheme();
+  });
+  SYSTEM_LIGHT.addEventListener("change", applyTheme);
+  applyTheme();
   el.startEvaluationBtn.addEventListener("click", () => {
     el.homeScreen.classList.add("hidden");
     el.evaluatorShell.classList.remove("hidden");

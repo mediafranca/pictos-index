@@ -306,5 +306,11 @@
     "intro": "Download the PDF report or the JSON data. Your answers also stay saved in this browser.",
     "introProtocol": "Send that JSON file to the panel coordinator. Nothing else is needed. If you cannot find it, download it again with the button.",
     "downloaded": "✓ Your answers have been downloaded to your downloads folder as “{file}”."
+  },
+  "theme": {
+    "label": "Theme",
+    "system": "System theme",
+    "light": "Light",
+    "dark": "Dark"
   }
 }
