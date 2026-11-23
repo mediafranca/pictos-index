@@ -119,7 +119,11 @@ function renderLinks() {
   const count = Math.min(200, Math.max(0, Math.floor(Number($("coordPeople").value) || 0)));
   $("coordPrintBtn").disabled = !state.library || !count;
   if (!state.library) {
-    $("coordLinksNote").textContent = t("coordination.linksNeedLibrary");
+    $("coordLinksNote").textContent = "";
+    const placeholder = document.createElement("p");
+    placeholder.className = "coord-links-placeholder";
+    placeholder.textContent = t("coordination.linksPlaceholder");
+    container.append(placeholder);
     return;
   }
   $("coordLinksNote").textContent = state.libraryRef ? t("coordination.linksReady") : t("coordination.linksLocalFile");

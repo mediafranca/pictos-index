@@ -103,8 +103,8 @@ function bindElements() {
     "stepBtn1", "stepBtn2", "stepBtn3", "stepBtn4", "step1", "step2", "step3", "step4",
     "step1Nav", "step2Nav", "step3Nav", "step2Title", "step2NextBtn", "setBackBtn", "evalNextBtn",
     "evaluatorForm", "evalAacNoExperience",
-    "libraryFileInput", "libraryLoader", "libraryLoaded", "loadedLibraryName", "loadedLibraryMeta",
-    "replaceLibraryBtn", "libraryStatus", "auditGrid", "setQuestionTitle", "setQuestionBody", "setOptions",
+    "libraryFileInput", "libraryLoader", "libraryLoaded", "loadedLibraryName",
+    "replaceLibraryBtn", "libraryStatus", "loadedLibraryContext", "loadedLibraryCount", "auditGrid", "setQuestionTitle", "setQuestionBody", "setOptions",
     "evalPosition", "evalProgressBar", "noticePanel", "noticeText", "noticeContext", "noticeBtn",
     "questionPanel", "phraseLine", "evalImage", "guessStage", "guessText", "saveGuessBtn", "skipGuessBtn",
     "dimensionStage", "dimensionTitle", "dimensionDescription", "dimensionOptions",
@@ -554,10 +554,11 @@ function renderLibrarySummary() {
   el.libraryLoader.classList.add("hidden");
   el.libraryLoaded.classList.remove("hidden");
   el.loadedLibraryName.textContent = state.library.name || t("library.untitled");
-  el.loadedLibraryMeta.textContent = [
-    t("library.pictogramCount", { count: state.items.length }),
-    state.library.domainContext,
-  ].filter(Boolean).join(" · ");
+  // Name first, then its context of use; the count goes under the grid.
+  el.loadedLibraryContext.textContent = state.library.domainContext
+    ? t("library.contextLabel", { context: state.library.domainContext })
+    : "";
+  el.loadedLibraryCount.textContent = t("library.pictogramCount", { count: state.items.length });
 
   el.auditGrid.innerHTML = "";
   state.items.forEach((item) => {
@@ -736,7 +737,7 @@ function renderCurrentEvalItem() {
   setImage(el.evalImage, item.imageSrc, `${t("evaluation.imageAlt")} ${item.id}`);
   // A blind item's phrase never enters the DOM; otherwise it shows once the guess is in.
   const showPhrase = item.pass !== "blind" && question !== "guess";
-  el.phraseLine.textContent = showPhrase ? t("evaluation.sourcePhraseLine", { phrase: item.utterance }) : "";
+  el.phraseLine.replaceChildren(showPhrase ? marked(t("evaluation.sourcePhraseLine", { phrase: item.utterance })) : "");
   el.phraseLine.classList.toggle("hidden", !showPhrase || item.pass === "sighted");
   el.guessStage.classList.toggle("hidden", question !== "guess");
   el.useStage.classList.toggle("hidden", question !== "use");
@@ -892,80 +893,6 @@ function previousQuestion() {
 }
 
 
-function drawHexChartOnCanvas(canvas, scores) {
-  const ctx = canvas.getContext("2d");
-
-  const width = canvas.width;
-  const height = canvas.height;
-  const cx = width / 2;
-  const cy = height / 2 + 8;
-  const radius = Math.min(width, height) * 0.34;
-
-  ctx.clearRect(0, 0, width, height);
-
-  for (let level = 1; level <= 5; level += 1) {
-    const points = DIMENSIONS.map((_, i) => polarPoint(cx, cy, (radius * level) / 5, i, DIMENSIONS.length));
-    strokePolygon(ctx, points, level === 5 ? "#72558f" : "#38264d", level === 5 ? 0 : 3);
-  }
-
-  DIMENSIONS.forEach((dimension, index) => {
-    const edge = polarPoint(cx, cy, radius, index, DIMENSIONS.length);
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(edge.x, edge.y);
-    ctx.strokeStyle = "#38264d";
-    ctx.stroke();
-
-    const label = polarPoint(cx, cy, radius + 20, index, DIMENSIONS.length);
-    ctx.fillStyle = "#d8cfe3";
-    ctx.font = "600 12px Lexend, sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(dimension.code, label.x, label.y);
-  });
-
-  const ratedPoints = DIMENSIONS.map((dimension, index) => {
-    const value = normalizeScore(scores[dimension.key]);
-    if (value === null) return null;
-    return {
-      index,
-      point: polarPoint(cx, cy, (radius * value) / 5, index, DIMENSIONS.length),
-    };
-  }).filter(Boolean);
-
-  if (ratedPoints.length >= 3) {
-    ctx.beginPath();
-    ratedPoints.forEach((entry, idx) => {
-      if (idx === 0) ctx.moveTo(entry.point.x, entry.point.y);
-      else ctx.lineTo(entry.point.x, entry.point.y);
-    });
-    ctx.closePath();
-    ctx.fillStyle = "rgba(157, 107, 255, 0.22)";
-    ctx.strokeStyle = "#b794ff";
-    ctx.lineWidth = 2;
-    ctx.fill();
-    ctx.stroke();
-  } else if (ratedPoints.length === 2) {
-    ctx.beginPath();
-    ctx.moveTo(ratedPoints[0].point.x, ratedPoints[0].point.y);
-    ctx.lineTo(ratedPoints[1].point.x, ratedPoints[1].point.y);
-    ctx.strokeStyle = "#b794ff";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  }
-
-  ratedPoints.forEach((entry) => {
-    ctx.beginPath();
-    ctx.arc(entry.point.x, entry.point.y, 4, 0, Math.PI * 2);
-    ctx.fillStyle = AXIS_COLORS[entry.index];
-    ctx.fill();
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 1.4;
-    ctx.stroke();
-  });
-}
-
-
 function normalizeScores(rawScores) {
   const normalized = {};
   DIMENSIONS.forEach((dimension) => {
@@ -1073,21 +1000,6 @@ function isLibraryAssessmentComplete() {
 function polarPoint(cx, cy, radius, index, total) {
   const angle = -Math.PI / 2 + (index * (Math.PI * 2)) / total;
   return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
-}
-
-function strokePolygon(ctx, points, strokeColor, dashLength) {
-  if (!points.length) return;
-  ctx.beginPath();
-  points.forEach((point, index) => {
-    if (index === 0) ctx.moveTo(point.x, point.y);
-    else ctx.lineTo(point.x, point.y);
-  });
-  ctx.closePath();
-  ctx.strokeStyle = strokeColor;
-  if (dashLength > 0) ctx.setLineDash([dashLength, dashLength]);
-  else ctx.setLineDash([]);
-  ctx.stroke();
-  ctx.setLineDash([]);
 }
 
 function getDimensionMeta(key) {
@@ -1342,6 +1254,7 @@ async function exportEvaluationPdf() {
   try {
     const payload = buildExportPayload();
     const pdf = new PdfDocument({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
+    pdfFont = await embedLexend(pdf);
     pdf.setProperties({
       title: t("pdf.documentTitle", { library: state.library.name || t("library.untitled") }),
       subject: t("pdf.documentSubject"),
@@ -1372,20 +1285,48 @@ async function exportEvaluationPdf() {
   }
 }
 
+// The report uses the site's typeface. jsPDF needs static TTF files, vendored with
+// their licence in web/vendor/fonts; if they cannot be read, Helvetica stands in.
+let pdfFont = "helvetica";
+
+async function embedLexend(pdf) {
+  try {
+    for (const [style, file] of [["normal", "Lexend-Regular.ttf"], ["bold", "Lexend-Bold.ttf"]]) {
+      const response = await fetch(`./web/vendor/fonts/${file}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      let binary = "";
+      for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+      pdf.addFileToVFS(file, btoa(binary));
+      pdf.addFont(file, "Lexend", style);
+    }
+    return "Lexend";
+  } catch (error) {
+    console.warn("Lexend could not be embedded; using Helvetica.", error);
+    return "helvetica";
+  }
+}
+
+// Light palette for print: no dark backgrounds.
+const PDF_INK = [26, 16, 37];
+const PDF_SOFT = [61, 49, 80];
+const PDF_MUTED = [98, 86, 115];
+const PDF_ACCENT = [91, 33, 182];
+const PDF_TINT = [243, 238, 250];
+const PDF_LINE = [221, 211, 234];
+
 function drawPdfCover(pdf, payload) {
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
   const summary = payload.summary;
   const libraryScores = payload.libraryAssessment.scores;
 
-  pdf.setFillColor(15, 8, 25);
-  pdf.rect(0, 0, pageWidth, pageHeight, "F");
-  pdf.setTextColor(183, 148, 255);
-  pdf.setFont("helvetica", "bold");
+  pdf.setTextColor(...PDF_ACCENT);
+  pdf.setFont(pdfFont, "bold");
   pdf.setFontSize(11);
   pdf.text(t("pdf.eyebrow").toUpperCase(), 18, 21);
 
-  pdf.setTextColor(255, 255, 255);
+  pdf.setTextColor(...PDF_INK);
   pdf.setFontSize(30);
   pdf.text(t("pdf.title"), 18, 39);
   pdf.setFontSize(17);
@@ -1398,23 +1339,24 @@ function drawPdfCover(pdf, payload) {
   drawPdfScoreCard(pdf, 108, cardY, cardWidth, t("audit.coherenceTitle"), libraryScores.coherence);
   drawPdfScoreCard(pdf, 198, cardY, cardWidth, t("audit.grammarTitle"), libraryScores.grammar);
 
-  pdf.setFont("helvetica", "normal");
-  pdf.setTextColor(216, 207, 227);
+  pdf.setFont(pdfFont, "normal");
+  pdf.setTextColor(...PDF_SOFT);
   pdf.setFontSize(10);
   pdf.text(t("pdf.completedItems", { completed: summary.completedItems, total: summary.totalItems }), 18, 132);
   pdf.text(t("pdf.exportedAt", { date: formatPdfDate(payload.exportedAt) }), 18, 140);
   pdf.text(t("pdf.locale", { locale: payload.uiLocale }), 18, 148);
 
-  pdf.setFillColor(42, 25, 61);
-  pdf.roundedRect(18, 160, 260, 25, 3, 3, "F");
-  pdf.setTextColor(255, 223, 94);
-  pdf.setFont("helvetica", "bold");
+  pdf.setFillColor(253, 246, 227);
+  pdf.setDrawColor(226, 196, 130);
+  pdf.roundedRect(18, 160, 260, 25, 3, 3, "FD");
+  pdf.setTextColor(146, 64, 14);
+  pdf.setFont(pdfFont, "bold");
   pdf.text(t("prototype.title"), 25, 171);
-  pdf.setTextColor(234, 228, 241);
-  pdf.setFont("helvetica", "normal");
+  pdf.setTextColor(...PDF_SOFT);
+  pdf.setFont(pdfFont, "normal");
   pdf.setFontSize(9);
   pdf.text(pdf.splitTextToSize(t("pdf.prototypeNote"), 185), 25, 178);
-  pdf.setTextColor(183, 148, 255);
+  pdf.setTextColor(...PDF_ACCENT);
   pdf.text(pdf.splitTextToSize(t("pdf.separateNote"), 58), 214, 171);
 }
 
@@ -1424,40 +1366,38 @@ async function drawPdfItemPage(pdf, item, index, payload) {
   const average = averageScore(scores);
   const pageWidth = pdf.internal.pageSize.getWidth();
 
-  pdf.setFillColor(249, 247, 252);
-  pdf.rect(0, 0, pageWidth, pdf.internal.pageSize.getHeight(), "F");
-  pdf.setTextColor(73, 45, 103);
-  pdf.setFont("helvetica", "bold");
+  pdf.setTextColor(...PDF_ACCENT);
+  pdf.setFont(pdfFont, "bold");
   pdf.setFontSize(10);
   pdf.text(t("pdf.itemCounter", { current: index + 1, total: state.items.length }).toUpperCase(), 16, 17);
-  pdf.setTextColor(20, 13, 31);
+  pdf.setTextColor(...PDF_INK);
   pdf.setFontSize(18);
   pdf.text(pdf.splitTextToSize(item.utterance, 205), 16, 29);
 
-  pdf.setFillColor(255, 223, 94);
+  pdf.setFillColor(...PDF_TINT);
   pdf.roundedRect(244, 14, 37, 18, 4, 4, "F");
-  pdf.setTextColor(20, 13, 31);
+  pdf.setTextColor(...PDF_ACCENT);
   pdf.setFontSize(8);
   pdf.text("PICTOS Index", 262.5, 21, { align: "center" });
   pdf.setFontSize(14);
   pdf.text(formatPdfScore(average), 262.5, 28, { align: "center" });
 
   pdf.setFillColor(255, 255, 255);
-  pdf.setDrawColor(224, 217, 232);
+  pdf.setDrawColor(...PDF_LINE);
   pdf.roundedRect(16, 43, 122, 104, 3, 3, "FD");
   const pictogram = await rasterizeImageForPdf(item.imageSrc, t("evaluation.imageFallback"));
   pdf.addImage(pictogram, "PNG", 22, 49, 110, 92, undefined, "FAST");
 
-  pdf.setFillColor(20, 11, 32);
-  pdf.roundedRect(148, 43, 133, 104, 3, 3, "F");
-  const chart = createPdfChart(scores);
-  pdf.addImage(chart, "PNG", 158, 48, 113, 94, undefined, "FAST");
+  pdf.setFillColor(255, 255, 255);
+  pdf.setDrawColor(...PDF_LINE);
+  pdf.roundedRect(148, 43, 133, 104, 3, 3, "FD");
+  drawPdfProfile(pdf, 214.5, 97, 34, scores);
 
   const interpretation = record?.guess
     ? record.guess
     : t("pdf.interpretationSkipped");
-  pdf.setTextColor(87, 75, 101);
-  pdf.setFont("helvetica", "normal");
+  pdf.setTextColor(...PDF_MUTED);
+  pdf.setFont(pdfFont, "normal");
   pdf.setFontSize(8.5);
   pdf.text(pdf.splitTextToSize(`${t("pdf.interpretation")}: ${interpretation}`, 265), 16, 156);
 
@@ -1466,19 +1406,19 @@ async function drawPdfItemPage(pdf, item, index, payload) {
     const row = Math.floor(dimensionIndex / 3);
     const x = 16 + column * 90;
     const y = 166 + row * 15;
-    pdf.setFillColor(239, 234, 245);
+    pdf.setFillColor(...PDF_TINT);
     pdf.roundedRect(x, y, 84, 11, 2, 2, "F");
-    pdf.setTextColor(73, 45, 103);
-    pdf.setFont("helvetica", "bold");
+    pdf.setTextColor(...PDF_ACCENT);
+    pdf.setFont(pdfFont, "bold");
     pdf.setFontSize(8);
     pdf.text(`${dimension.code} · ${getDimensionMeta(dimension.key).name}`, x + 4, y + 4.8, { maxWidth: 65 });
-    pdf.setTextColor(20, 13, 31);
+    pdf.setTextColor(...PDF_INK);
     pdf.setFontSize(11);
     pdf.text(String(scores[dimension.key]), x + 77, y + 7.2, { align: "right" });
   });
 
-  pdf.setTextColor(87, 75, 101);
-  pdf.setFont("helvetica", "normal");
+  pdf.setTextColor(...PDF_MUTED);
+  pdf.setFont(pdfFont, "normal");
   pdf.setFontSize(7.5);
   const category = item.category ? item.category.replaceAll("_", " ") : t("audit.unknownCategory");
   pdf.text(`${t("pdf.category")}: ${category}`, 16, 201);
@@ -1490,17 +1430,64 @@ async function drawPdfItemPage(pdf, item, index, payload) {
   );
 }
 
+// The six-dimension profile, drawn as vectors so it stays sharp at any zoom.
+function drawPdfProfile(pdf, cx, cy, radius, scores) {
+  const total = DIMENSIONS.length;
+  const polygon = (points, style) => {
+    const deltas = points.slice(1).map((point, i) => [point.x - points[i].x, point.y - points[i].y]);
+    pdf.lines(deltas, points[0].x, points[0].y, [1, 1], style, true);
+  };
+  pdf.setLineWidth(0.25);
+  for (let level = 1; level <= 5; level += 1) {
+    pdf.setDrawColor(...(level === 5 ? [185, 166, 211] : PDF_LINE));
+    pdf.setLineDashPattern(level === 5 ? [] : [1, 1], 0);
+    polygon(DIMENSIONS.map((_, i) => polarPoint(cx, cy, (radius * level) / 5, i, total)), "S");
+  }
+  pdf.setLineDashPattern([], 0);
+  pdf.setDrawColor(...PDF_LINE);
+  pdf.setFont(pdfFont, "bold");
+  pdf.setFontSize(8);
+  pdf.setTextColor(...PDF_SOFT);
+  DIMENSIONS.forEach((dimension, i) => {
+    const edge = polarPoint(cx, cy, radius, i, total);
+    pdf.line(cx, cy, edge.x, edge.y);
+    const label = polarPoint(cx, cy, radius + 6, i, total);
+    pdf.text(dimension.code, label.x, label.y, { align: "center", baseline: "middle" });
+  });
+
+  const rated = DIMENSIONS
+    .map((dimension, i) => ({ i, value: normalizeScore(scores[dimension.key]) }))
+    .filter((entry) => entry.value !== null)
+    .map((entry) => ({ ...entry, point: polarPoint(cx, cy, (radius * entry.value) / 5, entry.i, total) }));
+  if (rated.length >= 2) {
+    pdf.setDrawColor(...PDF_ACCENT);
+    pdf.setLineWidth(0.6);
+    pdf.setFillColor(...PDF_TINT);
+    polygon(rated.map((entry) => entry.point), rated.length >= 3 ? "FD" : "S");
+  }
+  pdf.setLineWidth(0.3);
+  pdf.setDrawColor(255, 255, 255);
+  rated.forEach(({ i, point }) => {
+    pdf.setFillColor(...hexToRgb(AXIS_COLORS[i]));
+    pdf.circle(point.x, point.y, 1.2, "FD");
+  });
+}
+
+function hexToRgb(hex) {
+  return hex.match(/[0-9a-f]{2}/gi).map((pair) => Number.parseInt(pair, 16));
+}
+
 function drawPdfScoreCard(pdf, x, y, width, label, value) {
-  pdf.setFillColor(42, 25, 61);
+  pdf.setFillColor(...PDF_TINT);
   pdf.roundedRect(x, y, width, 38, 4, 4, "F");
-  pdf.setTextColor(216, 207, 227);
-  pdf.setFont("helvetica", "bold");
+  pdf.setTextColor(...PDF_SOFT);
+  pdf.setFont(pdfFont, "bold");
   pdf.setFontSize(9);
   pdf.text(pdf.splitTextToSize(label, width - 12), x + 6, y + 10);
-  pdf.setTextColor(255, 223, 94);
+  pdf.setTextColor(...PDF_ACCENT);
   pdf.setFontSize(22);
   pdf.text(formatPdfScore(value), x + 6, y + 29);
-  pdf.setTextColor(216, 207, 227);
+  pdf.setTextColor(...PDF_SOFT);
   pdf.setFontSize(9);
   pdf.text("/ 5", x + width - 7, y + 29, { align: "right" });
 }
@@ -1508,21 +1495,13 @@ function drawPdfScoreCard(pdf, x, y, width, label, value) {
 function drawPdfFooter(pdf, page, totalPages) {
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
-  pdf.setDrawColor(207, 197, 218);
+  pdf.setDrawColor(...PDF_LINE);
   pdf.line(16, pageHeight - 7, pageWidth - 16, pageHeight - 7);
-  pdf.setTextColor(115, 101, 128);
-  pdf.setFont("helvetica", "normal");
+  pdf.setTextColor(...PDF_MUTED);
+  pdf.setFont(pdfFont, "normal");
   pdf.setFontSize(7);
   pdf.text(t("pdf.footer"), 16, pageHeight - 3);
   pdf.text(`${page} / ${totalPages}`, pageWidth - 16, pageHeight - 3, { align: "right" });
-}
-
-function createPdfChart(scores) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 360;
-  canvas.height = 320;
-  drawHexChartOnCanvas(canvas, scores);
-  return canvas.toDataURL("image/png");
 }
 
 async function rasterizeImageForPdf(source, fallbackLabel) {

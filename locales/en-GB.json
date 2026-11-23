@@ -39,7 +39,7 @@
     "eyebrow": "Procedure",
     "title": "Four stages of evaluation",
     "loadTitle": "Look at the library as a whole",
-    "loadBody": "A library exported from PICTOS.net, or a sample one, is loaded and viewed in full, without phrases. Its formal coherence and visual grammar are rated separately and reported alongside the index, not averaged into it.",
+    "loadBody": "The whole library is viewed without phrases, and its formal coherence and visual grammar are rated.",
     "relationTitle": "State the evaluator’s position",
     "relationBody": "The evaluator’s relationship with AAC is recorded, so that each judgement can be interpreted in light of the experience from which it is made.",
     "evaluateTitle": "Evaluate each pictogram",
@@ -93,7 +93,8 @@
     "untitled": "Untitled library",
     "pictogramCount": "{count} pictograms",
     "linkLoading": "Loading the panel’s library… This may take a moment: it is several megabytes.",
-    "linkError": "The library in this link could not be loaded. Check your connection and open it again; if it still fails, let the panel coordinator know."
+    "linkError": "The library in this link could not be loaded. Check your connection and open it again; if it still fails, let the panel coordinator know.",
+    "contextLabel": "Context of use: {context}"
   },
   "profile": {
     "title": "Tell us about your relationship with AAC",
@@ -130,7 +131,7 @@
     "imageFallback": "Pictogram unavailable",
     "noLevelDescription": "No description is available for this level.",
     "questionPosition": "Pictogram {current} of {total} · question {question} of {questions}",
-    "sourcePhraseLine": "Source phrase: “{phrase}”"
+    "sourcePhraseLine": "Source phrase: **“{phrase}”**"
   },
   "audit": {
     "unknownCategory": "Uncategorised",
@@ -252,10 +253,6 @@
     "codingBtn": "Download coding report (JSON)",
     "firstRound": "Reliability, first complete round (fixed): alpha {alpha}. This upload is round {round}; an alpha after reconciliation measures convergence, not reliability. Report the first-round one.",
     "howTitle": "How a panel works",
-    "how1": "Choose the library to be evaluated. Unless it is a sample one, it must be **published on the internet** (see below for where).",
-    "how2": "Say how many people will evaluate. Each one gets **their own link or QR code**, which opens on a phone or a computer. The link already carries the library: there is nothing to load.",
-    "how3": "Each person evaluates alone, at their own pace. At the end, their browser **downloads a file with their answers**, which they send you by email, WhatsApp or any other means.",
-    "how4": "Gather those files here to see the results and prepare the coding.",
     "howPrivacy": "There is no server and no database: the answers go straight from each person to you.",
     "chooseLibrary": "Choose a library…",
     "publishedLibrary": "Another library, published on the internet",
@@ -272,7 +269,6 @@
     "where4": "**Do not change the file** while the panel runs: if it changes, the evaluations can no longer be compared. On GitHub, use the address of a specific commit.",
     "where5": "A library is several megabytes (the sample ones, about 20 MB). To evaluate on a phone, Wi-Fi is advisable.",
     "people": "People who will evaluate",
-    "linksNeedLibrary": "Choose a library to generate the links.",
     "linksReady": "Give each person their card or their link. Odd numbers answer form A and even numbers form B, so handing them out in order balances the forms.",
     "linksLocalFile": "With a file from this computer the links cannot carry the library: each person will have to load this same file. To avoid that, publish it on the internet.",
     "cardTitle": "Person {n} · form {form}",
@@ -281,7 +277,21 @@
     "copy": "Copy link",
     "copyLabel": "Copy the link for person {n}",
     "copied": "Copied ✓",
-    "print": "Print cards with QR codes"
+    "print": "Print cards with QR codes",
+    "rolesIntro": "A panel involves **two groups of people**, at different moments:",
+    "roleEvaluators": "Evaluators",
+    "roleEvaluatorsBody": "They answer the instrument, each on their own phone or computer. They write what they think each pictogram communicates and say whether it works in a situation. At least 8 is advisable.",
+    "roleJudges": "Judges",
+    "roleJudgesBody": "They come in afterwards. They read the written answers and decide, against the real phrase, whether each one got it right. There are 2 or more, they work separately and do not evaluate pictograms.",
+    "whyJudges": "Why judges? Interpretations are free text: someone has to decide whether “I want water” matches “I am thirsty”. With two or more independent judges, it is possible to measure whether that decision is reliable.",
+    "sequenceTitle": "Step by step",
+    "seq1": "**You choose the library** and how many people will evaluate (step 1, below).",
+    "seq2": "**You hand out a card with a QR code**, or a link, to each person. The link already carries the library.",
+    "seq3": "**Each person evaluates** at their own pace. At the end, their phone downloads a file with their answers and they send it to you.",
+    "seq4": "**You load those files** (step 2). The screen prepares a sheet for each judge with all the written answers, in random order and without names.",
+    "seq5": "**Each judge codes**, on their own, every answer with a number from 1 to 6 and sends their sheet back.",
+    "seq6": "**You load the sheets** (step 3) and see how far the judges agree, which answers are worth reviewing together and the results for each pictogram.",
+    "linksPlaceholder": "The QR code cards, one per person, will appear here as soon as you choose the library."
   },
   "nav": {
     "back": "← Back",
@@ -315,5 +325,9 @@
     "choose": "Arrows: choose · Enter: next",
     "chooseText": "Arrows: choose · Enter: next · Ctrl or ⌘ + Enter from the text",
     "confirmText": "Ctrl or ⌘ + Enter: confirm"
+  },
+  "footer": {
+    "licences": "Code under the Apache 2.0 licence · Rubric under CC BY 4.0",
+    "source": "Source code on GitHub"
   }
 }

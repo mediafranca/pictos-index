@@ -39,7 +39,7 @@
     "eyebrow": "Procedimiento",
     "title": "Cuatro etapas de evaluación",
     "loadTitle": "Mirar la librería como conjunto",
-    "loadBody": "Se carga una librería exportada desde PICTOS.net, o una de ejemplo, y se observa completa, sin frases. Se valoran por separado su coherencia formal y su gramática visual, que se informan junto al índice sin promediarse con él.",
+    "loadBody": "Se mira la librería completa, sin frases, y se valoran su coherencia formal y su gramática visual.",
     "relationTitle": "Declarar la posición de quien evalúa",
     "relationBody": "Se registra la relación de quien evalúa con la CAA, para interpretar cada juicio según la experiencia desde la que se emite.",
     "evaluateTitle": "Evaluar cada pictograma",
@@ -93,7 +93,8 @@
     "untitled": "Librería sin nombre",
     "pictogramCount": "{count} pictogramas",
     "linkLoading": "Cargando la librería del panel… Puede tardar un poco: pesa varios megabytes.",
-    "linkError": "No se pudo cargar la librería de este enlace. Revisa tu conexión y vuelve a abrirlo; si sigue sin funcionar, avísale a quien coordina el panel."
+    "linkError": "No se pudo cargar la librería de este enlace. Revisa tu conexión y vuelve a abrirlo; si sigue sin funcionar, avísale a quien coordina el panel.",
+    "contextLabel": "Contexto de uso: {context}"
   },
   "profile": {
     "title": "Cuéntanos tu relación con la CAA",
@@ -130,7 +131,7 @@
     "imageFallback": "Pictograma sin imagen",
     "noLevelDescription": "Sin descripción para este nivel.",
     "questionPosition": "Pictograma {current} de {total} · pregunta {question} de {questions}",
-    "sourcePhraseLine": "Frase de origen: «{phrase}»"
+    "sourcePhraseLine": "Frase de origen: **«{phrase}»**"
   },
   "audit": {
     "unknownCategory": "Sin categoría",
@@ -252,10 +253,6 @@
     "codingBtn": "Descargar informe de codificación (JSON)",
     "firstRound": "Fiabilidad, primera ronda completa (fija): alfa {alpha}. Esta carga es la ronda {round}; un alfa posterior a la reconciliación mide convergencia, no fiabilidad. Reporta el de la primera ronda.",
     "howTitle": "Cómo funciona un panel",
-    "how1": "Elige la librería que se evaluará. Si no es una de ejemplo, tiene que estar **publicada en internet** (más abajo te decimos dónde).",
-    "how2": "Indica cuántas personas evaluarán. Cada una recibe **su propio enlace o código QR**, que se abre en un teléfono o en un computador. El enlace ya trae la librería: no hay que cargar nada.",
-    "how3": "Cada persona evalúa sola, a su ritmo. Al terminar, su navegador **descarga un archivo con sus respuestas**, que te envía por correo, WhatsApp u otro medio.",
-    "how4": "Reúne aquí esos archivos para ver los resultados y preparar la codificación.",
     "howPrivacy": "No hay servidor ni base de datos: las respuestas van directamente de cada persona a ti.",
     "chooseLibrary": "Elige una librería…",
     "publishedLibrary": "Otra librería, publicada en internet",
@@ -272,7 +269,6 @@
     "where4": "**No cambies el archivo** mientras dure el panel: si cambia, las evaluaciones ya no se pueden comparar. En GitHub, usa la dirección de un commit concreto.",
     "where5": "Una librería pesa varios megabytes (las de ejemplo, unos 20 MB). Para evaluar desde un teléfono, conviene usar wifi.",
     "people": "Personas que evaluarán",
-    "linksNeedLibrary": "Elige una librería para generar los enlaces.",
     "linksReady": "Da a cada persona su tarjeta o su enlace. Los números impares responden la forma A y los pares la forma B, así que repartirlos en orden equilibra las formas.",
     "linksLocalFile": "Con un archivo de este computador los enlaces no pueden traer la librería: cada persona tendrá que cargar este mismo archivo. Para evitarlo, publícala en internet.",
     "cardTitle": "Persona {n} · forma {form}",
@@ -281,7 +277,21 @@
     "copy": "Copiar enlace",
     "copyLabel": "Copiar el enlace de la persona {n}",
     "copied": "Copiado ✓",
-    "print": "Imprimir tarjetas con código QR"
+    "print": "Imprimir tarjetas con código QR",
+    "rolesIntro": "En un panel participan **dos grupos de personas**, en momentos distintos:",
+    "roleEvaluators": "Personas evaluadoras",
+    "roleEvaluatorsBody": "Responden el instrumento, cada una desde su teléfono o computador. Escriben qué creen que comunica cada pictograma y dicen si sirve en una situación. Conviene que sean al menos 8.",
+    "roleJudges": "Jueces",
+    "roleJudgesBody": "Llegan después. Leen las respuestas escritas y deciden, comparándolas con la frase real, si cada una acertó. Son 2 o más, trabajan por separado y no evalúan pictogramas.",
+    "whyJudges": "¿Por qué jueces? Las interpretaciones son texto libre: alguien tiene que decidir si «quiero agua» acierta con «tengo sed». Con dos o más jueces independientes se puede medir si esa decisión es fiable.",
+    "sequenceTitle": "Paso a paso",
+    "seq1": "**Eliges la librería** y cuántas personas evaluarán (paso 1, abajo).",
+    "seq2": "**Repartes una tarjeta con código QR**, o un enlace, a cada persona. El enlace ya trae la librería.",
+    "seq3": "**Cada persona evalúa** a su ritmo. Al terminar, su teléfono descarga un archivo con sus respuestas y te lo envía.",
+    "seq4": "**Cargas esos archivos** (paso 2). La pantalla prepara una planilla para cada juez, con todas las respuestas escritas, en orden aleatorio y sin nombres.",
+    "seq5": "**Cada juez codifica**, por su cuenta, cada respuesta con un número del 1 al 6 y te devuelve su planilla.",
+    "seq6": "**Cargas las planillas** (paso 3) y ves cuánto coinciden los jueces, qué respuestas conviene revisar juntos y los resultados de cada pictograma.",
+    "linksPlaceholder": "Aquí aparecerán las tarjetas con código QR, una por persona, en cuanto elijas la librería."
   },
   "nav": {
     "back": "← Atrás",
@@ -315,5 +325,9 @@
     "choose": "Flechas: elegir · Enter: siguiente",
     "chooseText": "Flechas: elegir · Enter: siguiente · Ctrl o ⌘ + Enter desde el texto",
     "confirmText": "Ctrl o ⌘ + Enter: confirmar"
+  },
+  "footer": {
+    "licences": "Código bajo licencia Apache 2.0 · Rúbrica bajo CC BY 4.0",
+    "source": "Código fuente en GitHub"
   }
 }
