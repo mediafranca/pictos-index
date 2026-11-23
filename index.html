@@ -404,6 +404,29 @@
           </div>
         </div>
 
+        <div id="useStage" class="evaluation-workspace hidden">
+          <div class="stage-image-card workspace-panel">
+            <img id="useImage" alt="Pictograma actual" data-i18n-alt="evaluation.imageAlt" class="stage-image" />
+          </div>
+
+          <div class="stage-input-card workspace-panel">
+            <p class="eyebrow" data-i18n="evaluation.useEyebrow">¿Sirve aquí?</p>
+            <p id="useScenario" class="use-scenario"></p>
+            <fieldset class="use-options">
+              <legend data-i18n="evaluation.useQuestion">¿Este pictograma le sirve para decirlo en esta situación?</legend>
+              <label><input type="radio" name="useAnswer" value="yes" /> <span data-i18n="evaluation.useYes">Sí, sirve</span></label>
+              <label><input type="radio" name="useAnswer" value="partly" /> <span data-i18n="evaluation.usePartly">Sirve, con reservas</span></label>
+              <label><input type="radio" name="useAnswer" value="no" /> <span data-i18n="evaluation.useNo">No sirve</span></label>
+              <label><input type="radio" name="useAnswer" value="cannot_judge" /> <span data-i18n="evaluation.useCannot">No puedo juzgarlo</span></label>
+            </fieldset>
+            <label>
+              <span data-i18n="evaluation.useReason">¿Por qué? (opcional)</span>
+              <textarea id="useReason" rows="3"></textarea>
+            </label>
+            <p class="field-hint" data-i18n="evaluation.useHint">Piensa en la situación descrita y en quien necesita decir esa frase, no en el pictograma en abstracto.</p>
+          </div>
+        </div>
+
         <div class="evaluation-bottom-bar">
           <button id="evalPrevBtn" type="button" class="secondary-btn pictogram-nav-btn" aria-label="Pictograma anterior" data-i18n-aria-label="evaluation.itemPrevious">
             <span class="pictogram-chevron" aria-hidden="true">←</span>

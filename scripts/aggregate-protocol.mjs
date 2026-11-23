@@ -16,7 +16,7 @@ import { join } from "node:path";
 
 import { aggregate } from "../web/protocol.js";
 
-export { DIMENSIONS, CODING_SCHEME, krippendorffAlpha, aggregate } from "../web/protocol.js";
+export { CODING_SCHEME, krippendorffAlpha, aggregate } from "../web/protocol.js";
 
 function listExports(paths) {
   return paths.flatMap((path) => (statSync(path).isDirectory()

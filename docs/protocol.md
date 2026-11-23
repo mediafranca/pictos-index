@@ -1,19 +1,27 @@
 # Experimental protocol: counterbalanced forms
 
-Status: experimental (`protocolo-experimental-0.1`). It runs without a server: each person evaluates on their own, downloads a JSON file, and the files are joined afterwards.
+Status: experimental (`protocolo-experimental-0.2`). It runs without a server: each person evaluates on their own, downloads a JSON file, and the files are joined afterwards.
 
 ## Why
 
-Revealing a phrase splits two constructs. Before it, an interpretation measures **transparency**: inferring meaning from the image. After it, a rating measures **translucency**: judging the link between sign and referent once the referent is known. No one can stop knowing a phrase once they have seen it, and in a library drawn with one visual grammar, seeing item 1's phrase teaches something about item 7. Per-item reveals mix the two constructs. Randomising the order spreads that carry-over across items but does not remove it.
+Revealing a phrase splits two constructs. Before it, an interpretation measures **transparency**: inferring meaning from the image. After it, a judgement measures **translucency** and use: whether the sign serves the referent once the referent is known. No one can stop knowing a phrase once they have seen it, and in a library drawn with one visual grammar, seeing item 1's phrase teaches something about item 7. Per-item reveals mix the two constructs. Randomising the order spreads that carry-over across items but does not remove it.
 
 The protocol therefore splits the library in two halves and gives each person only one construct per item:
 
 | Form | Pass 1: without the phrase | Pass 2: with the phrase |
 |---|---|---|
-| A | half 1: interpretation | half 2: ratings |
-| B | half 2: interpretation | half 1: ratings |
+| A | half 1: «¿Qué significa?» | half 2: «¿Sirve aquí?» |
+| B | half 2: «¿Qué significa?» | half 1: «¿Sirve aquí?» |
 
-Each item gets blind interpretations from one form and ratings from the other. No one interprets an item whose phrase they have seen, or rates an item they first interpreted blind.
+Each item gets blind interpretations from one form and use judgements from the other. No one interprets an item whose phrase they have seen, or judges an item they first interpreted blind.
+
+## Three questions, one per pictogram
+
+1. **¿Se ve bien?** Form. Nobody is asked: it is measured automatically with [pictos-auto-index](https://github.com/mediafranca/pictos-auto-index) (stroke, units, closed regions, dispersion and confusability within the library).
+2. **¿Qué significa?** Pass 1. An open interpretation without the phrase, later coded by judges.
+3. **¿Sirve aquí?** Pass 2. With the phrase and the declared context of use, the person answers whether the pictogram helps someone say that phrase in that situation: *yes*, *with reservations*, *no*, or *I cannot judge*, with an optional reason.
+
+The six ratings of the individual flow (clarity, recognisability, semantic transparency, pragmatic fit, cultural adequacy, cognitive accessibility) are not asked in the protocol. They remain only in the individual flow, so earlier evaluations stay readable. The profile hexagon and the average are not shown.
 
 ## How to run it
 
@@ -22,7 +30,7 @@ Each item gets blind interpretations from one form and ratings from the other. N
    - `https://mediafranca.net/pictos-index/?forma=A`
    - `https://mediafranca.net/pictos-index/?forma=B`
 3. Each person loads the same library file, completes both passes and the library audit, and downloads the evaluation JSON.
-4. Open the coordination screen (`?coordinar`, also linked from the home page), choose the library and load every evaluation file. The screen shows how many evaluations each form has, any warnings and the agreement on the ratings, and downloads the aggregate report.
+4. Open the coordination screen (`?coordinar`, also linked from the home page), choose the library and load every evaluation file. The screen shows how many evaluations each form has, any warnings and the agreement on «¿Sirve aquí?», and downloads the aggregate report.
 
 The same steps can be run from the command line:
 
@@ -30,7 +38,7 @@ The same steps can be run from the command line:
 node scripts/aggregate-protocol.mjs library.json evaluations/
 ```
 
-Without `?forma` the app keeps the individual flow, in which each pictogram is interpreted and then rated.
+Without `?forma` the app keeps the individual flow, in which each pictogram is interpreted and then rated on the six dimensions.
 
 ## What the app guarantees
 
@@ -45,16 +53,17 @@ Without `?forma` the app keeps the individual flow, in which each pictogram is i
 The evaluation JSON (`pictos-index-library-evaluation-1.5.0`) adds:
 
 - `protocol`: version, form, partition seed, order seed, both halves, and the full sequence with each item's pass and position;
-- `items[].pass`: `blind` or `sighted`.
+- `items[].pass`: `blind` or `sighted`;
+- `items[].sirve_aqui`: for sighted items, `respuesta` (`yes`, `partly`, `no`, `cannot_judge`) and `motivo`.
 
 ## Aggregate report
 
 `scripts/aggregate-protocol.mjs` checks that every file comes from the same library, protocol version and split, and warns when the forms are unbalanced. It writes, for each item:
 
 - the blind interpretations, with form and position, for the judges to code (see below).
-- the sighted ratings for each dimension: n, median and values.
+- the «¿Sirve aquí?» answers, with reasons, and their distribution.
 
-For each dimension it also writes Krippendorff's ordinal alpha over the sighted ratings (Krippendorff, 2011). `scripts/aggregate-protocol.test.mjs` checks this against Krippendorff's published example. No average is computed.
+It also writes Krippendorff's ordinal alpha over the «¿Sirve aquí?» answers, ordered *no* < *with reservations* < *yes*; *I cannot judge* counts as missing (Krippendorff, 2011). `scripts/aggregate-protocol.test.mjs` checks this against Krippendorff's published example. No average is computed.
 
 ## Coding the blind interpretations
 
@@ -79,7 +88,7 @@ Everything happens on the coordination screen. The scripts below do the same fro
 
 1. Choose the number of judges and download one sheet each (`juez-1.csv`, `juez-2.csv`, …). The screen also shows instructions for the judges, with the six codes, ready to forward. Each sheet lists every answer with an opaque id, the source phrase, the answer and an empty `codigo` column. Each sheet has its own random order and shows neither the evaluator, the form nor the position. Skipped answers are left out and count as code 6.
 2. Each judge opens their sheet in Excel or Google Sheets, writes a code from 1 to 6 in `codigo`, saves it as CSV and sends it back, without seeing the other judges' codes.
-3. Load all the returned sheets on the coordination screen. It lists problems in each sheet (missing or invalid codes), the nominal alpha between judges, the disagreements to resolve, and for each item the distribution of the codes on which all judges agree. Answers with disagreements are counted as unresolved until the judges settle them and correct their sheets. The screen downloads the coding report (JSON) and a results sheet with one row per item: half, code distribution, unresolved answers, and n and median of each sighted rating.
+3. Load all the returned sheets on the coordination screen. It lists problems in each sheet (missing or invalid codes), the nominal alpha between judges, the disagreements to resolve, and for each item the distribution of the codes on which all judges agree. Answers with disagreements are counted as unresolved until the judges settle them and correct their sheets. The screen downloads the coding report (JSON) and a results sheet with one row per item: half, code distribution, unresolved answers, and the count of each «¿Sirve aquí?» answer.
 
 Command line equivalent:
 
@@ -92,7 +101,8 @@ Codes are categories, not an interval scale: 6 is not "worse" than 5. Agreement 
 
 ## Known limits
 
-- Each person rates only half the library, so there is no full individual profile.
+- Each person judges only half the library, so there is no full individual profile.
+- «¿Sirve aquí?» is a judgement by the evaluator on behalf of the person who would use the pictogram. It is not that person's own use.
 - Assigning forms is up to the coordinator. Without a server nothing balances them automatically.
 - Transparency cannot be reported until at least two judges have coded the interpretations.
 - A persistent carry-over remains: the blind items of pass 1 teach the visual grammar used in pass 2. That affects translucency, not transparency, and should be declared.

@@ -22,7 +22,9 @@ const LIBRARY_DIMENSIONS = ["coherence", "grammar"];
 // blind and rates half 2 with the phrase visible; form B does the reverse. The phrase
 // of a blind item is never revealed in the session, so the two constructs do not
 // contaminate each other. Without ?forma the app keeps the individual flow.
-const PROTOCOL_VERSION = "protocolo-experimental-0.1";
+const PROTOCOL_VERSION = "protocolo-experimental-0.2";
+// Pass 2 asks a single question, "¿Sirve aquí?", instead of the six ratings.
+const USE_ANSWERS = ["yes", "partly", "no", "cannot_judge"];
 const PROTOCOL_FORM = (() => {
   const form = new URLSearchParams(window.location.search).get("forma")?.toUpperCase();
   return form === "A" || form === "B" ? form : null;
@@ -57,7 +59,7 @@ async function init() {
   loadEvaluatorProfile();
   updateStepLocks();
   if (isCoordinationRequested()) {
-    initCoordination({ dimensionName: (key) => getDimensionMeta(key).name });
+    initCoordination();
     el.homeScreen.classList.add("hidden");
     document.getElementById("coordinationScreen").classList.remove("hidden");
     return;
@@ -125,6 +127,10 @@ function bindElements() {
   el.realPhraseSlot = document.getElementById("realPhraseSlot");
   el.interpretationStage = document.getElementById("interpretationStage");
   el.likertStage = document.getElementById("likertStage");
+  el.useStage = document.getElementById("useStage");
+  el.useImage = document.getElementById("useImage");
+  el.useScenario = document.getElementById("useScenario");
+  el.useReason = document.getElementById("useReason");
 
   el.pragmaticImage = document.getElementById("pragmaticImage");
   el.dimensionImage = document.getElementById("dimensionImage");
@@ -207,6 +213,8 @@ function bindEvents() {
   el.saveGuessBtn.addEventListener("click", onSaveGuess);
   el.skipGuessBtn.addEventListener("click", onSkipGuess);
   el.editGuessBtn.addEventListener("click", onEditGuess);
+  document.querySelectorAll('input[name="useAnswer"]').forEach((radio) => radio.addEventListener("change", onUseAnswerChange));
+  el.useReason.addEventListener("change", onUseAnswerChange);
   el.clearEvalBtn.addEventListener("click", clearCurrentEvaluation);
   el.evalNextBtn.addEventListener("click", advanceToNextPictogram);
 
@@ -750,6 +758,7 @@ function renderCurrentEvalItem(preserveDimension = false) {
 
   setImage(el.pragmaticImage, item.imageSrc, `${t("evaluation.imageAlt")} ${item.id}`);
   setImage(el.dimensionImage, item.imageSrc, `${t("evaluation.dimensionImageAlt")} ${item.id}`);
+  el.useStage.classList.toggle("hidden", item.pass !== "sighted");
 
   // A blind item's phrase is kept out of the DOM, not just hidden.
   el.realPhraseText.textContent = item.pass === "blind" ? "" : item.utterance;
@@ -780,13 +789,17 @@ function renderCurrentEvalItem(preserveDimension = false) {
   if (item.pass === "sighted") {
     setRealPhraseVisibility(true);
     el.interpretationStage.classList.add("hidden");
-    el.likertStage.classList.remove("hidden");
-    const scores = normalizeScores(record.scores);
-    const firstUnscoredIndex = DIMENSIONS.findIndex((dimension) => normalizeScore(scores[dimension.key]) === null);
-    if (!preserveDimension) state.dimensionIndex = firstUnscoredIndex === -1 ? 0 : firstUnscoredIndex;
-    setScoresToUI(scores);
-    updateLikertPanels(scores);
-    updatePictogramNavigation(scores);
+    el.likertStage.classList.add("hidden");
+    setImage(el.useImage, item.imageSrc, `${t("evaluation.imageAlt")} ${item.id}`);
+    el.useScenario.textContent = t("evaluation.useScenario", { phrase: item.utterance });
+    document.querySelectorAll('input[name="useAnswer"]').forEach((radio) => {
+      radio.checked = radio.value === record.use;
+    });
+    el.useReason.value = record.useReason || "";
+    const answered = USE_ANSWERS.includes(record.use);
+    el.evalNextBtn.disabled = !answered;
+    el.evalNextBtn.classList.toggle("ready", answered);
+    setNextLabel();
     return;
   }
 
@@ -813,6 +826,24 @@ function renderCurrentEvalItem(preserveDimension = false) {
   setScoresToUI(scores);
   updateLikertPanels(scores);
   updatePictogramNavigation(scores);
+}
+
+function onUseAnswerChange() {
+  const item = state.items[state.evalIndex];
+  if (!item || item.pass !== "sighted") return;
+  const record = ensureRecord(item.id);
+  const chosen = document.querySelector('input[name="useAnswer"]:checked')?.value || null;
+  const firstAnswer = !record.use && chosen;
+  record.use = chosen;
+  record.useReason = el.useReason.value.trim();
+  record.updatedAt = new Date().toISOString();
+  state.evaluations.set(item.id, record);
+  persistEvaluations();
+  el.evalNextBtn.disabled = !chosen;
+  el.evalNextBtn.classList.toggle("ready", Boolean(chosen));
+  updateEvaluationStatus();
+  updateStepLocks();
+  if (firstAnswer) announce(t("evaluation.useSaved"));
 }
 
 function renderPassNotice(item, isTransition) {
@@ -1563,7 +1594,7 @@ function isRecordComplete(record) {
   const interpreted = record.guessSkipped || Boolean(record.guess && record.guess.trim());
   const pass = state.items.find((item) => item.id === record.itemId)?.pass;
   if (pass === "blind") return interpreted;
-  if (pass === "sighted") return hasAllDimensionsScored(record.scores);
+  if (pass === "sighted") return USE_ANSWERS.includes(record.use);
   return interpreted && hasAllDimensionsScored(record.scores);
 }
 
@@ -1597,6 +1628,9 @@ function buildExportPayload() {
       // cannot reveal blind items; the aggregator joins them from the library.
       utterance: item.pass ? null : item.utterance,
       pass: item.pass || null,
+      sirve_aqui: item.pass === "sighted"
+        ? { respuesta: record?.use || null, motivo: record?.useReason || "" }
+        : null,
       category: item.category || null,
       comprension_pragmatica: {
         estado: record ? (record.guessSkipped ? "omitida" : record.guess ? "respondida" : "pendiente") : "pendiente",

@@ -1,18 +1,16 @@
 // Coordination screen (?coordinar): joins the evaluations of a panel, hands out one
 // CSV per judge and reads the judges' sheets back. Everything stays in the browser.
 import { getLocale, t } from "./i18n.js";
-import { aggregate, codingRows, DIMENSIONS, mergeCoding, resultsCsv, shuffle, toCsv } from "./protocol.js";
+import { aggregate, codingRows, mergeCoding, resultsCsv, shuffle, toCsv } from "./protocol.js";
 
 const state = { library: null, libraryName: "", evaluations: [], aggregate: null, sheets: [], coding: null };
 const $ = (id) => document.getElementById(id);
-let dimensionName = (key) => key;
 
 export function isCoordinationRequested() {
   return new URLSearchParams(window.location.search).has("coordinar");
 }
 
-export function initCoordination(options = {}) {
-  if (options.dimensionName) dimensionName = options.dimensionName;
+export function initCoordination() {
   const base = `${window.location.origin}${window.location.pathname}`;
   $("coordLinkA").textContent = `${base}?forma=A`;
   $("coordLinkB").textContent = `${base}?forma=B`;
@@ -92,9 +90,7 @@ function render() {
     $("coordAggregateSummary").innerHTML = `
       <p>${escapeHtml(t("coordination.evaluationsSummary", { n: agg.evaluations.length, a: agg.forms.A, b: agg.forms.B, answers: codingRows(agg).length }))}</p>
       ${agg.warnings.length ? list(agg.warnings, "coord-warnings") : ""}
-      <table class="meta-table"><caption>${escapeHtml(t("coordination.ratingAgreement"))}</caption><tbody>
-        ${DIMENSIONS.map((d) => `<tr><th>${escapeHtml(dimensionName(d))}</th><td>${formatAlpha(agg.agreement[d].alpha_ordinal)}</td></tr>`).join("")}
-      </tbody></table>`;
+      <p>${escapeHtml(t("coordination.useAgreement", { alpha: formatAlpha(agg.agreement.use.alpha_ordinal) }))}</p>`;
   }
 
   const coding = state.coding;

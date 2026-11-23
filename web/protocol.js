@@ -10,10 +10,10 @@
  *   resultsCsv()   one row per item with the ratings and the agreed codes
  */
 
-export const DIMENSIONS = [
-  "clarity", "recognizability", "semantic_transparency",
-  "pragmatic_fit", "cultural_adequacy", "cognitive_accessibility",
-];
+// Pass 2 answers to "¿Sirve aquí?". cannot_judge is recorded but is not a value of
+// the ordinal scale: it counts as missing when agreement is computed.
+export const USE_ANSWERS = ["yes", "partly", "no", "cannot_judge"];
+const USE_ORDINAL = { no: 1, partly: 2, yes: 3 };
 
 // Ramírez (2018, p. 80, Fig. 9), internally called "Brugger–Frascara". Categories, not an interval scale.
 export const CODING_SCHEME = {
@@ -66,13 +66,6 @@ export function krippendorffAlpha(units, level = "ordinal") {
   return expected === 0 ? null : 1 - ((n - 1) * observed) / expected;
 }
 
-function median(values) {
-  if (!values.length) return null;
-  const s = [...values].sort((a, b) => a - b);
-  const mid = Math.floor(s.length / 2);
-  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
-}
-
 export function aggregate(library, exports) {
   const rows = library.rows || [];
   const byId = new Map(rows.map((row) => [String(row.id), row]));
@@ -106,7 +99,7 @@ export function aggregate(library, exports) {
   const items = rows.map((row) => {
     const id = String(row.id);
     const blind = [];
-    const ratings = Object.fromEntries(DIMENSIONS.map((d) => [d, []]));
+    const use = [];
     for (const { data } of consistent) {
       const item = data.items.find((candidate) => candidate.itemId === id);
       const position = data.protocol.sequence.find((s) => s.itemId === id)?.position ?? null;
@@ -117,8 +110,8 @@ export function aggregate(library, exports) {
           // Judges code these with scripts/coding-sheets.mjs; a skip counts as code 6.
           blind.push({ evaluation: data.evaluation.id, form: data.protocol.form, position, skipped, guess: item.comprension_pragmatica.respuesta || "" });
         }
-      } else if (item.pass === "sighted" && item.scores) {
-        DIMENSIONS.forEach((d) => { if (Number.isInteger(item.scores[d])) ratings[d].push(item.scores[d]); });
+      } else if (item.pass === "sighted" && USE_ANSWERS.includes(item.sirve_aqui?.respuesta)) {
+        use.push({ evaluation: data.evaluation.id, form: data.protocol.form, position, answer: item.sirve_aqui.respuesta, reason: item.sirve_aqui.motivo || "" });
       }
     }
     return {
@@ -126,18 +119,21 @@ export function aggregate(library, exports) {
       utterance: row.UTTERANCE ?? null,
       half: half.get(id) ?? null,
       blind,
-      sighted: Object.fromEntries(DIMENSIONS.map((d) => [d, { n: ratings[d].length, median: median(ratings[d]), values: ratings[d] }])),
+      use: {
+        answers: use,
+        distribution: Object.fromEntries(USE_ANSWERS.map((a) => [a, use.filter((u) => u.answer === a).length])),
+      },
     };
   });
 
-  const agreement = Object.fromEntries(DIMENSIONS.map((d) => {
-    const units = items.map((item) => item.sighted[d].values);
-    const alpha = krippendorffAlpha(units, "ordinal");
-    return [d, { alpha_ordinal: alpha === null ? null : Math.round(alpha * 1000) / 1000, pairable_items: units.filter((u) => u.length >= 2).length }];
-  }));
+  const useUnits = items.map((item) => item.use.answers.map((u) => USE_ORDINAL[u.answer]).filter(Boolean));
+  const useAlpha = krippendorffAlpha(useUnits, "ordinal");
+  const agreement = {
+    use: { alpha_ordinal: useAlpha === null ? null : Math.round(useAlpha * 1000) / 1000, pairable_items: useUnits.filter((u) => u.length >= 2).length },
+  };
 
   return {
-    schema: "pictos-index-protocol-aggregate-0.1",
+    schema: "pictos-index-protocol-aggregate-0.2",
     generated_at: new Date().toISOString(),
     protocol: { version: reference.version, partitionSeed: reference.partitionSeed },
     library: { name: library.config?.name ?? null, domainContext: library.config?.domainContext ?? null, items: rows.length },
@@ -267,19 +263,18 @@ export function mergeCoding(aggregate, sheets) {
   };
 }
 
-/** One row per item: half, sighted ratings (n and median per dimension) and, if available, agreed codes. */
+/** One row per item: half, agreed codes (if the judges' sheets are in) and the "¿Sirve aquí?" answers. */
 export function resultsCsv(aggregate, coding = null) {
   const codes = Object.keys(CODING_SCHEME.codes);
   const head = ["item", "frase", "mitad", "interpretaciones",
     ...(coding ? [...codes.map((c) => `codigo_${c}`), "sin_resolver"] : []),
-    ...DIMENSIONS.flatMap((d) => [`${d}_n`, `${d}_mediana`])];
+    "sirve_si", "sirve_con_reservas", "sirve_no", "no_puede_juzgar"];
   const byItem = new Map((coding?.items || []).map((item) => [item.itemId, item]));
   const lines = aggregate.items.map((item) => {
     const coded = byItem.get(item.itemId);
     return [item.itemId, item.utterance ?? "", item.half ?? "", item.blind.length,
       ...(coding ? [...codes.map((c) => coded?.distribution[c] ?? 0), coded?.unresolved ?? 0] : []),
-      // Decimal comma: the sheet uses ";" and is meant for spreadsheets in Spanish.
-      ...DIMENSIONS.flatMap((d) => [item.sighted[d].n, item.sighted[d].median === null ? "" : String(item.sighted[d].median).replace(".", ",")])];
+      ...USE_ANSWERS.map((a) => item.use.distribution[a])];
   });
   return `\uFEFF${[head, ...lines].map((row) => row.map(quote).join(";")).join("\r\n")}\r\n`;
 }

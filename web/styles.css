@@ -519,3 +519,10 @@ textarea { min-height: 9rem; resize: vertical; }
 .coord-instructions summary { cursor: pointer; font-weight: 650; }
 .coord-disagreements { margin-top: .4rem; }
 .coordination .meta-table caption { text-align: left; padding-bottom: .35rem; color: var(--muted); }
+
+/* ¿Sirve aquí? */
+.use-scenario { margin: .2rem 0 .4rem; color: var(--ink); font-size: 1.05rem; font-weight: 600; }
+.use-options { display: grid; gap: .45rem; margin: 0 0 .6rem; padding: 0; border: 0; }
+.use-options legend { margin-bottom: .45rem; font-weight: 650; }
+.use-options label { display: flex; align-items: center; gap: .55rem; padding: .55rem .7rem; border: 1px solid var(--line-strong); border-radius: .6rem; cursor: pointer; }
+.use-options label:has(input:checked) { border-color: var(--violet-bright); background: var(--surface-soft); }
