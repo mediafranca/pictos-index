@@ -19,6 +19,15 @@ export const DIMENSIONS = [
   "pragmatic_fit", "cultural_adequacy", "cognitive_accessibility",
 ];
 
+// Ramírez (2018, p. 80, Fig. 9), internally called "Brugger–Frascara". Categories, not an interval scale.
+export const CODING_SCHEME = {
+  source: "Ramírez M., R. (2018). REDER 2(1), 71–87, p. 80, Fig. 9. https://doi.org/10.55467/reder.v2i1.12",
+  codes: {
+    1: "correct", 2: "almost correct", 3: "doubtful",
+    4: "incorrect", 5: "opposite meaning", 6: "no answer",
+  },
+};
+
 /**
  * Krippendorff's alpha from units of pairable values (Krippendorff, 2011,
  * "Computing Krippendorff's alpha-reliability"). `units` is an array of arrays of
@@ -113,7 +122,9 @@ export function aggregate(library, exports) {
       if (item.pass === "blind") {
         const state = item.comprension_pragmatica?.estado;
         if (state === "respondida" || state === "omitida") {
-          blind.push({ evaluation: data.evaluation.id, form: data.protocol.form, position, skipped: state === "omitida", guess: item.comprension_pragmatica.respuesta || "" });
+          const skipped = state === "omitida";
+          // code: filled in by judges with the six-value scheme (CODING_SCHEME); a skip is 6.
+          blind.push({ evaluation: data.evaluation.id, form: data.protocol.form, position, skipped, guess: item.comprension_pragmatica.respuesta || "", code: skipped ? 6 : null });
         }
       } else if (item.pass === "sighted" && item.scores) {
         DIMENSIONS.forEach((d) => { if (Number.isInteger(item.scores[d])) ratings[d].push(item.scores[d]); });
@@ -140,6 +151,7 @@ export function aggregate(library, exports) {
     protocol: { version: reference.version, partitionSeed: reference.partitionSeed },
     library: { name: library.config?.name ?? null, domainContext: library.config?.domainContext ?? null, items: rows.length },
     forms,
+    coding_scheme: CODING_SCHEME,
     evaluations: consistent.map(({ file, data }) => ({ file, id: data.evaluation.id, form: data.protocol.form, completedAt: data.evaluation.completedAt ?? null })),
     warnings,
     agreement,

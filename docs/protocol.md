@@ -49,18 +49,39 @@ The evaluation JSON (`pictos-index-library-evaluation-1.5.0`) adds:
 
 `scripts/aggregate-protocol.mjs` checks that every file comes from the same library, protocol version and split, and warns when the forms are unbalanced. It writes, for each item:
 
-- the blind interpretations, with form and position, ready to be coded by judges. There is no automatic scoring of correctness.
+- the blind interpretations, with form and position, each with an empty `code` for the judges to fill in (see below). Skipped interpretations are pre-coded 6.
 - the sighted ratings for each dimension: n, median and values.
 
 For each dimension it also writes Krippendorff's ordinal alpha over the sighted ratings (Krippendorff, 2011). `scripts/aggregate-protocol.test.mjs` checks this against Krippendorff's published example. No average is computed.
+
+## Coding the blind interpretations
+
+Judges code each open answer against the source phrase with the six-value scheme of Ramírez (2018, p. 80, Fig. 9):
+
+| Code | Category | Criterion |
+|---|---|---|
+| 1 | Correct | The answer matches the assigned meaning |
+| 2 | Almost correct | The answer is similar or close to the assigned meaning |
+| 3 | Doubtful | The answer points to another interpretation or is ambiguous |
+| 4 | Incorrect | The answer does not match the assigned meaning |
+| 5 | Opposite meaning | The answer points to the contrary meaning |
+| 6 | No answer | No answer is given, or the person says they do not know |
+
+Ramírez adapted it from the comprehension-test procedures described by Brugger (1999), Olgyay, Frascara (2011) and Boersema & Adams (2017), simplifying seven-value variants. His figure labels it «Brugger–Frascara». PICTOS Index keeps that label only as an internal name. It does not designate a scale published or validated jointly by Brugger and Frascara.
+
+Suggested wording for publications: «Se aplicó el esquema de codificación de seis valores de Ramírez (2018, p. 80), referido internamente como "Brugger–Frascara".»
+
+Codes are categories, not an interval scale: 6 is not "worse" than 5. Agreement between judges should therefore be reported with nominal alpha, and each item's result as the distribution of codes rather than a mean.
 
 ## Known limits
 
 - Each person rates only half the library, so there is no full individual profile.
 - Assigning forms is up to the coordinator. Without a server nothing balances them automatically.
-- The interpretations still need a coding scheme and at least two judges before transparency can be reported.
+- Transparency cannot be reported until at least two judges have coded the interpretations.
 - A persistent carry-over remains: the blind items of pass 1 teach the visual grammar used in pass 2. That affects translucency, not transparency, and should be declared.
 
-## Reference
+## References
 
 Krippendorff, K. (2011). *Computing Krippendorff's alpha-reliability*. Annenberg School for Communication, University of Pennsylvania. https://repository.upenn.edu/asc_papers/43
+
+Ramírez M., R. (2018). El desempeño de íconos como herramienta gráfica para comunicar la emergencia. *Revista de Estudios Latinoamericanos sobre Reducción del Riesgo de Desastres REDER*, 2(1), 71–87. https://doi.org/10.55467/reder.v2i1.12
