@@ -31,7 +31,6 @@
     "accessibility": "Accessibility",
     "culture": "Culture",
     "meaning": "Meaning",
-    "modesLink": "Evaluate with a panel",
     "modesEyebrow": "Two ways to use it",
     "modesTitle": "On your own or with a panel",
     "soloTitle": "Evaluate on your own",
@@ -307,10 +306,7 @@
   "nav": {
     "back": "← Back",
     "next": "Next →",
-    "label": "Sections",
-    "how": "How it works",
     "panel": "Coordinate a panel",
-    "protocol": "Protocol",
     "about": "About",
     "protocolHref": "https://github.com/mediafranca/pictos-index/blob/main/docs/protocol.md"
   },

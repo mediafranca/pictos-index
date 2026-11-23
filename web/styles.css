@@ -352,6 +352,9 @@ textarea { min-height: 9rem; resize: vertical; }
   .final-downloads { width: 100%; flex-direction: column; }
 }
 @media (max-width: 480px) {
+  /* Language and theme get their own row under the brand, at full size. */
+  .site-header { flex-wrap: wrap; row-gap: .5rem; padding-block: .6rem; }
+  .header-actions { width: 100%; }
   .header-actions { gap: .5rem; }
   .language-picker select { padding-inline: .5rem; }
   .brand > span { gap: .35rem; }
@@ -502,12 +505,6 @@ textarea { min-height: 9rem; resize: vertical; }
 .about-schemas code { font-size: .85em; }
 @media (max-width: 760px) { .about-repos { grid-template-columns: 1fr; } }
 
-/* Section navigation: its own row under the brand bar */
-.site-header { flex-wrap: wrap; row-gap: .2rem; padding-top: .6rem; }
-.site-nav { order: 3; width: 100%; display: flex; gap: .4rem 1.3rem; flex-wrap: wrap; padding-bottom: .6rem; border-bottom: 1px solid var(--line); }
-.site-nav a { color: var(--ink-soft); font-size: .85rem; font-weight: 650; text-decoration: none; }
-.site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--violet-bright); }
-.site-nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: .3em; }
 
 /* The prototype warning: a discreet ribbon, not a box */
 .prototype-ribbon {

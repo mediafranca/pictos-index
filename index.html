@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b0613" />
     <!-- The instrument version (SemVer): shown in the header and stamped on every export. Keep in step with package.json. -->
-    <meta name="pictos-index-version" content="4.1.1" />
+    <meta name="pictos-index-version" content="4.1.2" />
     <meta
       name="description" data-i18n-content="meta.description"
       content="PICTOS Index es un instrumento para evaluar la calidad comunicativa de librerías pictográficas."
@@ -45,12 +45,6 @@
         </svg>
         <span><strong>PICTOS</strong><small>INDEX</small><small id="appVersion" class="brand-version"></small></span>
       </a>
-      <nav class="site-nav" aria-label="Secciones" data-i18n-aria-label="nav.label">
-        <a href="./#howItWorks" data-i18n="nav.how">Cómo funciona</a>
-        <a href="./?coordinar" data-nav="panel" data-i18n="nav.panel">Coordinar un panel</a>
-        <a href="https://github.com/mediafranca/pictos-index/blob/main/docs/protocolo.md" target="_blank" rel="noopener noreferrer" data-i18n="nav.protocol" data-i18n-href="nav.protocolHref">Protocolo</a>
-        <a href="./#about" data-i18n="nav.about">Acerca de</a>
-      </nav>
       <div class="header-actions">
         <label class="language-picker">
           <span class="sr-only" data-i18n="language.label">Idioma de la interfaz</span>
@@ -81,7 +75,9 @@
             <div class="hero-actions">
               <button id="startEvaluationBtn" class="primary-btn large-btn" type="button" data-i18n="home.start">Iniciar una evaluación</button>
               <a class="text-link" href="#howItWorks" data-i18n="home.howLink">Ver el procedimiento</a>
-              <a class="text-link" href="#modes" data-i18n="home.modesLink">Evaluar en panel</a>
+              <a class="text-link" href="./?coordinar" data-i18n="nav.panel">Coordinar un panel</a>
+              <a class="text-link" href="https://github.com/mediafranca/pictos-index/blob/main/docs/protocolo.md" target="_blank" rel="noopener noreferrer" data-i18n="footer.protocol" data-i18n-href="nav.protocolHref">Guía del protocolo</a>
+              <a class="text-link" href="#about" data-i18n="nav.about">Acerca de</a>
             </div>
             <p class="privacy-note" data-i18n="home.privacy">Los datos de la evaluación se almacenan en este navegador y sólo se exportan cuando quien evalúa lo decide.</p>
           </div>

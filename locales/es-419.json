@@ -31,7 +31,6 @@
     "accessibility": "Accesibilidad",
     "culture": "Cultura",
     "meaning": "Significado",
-    "modesLink": "Evaluar en panel",
     "modesEyebrow": "Dos maneras de usarlo",
     "modesTitle": "Por tu cuenta o con un panel",
     "soloTitle": "Evaluar por tu cuenta",
@@ -307,10 +306,7 @@
   "nav": {
     "back": "← Atrás",
     "next": "Siguiente →",
-    "label": "Secciones",
-    "how": "Cómo funciona",
     "panel": "Coordinar un panel",
-    "protocol": "Protocolo",
     "about": "Acerca de",
     "protocolHref": "https://github.com/mediafranca/pictos-index/blob/main/docs/protocolo.md"
   },
