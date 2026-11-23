@@ -1,4 +1,4 @@
-import { applyTranslations, getLocale, initI18n, setLocale, t } from "./i18n.js";
+import { applyTranslations, getLocale, initI18n, marked, setLocale, t } from "./i18n.js";
 import { initCoordination, isCoordinationRequested } from "./coordination.js";
 
 const DIMENSIONS = [
@@ -726,7 +726,7 @@ function renderCurrentEvalItem() {
   } else {
     const meta = getDimensionMeta(question);
     el.dimensionTitle.textContent = meta.name;
-    el.dimensionDescription.textContent = meta.description;
+    el.dimensionDescription.replaceChildren(emphasize(meta.description, meta.emphasis));
     renderLevelOptions(
       el.dimensionOptions,
       [1, 2, 3, 4, 5].map((score) => ({
@@ -990,7 +990,7 @@ function createEmptyLibraryAssessment() {
 function renderSetQuestion(focus = true) {
   const dimension = LIBRARY_DIMENSIONS[state.setIndex];
   el.setQuestionTitle.textContent = t(`audit.${dimension}Title`);
-  el.setQuestionBody.textContent = t(`audit.${dimension}Body`);
+  el.setQuestionBody.replaceChildren(marked(t(`audit.${dimension}Body`)));
   el.setBackBtn.disabled = state.setIndex === 0;
   renderSetNext();
   renderLevelOptions(
@@ -1061,6 +1061,7 @@ function getDimensionMeta(key) {
   const suffix = getLocale() === "en-GB" ? "en" : "es";
   return {
     name: raw && raw[`name_${suffix}`] ? raw[`name_${suffix}`] : t(`rubric.dimensions.${key}.name`),
+    emphasis: raw?.[`description_emphasis_${suffix}`] || [],
     description: raw && raw[`description_${suffix}`]
       ? raw[`description_${suffix}`]
       : t(`rubric.dimensions.${key}.description`),
@@ -1074,11 +1075,8 @@ function getDimensionLevelEmphasis(key, score) {
 
 // Wraps the given phrases of a text in <strong>, building nodes rather than HTML.
 function emphasize(text, phrases = []) {
+  if (!phrases.length) return marked(text);
   const fragment = document.createDocumentFragment();
-  if (!phrases.length) {
-    fragment.append(text);
-    return fragment;
-  }
   const pattern = new RegExp(`(${phrases.map((phrase) => phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`);
   text.split(pattern).forEach((part, index) => {
     if (!part) return;

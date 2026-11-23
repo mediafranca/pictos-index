@@ -37,8 +37,25 @@ if (unusedOrMissing.length) {
   console.error(`Keys used but absent from catalogues: ${unusedOrMissing.join(", ")}`);
 }
 
+for (const locale of locales) {
+  for (const [key, value] of flatten(catalogues[locale]).map((k) => [k, k.split(".").reduce((o, part) => o[part], catalogues[locale])])) {
+    if (typeof value === "string" && (value.match(/\*\*/g) || []).length % 2) {
+      failed = true;
+      console.error(`${locale}: unbalanced ** in ${key}`);
+    }
+  }
+}
+
 const rubric = JSON.parse(fs.readFileSync(path.join(root, "data", "rubric-scale-descriptions.json"), "utf8"));
 for (const [dimensionKey, dimension] of Object.entries(rubric.dimensions || {})) {
+  for (const lang of ["es", "en"]) {
+    for (const phrase of dimension[`description_emphasis_${lang}`] || []) {
+      if (!dimension[`description_${lang}`]?.includes(phrase)) {
+        failed = true;
+        console.error(`Rubric ${dimensionKey}: description_emphasis_${lang} «${phrase}» is not in description_${lang}`);
+      }
+    }
+  }
   for (const field of ["name_es", "name_en", "description_es", "description_en"]) {
     if (!dimension[field]) {
       failed = true;

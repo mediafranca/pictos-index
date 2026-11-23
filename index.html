@@ -94,10 +94,10 @@
           <p class="eyebrow" data-i18n="how.eyebrow">Procedimiento</p>
           <h2 id="howTitle" data-i18n="how.title">Cuatro etapas de evaluación</h2>
           <ol class="how-grid">
-            <li><span>1</span><strong data-i18n="how.loadTitle">Cargar la librería</strong><p data-i18n="how.loadBody">Se importa una librería exportada desde PICTOS.net o una de las librerías de ejemplo.</p></li>
-            <li><span>2</span><strong data-i18n="how.relationTitle">Declarar la posición de quien evalúa</strong><p data-i18n="how.relationBody">Se registra la relación de quien evalúa con la CAA, para interpretar cada juicio según la experiencia desde la que se emite.</p></li>
-            <li><span>3</span><strong data-i18n="how.evaluateTitle">Evaluar cada pictograma</strong><p data-i18n="how.evaluateBody">Antes de conocer la frase de origen, se registra cómo se interpreta el pictograma. Luego se califican sus seis dimensiones en una escala de 1 a 5.</p></li>
-            <li><span>4</span><strong data-i18n="how.auditTitle">Evaluar la librería como conjunto</strong><p data-i18n="how.auditBody">Se examina la librería completa y se valoran por separado su coherencia formal y su gramática visual, que se informan junto al índice sin promediarse con él.</p></li>
+            <li><span>1</span><strong data-i18n="how.relationTitle">Declarar la posición de quien evalúa</strong><p data-i18n="how.relationBody"></p></li>
+            <li><span>2</span><strong data-i18n="how.loadTitle">Mirar la librería como conjunto</strong><p data-i18n="how.loadBody"></p></li>
+            <li><span>3</span><strong data-i18n="how.evaluateTitle">Evaluar cada pictograma</strong><p data-i18n="how.evaluateBody"></p></li>
+            <li><span>4</span><strong data-i18n="how.submitTitle">Entregar los resultados</strong><p data-i18n="how.submitBody"></p></li>
           </ol>
         </section>
 
@@ -161,9 +161,9 @@
             <label><span data-i18n="coordination.library">Librería evaluada</span>
               <select id="coordSampleSelect">
                 <option value="" data-i18n="coordination.ownLibrary">Otra librería (cargar archivo)</option>
-                <option value="./examples/restoran-graph-2026-11-23.json">Almorzar en el restorán</option>
-                <option value="./examples/transporte-graph-2026-11-23.json">Viajar en transporte público</option>
-                <option value="./examples/salud-graph-2026-11-23.json">Consulta de salud</option>
+                <option value="./examples/restoran-graph-2026-11-23.json" data-i18n="library.exampleRestaurant">Almorzar en el restorán</option>
+                <option value="./examples/transporte-graph-2026-11-23.json" data-i18n="library.exampleTransport">Viajar en transporte público</option>
+                <option value="./examples/salud-graph-2026-11-23.json" data-i18n="library.exampleHealth">Consulta de salud</option>
               </select>
             </label>
             <input id="coordLibraryInput" type="file" accept=".json,application/json" aria-label="Archivo de la librería" data-i18n-aria-label="coordination.libraryFile" />
@@ -347,7 +347,7 @@
         <div id="questionPanel" class="question-panel">
           <p id="phraseLine" class="real-phrase hidden"></p>
           <div class="stage-image-card workspace-panel">
-            <img id="evalImage" alt="Pictograma actual" class="stage-image" />
+            <img id="evalImage" alt="Pictograma actual" data-i18n-alt="evaluation.imageAlt" class="stage-image" />
           </div>
 
           <div id="guessStage" class="question-box">

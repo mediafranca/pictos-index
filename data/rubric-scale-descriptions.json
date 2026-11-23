@@ -27,7 +27,7 @@
     "2": {
       "label_es": "Insuficiente",
       "label_en": "Insufficient",
-      "general_es": "La cualidad evaluada está presente sólo de forma limitada; predominan los problemas.",
+      "general_es": "La cualidad evaluada está presente solo de forma limitada; predominan los problemas.",
       "general_en": "The assessed quality is only marginally present; problems predominate.",
       "color": "#ea580c"
     },
@@ -73,7 +73,7 @@
           ]
         },
         "3": {
-          "text_es": "El pictograma es generalmente claro pero tiene algunos problemas menores. El contraste es adecuado en la mayoría de contextos. Algunos detalles no esenciales están presentes. Es legible en tamaños típicos de dispositivos AAC. Hay imperfecciones técnicas menores pero funciona para comunicación básica.",
+          "text_es": "El pictograma es generalmente claro pero tiene algunos problemas menores. El contraste es adecuado en la mayoría de contextos. Algunos detalles no esenciales están presentes. Es legible en tamaños típicos de dispositivos CAA. Hay imperfecciones técnicas menores pero funciona para comunicación básica.",
           "text_en": "The pictogram is generally clear but has some minor issues. Contrast is adequate in most contexts. Some non-essential details are present. Readable at typical AAC device sizes. Minor technical imperfections but works for basic communication.",
           "emphasis_es": [
             "generalmente claro",
@@ -99,7 +99,7 @@
           ]
         },
         "1": {
-          "text_es": "El pictograma es borroso, pixelado o de baja calidad. El contraste es pobre y es difícil distinguir elementos. Está saturado con detalles excesivos. Es ilegible cuando se escala. Hay problemas técnicos mayores. No es apto para uso en AAC y necesita rediseñarse completamente.",
+          "text_es": "El pictograma es borroso, pixelado o de baja calidad. El contraste es pobre y es difícil distinguir elementos. Está saturado con detalles excesivos. Es ilegible cuando se escala. Hay problemas técnicos mayores. No es apto para uso en CAA y necesita rediseñarse completamente.",
           "text_en": "The pictogram is blurry, pixelated, or low quality. Contrast is poor and elements are hard to distinguish. Saturated with excessive details. Illegible when scaled. Major technical problems. Not suitable for AAC use and needs complete redesign.",
           "emphasis_es": [
             "borroso, pixelado o de baja calidad",
@@ -110,7 +110,15 @@
             "needs complete redesign"
           ]
         }
-      }
+      },
+      "description_emphasis_es": [
+        "visualmente legible",
+        "libre de ambigüedad"
+      ],
+      "description_emphasis_en": [
+        "visually legible",
+        "free from ambiguity"
+      ]
     },
     "recognizability": {
       "name_es": "Reconocibilidad",
@@ -119,7 +127,7 @@
       "description_en": "Recognisability is how easily a person can identify what the pictogram represents without additional context.",
       "levels": {
         "5": {
-          "text_es": "El pictograma es instantáneamente reconocible por cualquier persona sin necesidad de contexto adicional. Representa el concepto de forma inequívoca utilizando convenciones visuales universales. No requiere etiqueta de texto. Coincide perfectamente con estándares AAC existentes como ARASAAC o PCS. La interpretación es única y clara.",
+          "text_es": "El pictograma es instantáneamente reconocible por cualquier persona sin necesidad de contexto adicional. Representa el concepto de forma inequívoca utilizando convenciones visuales universales. No requiere etiqueta de texto. Coincide perfectamente con estándares CAA existentes como ARASAAC o PCS. La interpretación es única y clara.",
           "text_en": "The pictogram is instantly recognisable by anyone without need for additional context. Represents the concept unambiguously using universal visual conventions. No text label needed. Perfectly matches existing AAC standards like ARASAAC or PCS. Interpretation is unique and clear.",
           "emphasis_es": [
             "instantáneamente reconocible",
@@ -133,7 +141,7 @@
           ]
         },
         "4": {
-          "text_es": "El pictograma es fácilmente reconocible tras una observación breve. La representación es clara y utiliza elementos visuales convencionales. Puede tener una interpretación alternativa menor pero el significado principal es evidente. Es consistente con convenciones AAC. Funciona bien sin contexto adicional en la mayoría de situaciones.",
+          "text_es": "El pictograma es fácilmente reconocible tras una observación breve. La representación es clara y utiliza elementos visuales convencionales. Puede tener una interpretación alternativa menor pero el significado principal es evidente. Es consistente con convenciones CAA. Funciona bien sin contexto adicional en la mayoría de situaciones.",
           "text_en": "The pictogram is easily recognisable after brief observation. Representation is clear and uses conventional visual elements. May have a minor alternative interpretation but main meaning is evident. Consistent with AAC conventions. Works well without additional context in most situations.",
           "emphasis_es": [
             "fácilmente reconocible tras una observación breve",
@@ -145,7 +153,7 @@
           ]
         },
         "3": {
-          "text_es": "El pictograma es reconocible con consideración breve (2-3 segundos). El significado principal es claro aunque pueden existir interpretaciones alternativas menores. Utiliza elementos visuales comunes. Puede beneficiarse de contexto pero no lo requiere absolutamente. Generalmente coincide con convenciones AAC. Es funcional para comunicación básica.",
+          "text_es": "El pictograma es reconocible con consideración breve (2-3 segundos). El significado principal es claro aunque pueden existir interpretaciones alternativas menores. Utiliza elementos visuales comunes. Puede beneficiarse de contexto pero no lo requiere absolutamente. Generalmente coincide con convenciones CAA. Es funcional para comunicación básica.",
           "text_en": "The pictogram is recognisable with brief consideration (2-3 seconds). Main meaning is clear although minor alternative interpretations may exist. Uses common visual elements. May benefit from context but doesn't absolutely require it. Generally matches AAC conventions. Functional for basic communication.",
           "emphasis_es": [
             "reconocible con consideración breve (2-3 segundos)",
@@ -169,7 +177,7 @@
           ]
         },
         "1": {
-          "text_es": "El pictograma es imposible de reconocer o altamente ambiguo. Utiliza simbolismo oscuro, personal o abstracto sin conexión clara con el concepto. Requiere explicación extensa para comprenderse. Contradice convenciones AAC establecidas. No es funcional para comunicación y necesita rediseñarse completamente desde un enfoque diferente.",
+          "text_es": "El pictograma es imposible de reconocer o altamente ambiguo. Utiliza simbolismo oscuro, personal o abstracto sin conexión clara con el concepto. Requiere explicación extensa para comprenderse. Contradice convenciones CAA establecidas. No es funcional para comunicación y necesita rediseñarse completamente desde un enfoque diferente.",
           "text_en": "The pictogram is impossible to recognise or highly ambiguous. Uses obscure, personal, or abstract symbolism without clear connection to the concept. Requires extensive explanation to understand. Contradicts established AAC conventions. Not functional for communication and needs complete redesign from a different approach.",
           "emphasis_es": [
             "imposible de reconocer o altamente ambiguo",
@@ -180,7 +188,15 @@
             "Requires extensive explanation"
           ]
         }
-      }
+      },
+      "description_emphasis_es": [
+        "identificar lo que representa",
+        "sin contexto adicional"
+      ],
+      "description_emphasis_en": [
+        "identify what the pictogram represents",
+        "without additional context"
+      ]
     },
     "semantic_transparency": {
       "name_es": "Transparencia Semántica",
@@ -248,7 +264,15 @@
             "Critical semantic elements are missing"
           ]
         }
-      }
+      },
+      "description_emphasis_es": [
+        "comunica con precisión",
+        "significado de la frase objetivo"
+      ],
+      "description_emphasis_en": [
+        "accurately communicates",
+        "meaning of the target phrase"
+      ]
     },
     "pragmatic_fit": {
       "name_es": "Adecuación Pragmática",
@@ -257,7 +281,7 @@
       "description_en": "Pragmatic fit is the usefulness of the pictogram in real-world AAC communication situations.",
       "levels": {
         "5": {
-          "text_es": "El pictograma es altamente práctico para uso en AAC. Es apropiado para la edad y capacidades del usuario objetivo. Apoya la comunicación efectiva en múltiples contextos. Es socialmente apropiado en todas las situaciones. Facilita la autonomía y dignidad del usuario. Se puede usar con confianza en espacios públicos, escolares, domésticos, etc.",
+          "text_es": "El pictograma es altamente práctico para uso en CAA. Es apropiado para la edad y capacidades del usuario objetivo. Apoya la comunicación efectiva en múltiples contextos. Es socialmente apropiado en todas las situaciones. Facilita la autonomía y dignidad del usuario. Se puede usar con confianza en espacios públicos, escolares, domésticos, etc.",
           "text_en": "The pictogram is highly practical for AAC use. Appropriate for target user age and abilities. Supports effective communication in multiple contexts. Socially appropriate in all situations. Facilitates user autonomy and dignity. Can be used confidently in public, school, home, etc.",
           "emphasis_es": [
             "altamente práctico",
@@ -269,7 +293,7 @@
           ]
         },
         "4": {
-          "text_es": "El pictograma es muy práctico para uso en AAC. Es apropiado para la mayoría de usuarios del rango objetivo. Apoya bien la comunicación en contextos típicos. Es socialmente apropiado en la gran mayoría de situaciones. Facilita la autonomía del usuario. Funciona bien en la mayoría de entornos con necesidad mínima de adaptación.",
+          "text_es": "El pictograma es muy práctico para uso en CAA. Es apropiado para la mayoría de usuarios del rango objetivo. Apoya bien la comunicación en contextos típicos. Es socialmente apropiado en la gran mayoría de situaciones. Facilita la autonomía del usuario. Funciona bien en la mayoría de entornos con necesidad mínima de adaptación.",
           "text_en": "The pictogram is very practical for AAC use. Appropriate for most users in target range. Supports communication well in typical contexts. Socially appropriate in vast majority of situations. Facilitates user autonomy. Works well in most environments with minimal need for adaptation.",
           "emphasis_es": [
             "muy práctico",
@@ -281,8 +305,8 @@
           ]
         },
         "3": {
-          "text_es": "El pictograma es generalmente práctico para AAC. Es apropiado para la mayoría de contextos aunque puede necesitar complementación en algunos casos. Es funcionalmente adecuado para necesidades básicas de comunicación. No tiene problemas mayores de adecuación social. Apoya las necesidades básicas del usuario aunque podría optimizarse para mayor efectividad.",
-          "text_en": "The pictogram is generally practical for AAC. Appropriate for most contexts though may need supplementation in some cases. Functionally adequate for basic communication needs. No major social appropriateness issues. Supports user's basic needs though could be optimized for greater effectiveness.",
+          "text_es": "El pictograma es generalmente práctico para CAA. Es apropiado para la mayoría de contextos aunque puede necesitar complementación en algunos casos. Es funcionalmente adecuado para necesidades básicas de comunicación. No tiene problemas mayores de adecuación social. Apoya las necesidades básicas del usuario aunque podría optimizarse para mayor efectividad.",
+          "text_en": "The pictogram is generally practical for AAC. Appropriate for most contexts though may need supplementation in some cases. Functionally adequate for basic communication needs. No major social appropriateness issues. Supports user's basic needs though could be optimised for greater effectiveness.",
           "emphasis_es": [
             "generalmente práctico",
             "necesidades básicas de comunicación"
@@ -293,7 +317,7 @@
           ]
         },
         "2": {
-          "text_es": "El pictograma tiene limitaciones prácticas significativas para uso en AAC. Puede no ser apropiado para algunos usuarios o contextos objetivo. La efectividad comunicativa es limitada. Puede tener problemas de adecuación social en ciertos contextos. No apoya adecuadamente la autonomía del usuario. Requiere adaptaciones significativas o contexto adicional para ser útil.",
+          "text_es": "El pictograma tiene limitaciones prácticas significativas para uso en CAA. Puede no ser apropiado para algunos usuarios o contextos objetivo. La efectividad comunicativa es limitada. Puede tener problemas de adecuación social en ciertos contextos. No apoya adecuadamente la autonomía del usuario. Requiere adaptaciones significativas o contexto adicional para ser útil.",
           "text_en": "The pictogram has significant practical limitations for AAC use. May not be appropriate for some target users or contexts. Communication effectiveness is limited. May have social appropriateness issues in certain contexts. Does not adequately support user autonomy. Requires significant adaptations or additional context to be useful.",
           "emphasis_es": [
             "limitaciones prácticas significativas",
@@ -305,10 +329,10 @@
           ]
         },
         "1": {
-          "text_es": "El pictograma es impráctico para uso real en AAC. Es inapropiado para los usuarios objetivo. No facilita comunicación efectiva. Es socialmente problemático o inadecuado. No apoya las necesidades del usuario. Puede ser embarazoso, poco claro en contexto, o no habilita comunicación real. Necesita replantease completamente con enfoque en usabilidad práctica.",
+          "text_es": "El pictograma es impráctico para uso real en CAA. Es inapropiado para los usuarios objetivo. No facilita comunicación efectiva. Es socialmente problemático o inadecuado. No apoya las necesidades del usuario. Puede ser embarazoso, poco claro en contexto, o no habilita comunicación real. Necesita replantearse completamente con enfoque en usabilidad práctica.",
           "text_en": "The pictogram is impractical for real AAC use. Inappropriate for target users. Does not facilitate effective communication. Socially problematic or inadequate. Does not support user needs. May be embarrassing, unclear in context, or doesn't enable actual communication. Needs complete rethinking with focus on practical usability.",
           "emphasis_es": [
-            "impráctico para uso real en AAC",
+            "impráctico para uso real en CAA",
             "No facilita comunicación efectiva"
           ],
           "emphasis_en": [
@@ -316,7 +340,15 @@
             "Does not facilitate effective communication"
           ]
         }
-      }
+      },
+      "description_emphasis_es": [
+        "utilidad del pictograma",
+        "situaciones reales de comunicación"
+      ],
+      "description_emphasis_en": [
+        "usefulness of the pictogram",
+        "real-world AAC communication situations"
+      ]
     },
     "cultural_adequacy": {
       "name_es": "Adecuación Cultural",
@@ -384,7 +416,15 @@
             "evident stereotypes"
           ]
         }
-      }
+      },
+      "description_emphasis_es": [
+        "pertinencia del pictograma",
+        "contexto cultural y lingüístico"
+      ],
+      "description_emphasis_en": [
+        "relevance of the pictogram",
+        "cultural and linguistic context"
+      ]
     },
     "cognitive_accessibility": {
       "name_es": "Accesibilidad Cognitiva",
@@ -394,7 +434,7 @@
       "levels": {
         "5": {
           "text_es": "El pictograma es extremadamente simple y claro para procesamiento cognitivo. Requiere carga cognitiva mínima. Es inmediatamente procesable sin esfuerzo. Capta la atención sin ser distractor. Utiliza 2-3 formas simples y audaces con alto contraste. Permite reconocimiento instantáneo sin necesidad de memorización.",
-          "text_en": "The pictogram is extremely simple and clear for cognitive processing. Requires minimal cognitive load. Immediately processable without effort. Captures attention without being distracting. Uses 2-3 bold, simple shapes with high contrast. Allows instant recognition without need for memorization.",
+          "text_en": "The pictogram is extremely simple and clear for cognitive processing. Requires minimal cognitive load. Immediately processable without effort. Captures attention without being distracting. Uses 2-3 bold, simple shapes with high contrast. Allows instant recognition without need for memorisation.",
           "emphasis_es": [
             "extremadamente simple y claro",
             "carga cognitiva mínima"
@@ -406,7 +446,7 @@
         },
         "4": {
           "text_es": "El pictograma es muy accesible cognitivamente. La carga cognitiva es baja. Es procesable con esfuerzo mínimo. Mantiene bien la atención sin distraer. Cumple con estándares de accesibilidad con alto nivel. Es simple con detalles mínimos bien integrados. El reconocimiento es rápido y no requiere memorización significativa. Apropiado para amplio rango de capacidades cognitivas.",
-          "text_en": "The pictogram is very cognitively accessible. Cognitive load is low. Processable with minimal effort. Maintains attention well without distraction. Meets accessibility standards at high level. Simple with minimal well-integrated details. Recognition is quick and doesn't require significant memorization. Appropriate for wide range of cognitive abilities.",
+          "text_en": "The pictogram is very cognitively accessible. Cognitive load is low. Processable with minimal effort. Maintains attention well without distraction. Meets accessibility standards at high level. Simple with minimal well-integrated details. Recognition is quick and doesn't require significant memorisation. Appropriate for wide range of cognitive abilities.",
           "emphasis_es": [
             "muy accesible cognitivamente",
             "carga cognitiva es baja"
@@ -417,7 +457,7 @@
           ]
         },
         "3": {
-          "text_es": "El pictograma es adecuadamente accesible cognitivamente. La carga cognitiva es razonable. Es procesable con algo de esfuerzo pero no excesivo. Mantiene la atención adecuadamente. Cumple con estándares básicos de accesibilidad. Tiene complejidad moderada pero manejable. Requiere algún procesamiento cognitivo pero está dentro de capacidades de usuarios objetivo. Es funcional para comunicación AAC básica.",
+          "text_es": "El pictograma es adecuadamente accesible cognitivamente. La carga cognitiva es razonable. Es procesable con algo de esfuerzo pero no excesivo. Mantiene la atención adecuadamente. Cumple con estándares básicos de accesibilidad. Tiene complejidad moderada pero manejable. Requiere algún procesamiento cognitivo pero está dentro de capacidades de usuarios objetivo. Es funcional para comunicación CAA básica.",
           "text_en": "The pictogram is adequately cognitively accessible. Cognitive load is reasonable. Processable with some but not excessive effort. Maintains attention adequately. Meets basic accessibility standards. Has moderate but manageable complexity. Requires some cognitive processing but within target users' capabilities. Functional for basic AAC communication.",
           "emphasis_es": [
             "adecuadamente accesible cognitivamente",
@@ -429,7 +469,7 @@
           ]
         },
         "2": {
-          "text_es": "El pictograma presenta desafíos significativos de accesibilidad cognitiva. La carga cognitiva es alta. Requiere esfuerzo considerable para procesarse. Puede perder la atención del usuario o ser confuso. No cumple adecuadamente con estándares de accesibilidad. Tiene demasiados detalles o complejidad. El procesamiento es difícil para usuarios con diferencias cognitivas. No es apropiado para público general AAC sin simplificación.",
+          "text_es": "El pictograma presenta desafíos significativos de accesibilidad cognitiva. La carga cognitiva es alta. Requiere esfuerzo considerable para procesarse. Puede perder la atención del usuario o ser confuso. No cumple adecuadamente con estándares de accesibilidad. Tiene demasiados detalles o complejidad. El procesamiento es difícil para usuarios con diferencias cognitivas. No es apropiado para público general CAA sin simplificación.",
           "text_en": "The pictogram presents significant cognitive accessibility challenges. Cognitive load is high. Requires considerable effort to process. May lose user attention or be confusing. Does not adequately meet accessibility standards. Has too many details or complexity. Processing is difficult for users with cognitive differences. Not appropriate for general AAC public without simplification.",
           "emphasis_es": [
             "desafíos significativos de accesibilidad cognitiva",
@@ -452,7 +492,15 @@
             "Cognitive load is excessive"
           ]
         }
-      }
+      },
+      "description_emphasis_es": [
+        "distintas capacidades cognitivas",
+        "comprender y usar"
+      ],
+      "description_emphasis_en": [
+        "different cognitive abilities",
+        "understand and use"
+      ]
     }
   }
 }

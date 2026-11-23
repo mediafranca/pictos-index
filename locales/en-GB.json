@@ -38,14 +38,14 @@
   "how": {
     "eyebrow": "Procedure",
     "title": "Four stages of evaluation",
-    "loadTitle": "Load the library",
-    "loadBody": "Import a library exported from PICTOS.net or one of the sample libraries.",
-    "relationTitle": "State the evaluator's position",
-    "relationBody": "The evaluator's relationship with AAC is recorded, so that each judgement can be interpreted in light of the experience from which it is made.",
+    "loadTitle": "Look at the library as a whole",
+    "loadBody": "A library exported from PICTOS.net, or a sample one, is loaded and viewed in full, without phrases. Its formal coherence and visual grammar are rated separately and reported alongside the index, not averaged into it.",
+    "relationTitle": "State the evaluator’s position",
+    "relationBody": "The evaluator’s relationship with AAC is recorded, so that each judgement can be interpreted in light of the experience from which it is made.",
     "evaluateTitle": "Evaluate each pictogram",
-    "evaluateBody": "Before the source phrase is shown, the evaluator records how they interpret the pictogram. Its six dimensions are then rated on a scale from 1 to 5.",
-    "auditTitle": "Evaluate the library as a whole",
-    "auditBody": "The complete library is examined and its formal coherence and visual grammar are rated separately; they are reported alongside the index, not averaged into it."
+    "evaluateBody": "Before the source phrase is shown, the evaluator records how they interpret the pictogram. Its six dimensions are then rated on a scale from 1 to 5, one question per screen.",
+    "submitTitle": "Hand in the results",
+    "submitBody": "The PDF report or the JSON data is downloaded. In a panel, the JSON file downloads by itself at the end and is sent to the coordinator."
   },
   "principles": {
     "eyebrow": "Rationale",
@@ -75,30 +75,22 @@
     "stepLibrary": "The set",
     "stepEvaluator": "You",
     "stepEvaluation": "Pictograms",
-    "stepSubmit": "Submit",
-    "stepCount": "Stage {step} of {total}"
+    "stepSubmit": "Submit"
   },
   "library": {
     "title": "Load the library",
-    "instruction": "Select a JSON file exported from PICTOS.net. The instrument supports raster and SVG images from the current format.",
     "instructionBefore": "Select a JSON file exported from",
     "uploadTitle": "Load your own file",
-    "uploadHint": "JSON format exported from PICTOS.net.",
     "uploadHintBefore": "JSON format exported from",
     "samplesTitle": "Or try a short library",
     "samplesBody": "Three declared contexts of use, in the same graphic style. Spanish only for now.",
-    "exampleRestaurant": "Almorzar en el restorán",
-    "exampleTransport": "Viajar en transporte público",
-    "exampleHealth": "Consulta de salud",
+    "exampleRestaurant": "Lunch at a restaurant",
+    "exampleTransport": "Travelling by public transport",
+    "exampleHealth": "A health appointment",
     "eighteenPictograms": "18 pictograms",
     "change": "Change library",
-    "continue": "Continue to step 2",
     "successStatus": "Library imported successfully: {count} pictograms ready for evaluation.",
     "untitled": "Untitled library",
-    "noName": "Untitled",
-    "unknown": "Unknown",
-    "notReported": "Not provided",
-    "legacy": "Legacy",
     "pictogramCount": "{count} pictograms"
   },
   "profile": {
@@ -112,7 +104,6 @@
     "none": "I have no previous relationship with or experience of AAC",
     "noticeTitle": "Your data remains in this browser.",
     "noticeBody": "It will be included only in a file you choose to export; it is not sent automatically.",
-    "back": "Return to step 1",
     "continue": "Continue",
     "required": "Select at least one relationship with AAC.",
     "exclusiveAnnouncement": "No previous experience selected; the other options have been disabled."
@@ -121,15 +112,15 @@
     "title": "Pictogram evaluation",
     "pictogramPosition": "Pictogram {current} of {total}",
     "domainContext": "Context of use: {context}",
-    "useScenario": "In this situation, someone wants to say: «{phrase}».",
-    "useQuestion": "Does this pictogram help them say it in this situation?",
+    "useScenario": "In this situation, someone wants to say: “{phrase}”.",
+    "useQuestion": "Does this pictogram **help them say it** in this situation?",
     "useYes": "Yes, it works",
     "usePartly": "It works, with reservations",
     "useNo": "It does not work",
     "useCannot": "I cannot judge",
     "useReason": "Why? (optional)",
     "question": "What does this pictogram communicate?",
-    "placeholder": "Write what you understand it to communicate...",
+    "placeholder": "Write what you understand it to communicate…",
     "skip": "I do not know what it communicates",
     "confirm": "Confirm",
     "imageAlt": "Current pictogram",
@@ -143,26 +134,25 @@
     "unknownCategory": "Uncategorised",
     "unlabelledImage": "Unlabelled pictogram",
     "coherenceTitle": "Formal coherence",
-    "coherenceBody": "Are the pictograms recognisable as members of the same set?",
+    "coherenceBody": "Are the pictograms recognisable as members of **the same set**?",
     "grammarTitle": "Visual grammar",
-    "grammarBody": "Does the set apply shared, recognisable visual rules?",
+    "grammarBody": "Does the set apply **shared, recognisable visual rules**?",
     "levels": {
       "coherence": {
-        "1": "No common set is apparent.",
-        "2": "Membership of the set is weak.",
-        "3": "The set is recognisable, although visible variations remain.",
-        "4": "The set is coherent, with minor variations.",
-        "5": "The set is clearly coherent and distinctive."
+        "1": "**No common set** is apparent.",
+        "2": "Membership of the set is **weak**.",
+        "3": "The set is **recognisable**, although **visible variations** remain.",
+        "4": "The set is **coherent**, with **minor variations**.",
+        "5": "The set is **clearly coherent and distinctive**."
       },
       "grammar": {
-        "1": "No shared visual rules are recognisable.",
-        "2": "Shared rules appear only occasionally.",
-        "3": "A recognisable grammar exists but is applied unevenly.",
-        "4": "The visual grammar is stable, with minor exceptions.",
-        "5": "The visual grammar is clear, stable and recognisable."
+        "1": "**No shared visual rules** are recognisable.",
+        "2": "Shared rules appear **only occasionally**.",
+        "3": "A **recognisable grammar** exists but is **applied unevenly**.",
+        "4": "The visual grammar is **stable**, with **minor exceptions**.",
+        "5": "The visual grammar is **clear, stable and recognisable**."
       }
     },
-    "download": "Download complete evaluation",
     "downloadPdf": "Download PDF report",
     "downloadJson": "Download JSON data",
     "generatingPdf": "Generating PDF…"
@@ -172,7 +162,7 @@
     "sampleLoad": "The sample library could not be loaded.",
     "noImages": "The file contains no compatible images in row.bitmap, row.rawSvg or row.structuredSvg.",
     "loadFirst": "Load a library first.",
-    "profileFirst": "Complete the evaluator details first.",
+    "profileFirst": "First, tell us about your relationship with AAC.",
     "completeForPdf": "Complete every pictogram, formal coherence and visual grammar before generating the PDF.",
     "pdfUnavailable": "The PDF generator is unavailable.",
     "pdfError": "The PDF report could not be generated. Please try again."
@@ -186,16 +176,13 @@
     "completedItems": "{completed} of {total} pictograms evaluated",
     "exportedAt": "Generated: {date}",
     "locale": "Evaluation language: {locale}",
-    "prototypeNote": "This index is a prototype under construction. Its results are experimental and do not replace comprehension studies or validation with users.",
+    "prototypeNote": "This index is a prototype under development. Its results are experimental and do not replace comprehension studies or validation with users.",
     "separateNote": "Coherence and grammar describe the library and remain separate from the PICTOS Index average.",
     "itemCounter": "Pictogram {current} of {total}",
     "interpretation": "Recorded interpretation",
     "interpretationSkipped": "Skipped",
     "category": "Category",
     "footer": "PICTOS Index · Experimental prototype"
-  },
-  "status": {
-    "step": "Stage {step} of 4"
   },
   "rubric": {
     "dimensions": {
@@ -223,28 +210,6 @@
         "name": "Cognitive accessibility",
         "description": "Cognitive accessibility is how easily people with different cognitive abilities can understand and use the pictogram."
       }
-    },
-    "scale": {
-      "1": {
-        "label": "Not functional",
-        "general": "Quality absent or severely compromised."
-      },
-      "2": {
-        "label": "Insufficient",
-        "general": "Quality only marginally present."
-      },
-      "3": {
-        "label": "Works",
-        "general": "Quality partly present."
-      },
-      "4": {
-        "label": "Good",
-        "general": "Quality present, with minor problems."
-      },
-      "5": {
-        "label": "Excellent",
-        "general": "Quality fully present."
-      }
     }
   },
   "coordination": {
@@ -261,19 +226,19 @@
     "items": "pictograms",
     "evaluations": "Evaluations downloaded by each person (JSON, you can choose several)",
     "evaluationsSummary": "{n} evaluations: {a} with form A and {b} with form B. {answers} interpretations to code.",
-    "useAgreement": "Agreement on «Does it work here?» (Krippendorff's ordinal alpha; «I cannot judge» counts as missing): {alpha}.",
+    "useAgreement": "Agreement on “Does it work here?” (Krippendorff’s ordinal alpha; “I cannot judge” counts as missing): {alpha}.",
     "judges": "Number of judges",
     "sheetsBtn": "Download sheets for judges (CSV)",
     "aggregateBtn": "Download aggregate report (JSON)",
     "instructionsTitle": "Instructions for judges",
-    "instructionsBody": "Compare each answer with the source phrase and write a number from 1 to 6 in the «codigo» column. Do not look at the other judges' codes. Save the file as CSV, with the same name.",
+    "instructionsBody": "Compare each answer with the source phrase and write a number from 1 to 6 in the “codigo” column. Do not look at the other judges’ codes. Save the file as CSV, with the same name.",
     "code1": "Correct: the answer matches the assigned meaning.",
     "code2": "Almost correct: the answer is similar or close to the meaning.",
     "code3": "Doubtful: the answer points to another interpretation or is ambiguous.",
     "code4": "Incorrect: the answer does not match the meaning.",
     "code5": "Opposite meaning: the answer points to the contrary meaning.",
     "code6": "No answer: no answer is given, or the person says they do not know.",
-    "schemeSource": "Six-value scheme of Ramírez (2018, p. 80), internally called «Brugger–Frascara».",
+    "schemeSource": "Six-value scheme of Ramírez (2018, p. 80), internally called “Brugger–Frascara”.",
     "step3Title": "3. Collect the judges' sheets",
     "sheets": "Coded sheets (CSV, choose all of them)",
     "needTwoSheets": "At least two sheets are needed to compute agreement.",

@@ -27,7 +27,7 @@
     "start": "Iniciar una evaluación",
     "howLink": "Ver el procedimiento",
     "coordinateLink": "Coordinar un panel",
-    "privacy": "Los datos de la evaluación se almacenan en este navegador y sólo se exportan cuando quien evalúa lo decide.",
+    "privacy": "Los datos de la evaluación se almacenan en este navegador y solo se exportan cuando quien evalúa lo decide.",
     "clarity": "Claridad",
     "recognition": "Reconocimiento",
     "use": "Uso",
@@ -38,14 +38,14 @@
   "how": {
     "eyebrow": "Procedimiento",
     "title": "Cuatro etapas de evaluación",
-    "loadTitle": "Cargar la librería",
-    "loadBody": "Se importa una librería exportada desde PICTOS.net o una de las librerías de ejemplo.",
+    "loadTitle": "Mirar la librería como conjunto",
+    "loadBody": "Se carga una librería exportada desde PICTOS.net, o una de ejemplo, y se observa completa, sin frases. Se valoran por separado su coherencia formal y su gramática visual, que se informan junto al índice sin promediarse con él.",
     "relationTitle": "Declarar la posición de quien evalúa",
     "relationBody": "Se registra la relación de quien evalúa con la CAA, para interpretar cada juicio según la experiencia desde la que se emite.",
     "evaluateTitle": "Evaluar cada pictograma",
-    "evaluateBody": "Antes de conocer la frase de origen, se registra cómo se interpreta el pictograma. Luego se califican sus seis dimensiones en una escala de 1 a 5.",
-    "auditTitle": "Evaluar la librería como conjunto",
-    "auditBody": "Se examina la librería completa y se valoran por separado su coherencia formal y su gramática visual, que se informan junto al índice sin promediarse con él."
+    "evaluateBody": "Antes de conocer la frase de origen, se registra cómo se interpreta el pictograma. Luego se califican sus seis dimensiones en una escala de 1 a 5, una pregunta por pantalla.",
+    "submitTitle": "Entregar los resultados",
+    "submitBody": "Se descarga el informe PDF o los datos JSON. En un panel, el archivo JSON se descarga solo al terminar y se envía a quien coordina."
   },
   "principles": {
     "eyebrow": "Fundamento",
@@ -75,15 +75,12 @@
     "stepLibrary": "Conjunto",
     "stepEvaluator": "Tú",
     "stepEvaluation": "Pictogramas",
-    "stepSubmit": "Entrega",
-    "stepCount": "Momento {step} de {total}"
+    "stepSubmit": "Entrega"
   },
   "library": {
     "title": "Carga la librería",
-    "instruction": "Selecciona un archivo JSON exportado desde PICTOS.net. El instrumento admite imágenes raster y SVG del formato actual.",
     "instructionBefore": "Selecciona un archivo JSON exportado desde",
     "uploadTitle": "Cargar un archivo propio",
-    "uploadHint": "Formato JSON exportado desde PICTOS.net.",
     "uploadHintBefore": "Formato JSON exportado desde",
     "samplesTitle": "O prueba con una librería breve",
     "samplesBody": "Tres situaciones de uso declaradas, con el mismo estilo gráfico.",
@@ -92,13 +89,8 @@
     "exampleHealth": "Consulta de salud",
     "eighteenPictograms": "18 pictogramas",
     "change": "Cambiar librería",
-    "continue": "Continuar al paso 2",
     "successStatus": "Librería importada correctamente: {count} pictogramas listos para evaluar.",
     "untitled": "Librería sin nombre",
-    "noName": "Sin nombre",
-    "unknown": "Desconocida",
-    "notReported": "No informado",
-    "legacy": "Legado",
     "pictogramCount": "{count} pictogramas"
   },
   "profile": {
@@ -111,8 +103,7 @@
     "researcher": "Investigo o diseño recursos de CAA",
     "none": "No tengo relación ni experiencia previa con la CAA",
     "noticeTitle": "Tus datos permanecen en este navegador.",
-    "noticeBody": "Sólo se incluirán en el archivo que decidas exportar; no se envían automáticamente.",
-    "back": "Volver al paso 1",
+    "noticeBody": "Solo se incluirán en el archivo que decidas exportar; no se envían automáticamente.",
     "continue": "Continuar",
     "required": "Selecciona al menos una relación con la CAA.",
     "exclusiveAnnouncement": "Se seleccionó sin experiencia previa; se desactivaron las demás opciones."
@@ -122,14 +113,14 @@
     "pictogramPosition": "Pictograma {current} de {total}",
     "domainContext": "Contexto de uso: {context}",
     "useScenario": "En esta situación, alguien quiere decir: «{phrase}».",
-    "useQuestion": "¿Este pictograma le sirve para decirlo en esta situación?",
+    "useQuestion": "¿Este pictograma le **sirve para decirlo** en esta situación?",
     "useYes": "Sí, sirve",
     "usePartly": "Sirve, con reservas",
     "useNo": "No sirve",
     "useCannot": "No puedo juzgarlo",
     "useReason": "¿Por qué? (opcional)",
     "question": "¿Qué comunica este pictograma?",
-    "placeholder": "Escribe lo que entiendes que comunica...",
+    "placeholder": "Escribe lo que entiendes que comunica…",
     "skip": "No sé qué comunica",
     "confirm": "Confirmar",
     "imageAlt": "Pictograma actual",
@@ -143,26 +134,25 @@
     "unknownCategory": "Sin categoría",
     "unlabelledImage": "Pictograma sin etiqueta",
     "coherenceTitle": "Coherencia formal",
-    "coherenceBody": "¿Los pictogramas se reconocen como integrantes de un mismo conjunto?",
+    "coherenceBody": "¿Los pictogramas se reconocen como integrantes de **un mismo conjunto**?",
     "grammarTitle": "Gramática visual",
-    "grammarBody": "¿El conjunto aplica reglas visuales compartidas y reconocibles?",
+    "grammarBody": "¿El conjunto aplica **reglas visuales compartidas** y reconocibles?",
     "levels": {
       "coherence": {
-        "1": "No se percibe un conjunto común.",
-        "2": "La pertenencia al conjunto es débil.",
-        "3": "El conjunto se reconoce, aunque presenta variaciones visibles.",
-        "4": "El conjunto es coherente, con variaciones menores.",
-        "5": "El conjunto es claramente coherente y distintivo."
+        "1": "**No se percibe** un conjunto común.",
+        "2": "La pertenencia al conjunto es **débil**.",
+        "3": "El conjunto **se reconoce**, aunque presenta **variaciones visibles**.",
+        "4": "El conjunto es **coherente**, con **variaciones menores**.",
+        "5": "El conjunto es **claramente coherente y distintivo**."
       },
       "grammar": {
-        "1": "No se reconocen reglas visuales compartidas.",
-        "2": "Las reglas compartidas aparecen de manera ocasional.",
-        "3": "Existe una gramática reconocible, aplicada de forma irregular.",
-        "4": "La gramática visual es estable, con excepciones menores.",
-        "5": "La gramática visual es clara, estable y reconocible."
+        "1": "**No se reconocen** reglas visuales compartidas.",
+        "2": "Las reglas compartidas aparecen **solo de manera ocasional**.",
+        "3": "Existe una **gramática reconocible**, aplicada **de forma irregular**.",
+        "4": "La gramática visual es **estable**, con **excepciones menores**.",
+        "5": "La gramática visual es **clara, estable y reconocible**."
       }
     },
-    "download": "Descargar evaluación completa",
     "downloadPdf": "Descargar informe PDF",
     "downloadJson": "Descargar datos JSON",
     "generatingPdf": "Generando PDF…"
@@ -172,7 +162,7 @@
     "sampleLoad": "No se pudo cargar la librería de ejemplo.",
     "noImages": "El archivo no contiene imágenes compatibles en row.bitmap, row.rawSvg o row.structuredSvg.",
     "loadFirst": "Primero carga una librería.",
-    "profileFirst": "Primero completa los datos del evaluador.",
+    "profileFirst": "Primero cuéntanos tu relación con la CAA.",
     "completeForPdf": "Completa todos los pictogramas, la coherencia formal y la gramática visual antes de generar el PDF.",
     "pdfUnavailable": "El generador de PDF no está disponible.",
     "pdfError": "No se pudo generar el informe PDF. Inténtalo nuevamente."
@@ -187,15 +177,12 @@
     "exportedAt": "Generado: {date}",
     "locale": "Idioma de la evaluación: {locale}",
     "prototypeNote": "Este índice es un prototipo en construcción. Sus resultados son experimentales y no sustituyen estudios de comprensión ni validación con personas usuarias.",
-    "separateNote": "Coherencia y gramática describen la biblioteca y permanecen separadas del promedio PICTOS Index.",
+    "separateNote": "Coherencia y gramática describen la librería y permanecen separadas del promedio PICTOS Index.",
     "itemCounter": "Pictograma {current} de {total}",
     "interpretation": "Interpretación registrada",
     "interpretationSkipped": "Omitida",
     "category": "Categoría",
     "footer": "PICTOS Index · Prototipo experimental"
-  },
-  "status": {
-    "step": "Momento {step} de 4"
   },
   "rubric": {
     "dimensions": {
@@ -222,28 +209,6 @@
       "cognitive_accessibility": {
         "name": "Accesibilidad cognitiva",
         "description": "La accesibilidad cognitiva es la facilidad con que personas con distintas capacidades cognitivas pueden comprender y usar el pictograma."
-      }
-    },
-    "scale": {
-      "1": {
-        "label": "No funcional",
-        "general": "Cualidad ausente o gravemente comprometida."
-      },
-      "2": {
-        "label": "Insuficiente",
-        "general": "Cualidad presente sólo de forma limitada."
-      },
-      "3": {
-        "label": "Funciona",
-        "general": "Cualidad presente de forma parcial."
-      },
-      "4": {
-        "label": "Bien",
-        "general": "Cualidad presente, con problemas menores."
-      },
-      "5": {
-        "label": "Excelente",
-        "general": "Cualidad plenamente presente."
       }
     }
   },

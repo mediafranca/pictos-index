@@ -96,6 +96,16 @@
           "type": "string",
           "description": "Dimension operational definition in Spanish"
         },
+        "description_emphasis_es": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Phrases of the Spanish definition shown in bold; each must appear verbatim in it"
+        },
+        "description_emphasis_en": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Phrases of the English definition shown in bold; each must appear verbatim in it"
+        },
         "levels": {
           "type": "object",
           "required": ["1", "2", "3", "4", "5"],

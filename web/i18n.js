@@ -48,10 +48,27 @@ export function t(key, variables = {}) {
   );
 }
 
+// A catalogue string may mark key phrases as **phrase** to make it scannable;
+// they render as <strong>, built as nodes, never as HTML.
+export function marked(text) {
+  const fragment = document.createDocumentFragment();
+  text.split(/\*\*(.+?)\*\*/).forEach((part, index) => {
+    if (!part) return;
+    if (index % 2) {
+      const strong = document.createElement("strong");
+      strong.textContent = part;
+      fragment.append(strong);
+    } else {
+      fragment.append(part);
+    }
+  });
+  return fragment;
+}
+
 export function applyTranslations(root = document) {
   root.querySelectorAll("[data-i18n]").forEach((node) => {
     const variables = node.dataset.i18nVars ? JSON.parse(node.dataset.i18nVars) : {};
-    node.textContent = t(node.dataset.i18n, variables);
+    node.replaceChildren(marked(t(node.dataset.i18n, variables)));
   });
 
   const translatedAttributes = ["aria-label", "placeholder", "title", "content", "alt"];
