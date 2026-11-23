@@ -145,6 +145,11 @@
   "evaluation": {
     "title": "Evaluación de pictogramas",
     "pictogramPosition": "Pictograma {current} de {total}",
+    "protocolForm": "Forma {form}",
+    "passBlind": "Pasada 1 de 2: sin la frase",
+    "passSighted": "Pasada 2 de 2: con la frase",
+    "passSightedStart": "Terminó la pasada sin frases. Ahora verás otros pictogramas, cada uno con su frase.",
+    "domainContext": "Contexto de uso: {context}",
     "sourcePhrase": "Frase real de origen:",
     "firstImpression": "Primera impresión",
     "question": "¿Qué comunica este pictograma?",

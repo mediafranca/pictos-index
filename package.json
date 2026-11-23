@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev-server.mjs",
-    "validate-i18n": "node scripts/validate-i18n.mjs"
+    "validate-i18n": "node scripts/validate-i18n.mjs",
+    "aggregate": "node scripts/aggregate-protocol.mjs",
+    "test": "node --test scripts/"
   },
   "dependencies": {
     "jspdf": "4.2.1"

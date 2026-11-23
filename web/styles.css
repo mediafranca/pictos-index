@@ -361,6 +361,8 @@ textarea { min-height: 9rem; resize: vertical; }
   font-weight: 700; letter-spacing: -.035em;
 }
 .phrase-slot.concealed { visibility: hidden; }
+.pass-notice { margin: -.35rem 0 .5rem; color: var(--muted); font-size: .86rem; font-weight: 600; }
+.pass-notice.transition { color: var(--ink); padding: .5rem .7rem; border-left: 3px solid var(--violet-bright); background: var(--surface-soft); }
 .real-phrase-label { margin: 0; color: var(--muted); font-size: .76rem; text-transform: uppercase; letter-spacing: .08em; }
 .real-phrase { margin: .25rem 0 0; color: var(--ink); font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 650; }
 .evaluation-workspace {

@@ -15,6 +15,18 @@ const LEGACY_PROFILE_STORAGE_KEYS = ["pictos-index:evaluator-profile:v4", "picto
 const LIBRARY_STORAGE_PREFIX = "pictos-index:library-evals:v3:";
 const LIBRARY_DIMENSIONS = ["coherence", "grammar"];
 
+// Experimental protocol: a coordinator hands out links with ?forma=A or ?forma=B.
+// The library is split into two halves with a seed derived from the library itself,
+// so every browser draws the same split without a server. Form A interprets half 1
+// blind and rates half 2 with the phrase visible; form B does the reverse. The phrase
+// of a blind item is never revealed in the session, so the two constructs do not
+// contaminate each other. Without ?forma the app keeps the individual flow.
+const PROTOCOL_VERSION = "protocolo-experimental-0.1";
+const PROTOCOL_FORM = (() => {
+  const form = new URLSearchParams(window.location.search).get("forma")?.toUpperCase();
+  return form === "A" || form === "B" ? form : null;
+})();
+
 const state = {
   rubric: null,
   library: null,
@@ -102,6 +114,7 @@ function bindElements() {
 
   el.realPhraseLabel = document.getElementById("realPhraseLabel");
   el.realPhraseText = document.getElementById("realPhraseText");
+  el.passNotice = document.getElementById("passNotice");
   el.realPhraseSlot = document.getElementById("realPhraseSlot");
   el.interpretationStage = document.getElementById("interpretationStage");
   el.likertStage = document.getElementById("likertStage");
@@ -363,7 +376,8 @@ function loadLibraryPayload(payload, fileName) {
     timestamp: payload.timestamp || null,
     author: payload.config && (payload.config.credits || payload.config.author) ? (payload.config.credits || payload.config.author) : "",
     imageFormats,
-    key: buildLibraryStorageKey(payload, items),
+    domainContext: String(payload.config?.domainContext || "").trim() || null,
+    key: buildLibraryStorageKey(payload, items) + (PROTOCOL_FORM ? `:${PROTOCOL_VERSION}:${PROTOCOL_FORM}` : ""),
   };
 
   state.previewIndex = 0;
@@ -372,12 +386,71 @@ function loadLibraryPayload(payload, fileName) {
   state.assessment = null;
   state.evaluations = new Map();
   state.libraryAssessment = createEmptyLibraryAssessment();
+  state.protocol = null;
   loadStoredEvaluations();
   if (!state.assessment) state.assessment = createAssessmentIdentity();
+  if (PROTOCOL_FORM) applyProtocolPlan(payload);
 
   renderLibrarySummary();
   renderPreview();
   updateStepLocks();
+}
+
+// Reorders state.items into the two passes and tags each item with its pass.
+function applyProtocolPlan(payload) {
+  if (!Number.isInteger(state.assessment.orderSeed)) {
+    state.assessment.orderSeed = crypto.getRandomValues(new Uint32Array(1))[0];
+  }
+  const partitionSeed = hashToUint32(buildLibraryStorageKey(payload, state.items));
+  const split = seededShuffle(state.items, partitionSeed);
+  const half1 = split.slice(0, Math.ceil(split.length / 2));
+  const half2 = split.slice(half1.length);
+  const [blind, sighted] = PROTOCOL_FORM === "A" ? [half1, half2] : [half2, half1];
+  const order = mulberry32(state.assessment.orderSeed);
+  state.items = [
+    ...seededShuffle(blind, order).map((item) => ({ ...item, pass: "blind" })),
+    ...seededShuffle(sighted, order).map((item) => ({ ...item, pass: "sighted" })),
+  ];
+  state.protocol = {
+    version: PROTOCOL_VERSION,
+    form: PROTOCOL_FORM,
+    partitionSeed,
+    orderSeed: state.assessment.orderSeed,
+    halves: { 1: half1.map((item) => item.id), 2: half2.map((item) => item.id) },
+    sequence: state.items.map((item, position) => ({ itemId: item.id, pass: item.pass, position: position + 1 })),
+  };
+  // Resume at the first unfinished item: after a reload, someone in the second pass
+  // must not land back on the blind items.
+  const resumeAt = state.items.findIndex((item) => !isRecordComplete(state.evaluations.get(item.id)));
+  state.evalIndex = resumeAt === -1 ? state.items.length - 1 : resumeAt;
+  persistEvaluations();
+}
+
+function hashToUint32(text) {
+  let hash = 0x811c9dc5; // FNV-1a
+  for (let i = 0; i < text.length; i += 1) hash = Math.imul(hash ^ text.charCodeAt(i), 0x01000193);
+  return hash >>> 0;
+}
+
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let x = Math.imul(a ^ (a >>> 15), a | 1);
+    x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+    return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Fisher-Yates over a copy; takes a seed or an already running generator.
+function seededShuffle(list, seedOrRandom) {
+  const random = typeof seedOrRandom === "function" ? seedOrRandom : mulberry32(seedOrRandom);
+  const out = [...list];
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
 }
 
 function parseLibraryPayload(payload) {
@@ -667,15 +740,44 @@ function renderCurrentEvalItem(preserveDimension = false) {
   setImage(el.pragmaticImage, item.imageSrc, `${t("evaluation.imageAlt")} ${item.id}`);
   setImage(el.dimensionImage, item.imageSrc, `${t("evaluation.dimensionImageAlt")} ${item.id}`);
 
-  el.realPhraseText.textContent = item.utterance;
+  // A blind item's phrase is kept out of the DOM, not just hidden.
+  el.realPhraseText.textContent = item.pass === "blind" ? "" : item.utterance;
   el.pictogramPosition.textContent = t("evaluation.pictogramPosition", {
     current: state.evalIndex + 1,
     total: state.items.length,
   });
-  el.evalPrevBtn.disabled = state.evalIndex === 0;
+  const firstSighted = state.items.findIndex((candidate) => candidate.pass === "sighted");
+  el.evalPrevBtn.disabled = state.evalIndex === 0 || state.evalIndex === firstSighted;
+  renderPassNotice(item, state.evalIndex === firstSighted);
 
   updateEvaluationStatus();
   updateStepLocks();
+
+  if (item.pass === "blind") {
+    setRealPhraseVisibility(false);
+    el.interpretationStage.classList.remove("hidden");
+    el.likertStage.classList.add("hidden");
+    el.guessText.value = record.guess || "";
+    const answered = Boolean(record.guessSkipped || (record.guess && record.guess.trim()));
+    el.evalNextBtn.disabled = !answered;
+    el.evalNextBtn.classList.toggle("ready", answered);
+    setNextLabel();
+    return;
+  }
+
+  el.editGuessBtn.classList.toggle("hidden", item.pass === "sighted");
+  if (item.pass === "sighted") {
+    setRealPhraseVisibility(true);
+    el.interpretationStage.classList.add("hidden");
+    el.likertStage.classList.remove("hidden");
+    const scores = normalizeScores(record.scores);
+    const firstUnscoredIndex = DIMENSIONS.findIndex((dimension) => normalizeScore(scores[dimension.key]) === null);
+    if (!preserveDimension) state.dimensionIndex = firstUnscoredIndex === -1 ? 0 : firstUnscoredIndex;
+    setScoresToUI(scores);
+    updateLikertPanels(scores);
+    updatePictogramNavigation(scores);
+    return;
+  }
 
   const hasGuess = Boolean(record.guess && record.guess.trim());
   const skipped = Boolean(record.guessSkipped);
@@ -700,6 +802,20 @@ function renderCurrentEvalItem(preserveDimension = false) {
   setScoresToUI(scores);
   updateLikertPanels(scores);
   updatePictogramNavigation(scores);
+}
+
+function renderPassNotice(item, isTransition) {
+  const parts = [];
+  if (item.pass) {
+    parts.push(t("evaluation.protocolForm", { form: PROTOCOL_FORM }));
+    parts.push(t(item.pass === "blind" ? "evaluation.passBlind" : "evaluation.passSighted"));
+  }
+  if (state.library?.domainContext) parts.push(t("evaluation.domainContext", { context: state.library.domainContext }));
+  if (isTransition) parts.unshift(t("evaluation.passSightedStart"));
+  el.passNotice.textContent = parts.join(" · ");
+  el.passNotice.classList.toggle("hidden", parts.length === 0);
+  el.passNotice.classList.toggle("transition", isTransition);
+  if (isTransition) announce(t("evaluation.passSightedStart"));
 }
 
 function setRealPhraseVisibility(isVisible) {
@@ -728,6 +844,7 @@ function onSaveGuess() {
   state.evaluations.set(item.id, record);
   persistEvaluations();
   renderCurrentEvalItem();
+  if (item.pass === "blind") el.evalNextBtn.focus({ preventScroll: true });
 }
 
 function onSkipGuess() {
@@ -745,6 +862,7 @@ function onSkipGuess() {
   state.evaluations.set(item.id, record);
   persistEvaluations();
   renderCurrentEvalItem();
+  if (item.pass === "blind") el.evalNextBtn.focus({ preventScroll: true });
 }
 
 function onEditGuess() {
@@ -911,9 +1029,13 @@ function updateEvaluationStatus() {
 
 function updatePictogramNavigation(scores) {
   const allScored = hasAllDimensionsScored(scores);
-  const isLast = state.evalIndex >= state.items.length - 1;
   el.evalNextBtn.disabled = !allScored;
   el.evalNextBtn.classList.toggle("ready", allScored);
+  setNextLabel();
+}
+
+function setNextLabel() {
+  const isLast = state.evalIndex >= state.items.length - 1;
   el.evalNextLabel.textContent = isLast
     ? t("evaluation.save", { current: state.evalIndex + 1, total: state.items.length })
     : t("evaluation.itemNext");
@@ -1428,6 +1550,9 @@ function countCompletedItems() {
 function isRecordComplete(record) {
   if (!record) return false;
   const interpreted = record.guessSkipped || Boolean(record.guess && record.guess.trim());
+  const pass = state.items.find((item) => item.id === record.itemId)?.pass;
+  if (pass === "blind") return interpreted;
+  if (pass === "sighted") return hasAllDimensionsScored(record.scores);
   return interpreted && hasAllDimensionsScored(record.scores);
 }
 
@@ -1457,25 +1582,29 @@ function buildExportPayload() {
     return {
       index: index + 1,
       itemId: item.id,
-      utterance: item.utterance,
+      // In the protocol the phrases stay out of the export, so a partial download
+      // cannot reveal blind items; the aggregator joins them from the library.
+      utterance: item.pass ? null : item.utterance,
+      pass: item.pass || null,
       category: item.category || null,
       comprension_pragmatica: {
         estado: record ? (record.guessSkipped ? "omitida" : record.guess ? "respondida" : "pendiente") : "pendiente",
         respuesta: record && record.guess ? record.guess : "",
       },
       scores: record && record.scores ? normalizeScores(record.scores) : null,
-      average: isRecordComplete(record) ? Number(averageScore(record.scores).toFixed(3)) : null,
+      average: hasAllDimensionsScored(record?.scores) ? Number(averageScore(record.scores).toFixed(3)) : null,
       updatedAt: record ? record.updatedAt : null,
     };
   });
 
   const payload = {
-    schemaVersion: "pictos-index-library-evaluation-1.4.0",
+    schemaVersion: "pictos-index-library-evaluation-1.5.0",
     exportedAt: new Date().toISOString(),
     uiLocale: getLocale(),
     evaluation: state.assessment || createAssessmentIdentity(),
     library: state.library,
     evaluator: state.evaluatorProfile,
+    protocol: state.protocol || null,
     summary: buildSummary(),
     libraryAssessment: {
       scores: {
@@ -1742,7 +1871,10 @@ function buildSummary() {
   const completedItems = countCompletedItems();
   const allComplete = state.items.length > 0 && completedItems === state.items.length;
   // No average over partial data: library averages need every pictogram complete.
-  const records = allComplete ? state.items.map((item) => state.evaluations.get(item.id)) : [];
+  // In the protocol, blind items carry an interpretation and no ratings.
+  const records = allComplete
+    ? state.items.map((item) => state.evaluations.get(item.id)).filter((record) => hasAllDimensionsScored(record?.scores))
+    : [];
   const mean = (values) => (values.length
     ? Number((values.reduce((acc, value) => acc + value, 0) / values.length).toFixed(3))
     : null);

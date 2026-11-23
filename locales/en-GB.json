@@ -145,6 +145,11 @@
   "evaluation": {
     "title": "Pictogram evaluation",
     "pictogramPosition": "Pictogram {current} of {total}",
+    "protocolForm": "Form {form}",
+    "passBlind": "Pass 1 of 2: without the phrase",
+    "passSighted": "Pass 2 of 2: with the phrase",
+    "passSightedStart": "The pass without phrases is over. You will now see other pictograms, each with its phrase.",
+    "domainContext": "Context of use: {context}",
     "sourcePhrase": "Original source phrase:",
     "firstImpression": "First impression",
     "question": "What does this pictogram communicate?",
