@@ -34,9 +34,6 @@ const PROTOCOL_FORM = (() => {
   if (form === "A" || form === "B") return form;
   return PARTICIPANT ? (PARTICIPANT % 2 ? "A" : "B") : null;
 })();
-// A pointer pick on a rating advances by itself; a keyboard pick waits for Enter,
-// because arrow keys move through a radio group and would skip questions.
-let pickedWithPointer = false;
 
 const state = {
   rubric: null,
@@ -90,14 +87,14 @@ function bindElements() {
   const ids = [
     "homeScreen", "evaluatorShell", "startEvaluationBtn", "brandHome", "statusRegion", "languageSelect", "themeSelect",
     "stepBtn1", "stepBtn2", "stepBtn3", "stepBtn4", "step1", "step2", "step3", "step4",
-    "step1Nav", "step2Nav", "step3Nav", "step2Title", "step2NextBtn", "setBackBtn",
+    "step1Nav", "step2Nav", "step3Nav", "step2Title", "step2NextBtn", "setBackBtn", "evalNextBtn",
     "evaluatorForm", "evalAacNoExperience",
     "libraryFileInput", "libraryLoader", "libraryLoaded", "loadedLibraryName", "loadedLibraryMeta",
     "replaceLibraryBtn", "libraryStatus", "auditGrid", "setQuestionTitle", "setQuestionBody", "setOptions",
     "evalPosition", "evalProgressBar", "noticePanel", "noticeText", "noticeContext", "noticeBtn",
     "questionPanel", "phraseLine", "evalImage", "guessStage", "guessText", "saveGuessBtn", "skipGuessBtn",
     "dimensionStage", "dimensionTitle", "dimensionDescription", "dimensionOptions",
-    "useStage", "useScenario", "useReason", "useNextBtn", "evalBackBtn",
+    "useStage", "useScenario", "useReason", "evalBackBtn",
     "doneIntro", "doneStatus", "auditExportBtn", "auditPdfBtn",
   ];
   ids.forEach((id) => { el[id] = document.getElementById(id); });
@@ -139,7 +136,7 @@ function bindEvents() {
     button.addEventListener("click", () => onLoadSampleLibrary(button));
   });
   el.setBackBtn.addEventListener("click", () => changeSetQuestion(-1));
-  el.step2NextBtn.addEventListener("click", () => goToStep(3));
+  el.step2NextBtn.addEventListener("click", () => changeSetQuestion(1));
 
   el.noticeBtn.addEventListener("click", () => {
     state.seenNotices.add(el.noticePanel.dataset.notice);
@@ -152,7 +149,7 @@ function bindEvents() {
   el.skipGuessBtn.addEventListener("click", () => saveGuess(true));
   document.querySelectorAll('input[name="useAnswer"]').forEach((radio) => radio.addEventListener("change", onUseAnswerChange));
   el.useReason.addEventListener("input", onUseAnswerChange);
-  el.useNextBtn.addEventListener("click", nextQuestion);
+  el.evalNextBtn.addEventListener("click", nextQuestion);
   el.evalBackBtn.addEventListener("click", previousQuestion);
 
   el.auditExportBtn.addEventListener("click", exportEvaluationJson);
@@ -235,7 +232,6 @@ function updateStepLocks() {
   el.stepBtn2.disabled = !hasProfile;
   el.stepBtn3.disabled = !(hasProfile && setReady);
   el.stepBtn4.disabled = !(hasProfile && pictogramsComplete);
-  el.step2NextBtn.disabled = !setReady;
 }
 
 function isProfileComplete(profile) {
@@ -699,6 +695,9 @@ function renderCurrentEvalItem() {
   el.useStage.classList.toggle("hidden", question !== "use");
   el.dimensionStage.classList.toggle("hidden", question === "guess" || question === "use");
   el.evalBackBtn.disabled = !canGoBack();
+  // The guess has its own Confirm button; every other answer is confirmed with Next.
+  el.evalNextBtn.classList.toggle("hidden", question === "guess");
+  el.evalNextBtn.disabled = !isQuestionAnswered(record, question);
 
   if (question === "guess") {
     el.guessText.value = record.guess || "";
@@ -710,7 +709,6 @@ function renderCurrentEvalItem() {
       radio.checked = radio.value === record.use;
     });
     el.useReason.value = record.useReason || "";
-    el.useNextBtn.disabled = !USE_ANSWERS.includes(record.use);
   } else {
     const meta = getDimensionMeta(question);
     el.dimensionTitle.textContent = meta.name;
@@ -725,11 +723,10 @@ function renderCurrentEvalItem() {
   }
 }
 
-// Five options, each with what its score means. A pointer pick advances by itself;
-// with the keyboard, arrows choose and Enter advances.
+// Five options, each with what its score means. Picking only selects; the person
+// confirms with Next (or Enter), so a slip of the pointer never skips a question.
 function renderLevelOptions(container, levels, selected, onPick, onAdvance) {
   container.innerHTML = "";
-  container.onpointerdown = () => { pickedWithPointer = true; };
   container.onkeydown = (event) => {
     if (event.key !== "Enter" || !container.querySelector("input:checked")) return;
     event.preventDefault();
@@ -744,11 +741,7 @@ function renderLevelOptions(container, levels, selected, onPick, onAdvance) {
     input.name = `${container.id}-level`;
     input.value = String(score);
     input.checked = selected === score;
-    input.addEventListener("change", () => {
-      onPick(score);
-      if (pickedWithPointer) window.setTimeout(onAdvance, 250);
-      pickedWithPointer = false;
-    });
+    input.addEventListener("change", () => onPick(score));
     const number = document.createElement("span");
     number.className = "level-number";
     number.textContent = String(score);
@@ -785,6 +778,7 @@ function onDimensionScore(key, score) {
   record.scores = { ...normalizeScores(record.scores), [key]: score };
   record.average = averageScore(record.scores);
   saveRecord(item, record);
+  el.evalNextBtn.disabled = false;
 }
 
 function onUseAnswerChange() {
@@ -794,7 +788,7 @@ function onUseAnswerChange() {
   record.use = document.querySelector('input[name="useAnswer"]:checked')?.value || null;
   record.useReason = el.useReason.value.trim();
   saveRecord(item, record);
-  el.useNextBtn.disabled = !record.use;
+  el.evalNextBtn.disabled = !record.use;
 }
 
 function nextQuestion() {
@@ -974,6 +968,7 @@ function renderSetQuestion() {
   el.setQuestionTitle.textContent = t(`audit.${dimension}Title`);
   el.setQuestionBody.textContent = t(`audit.${dimension}Body`);
   el.setBackBtn.disabled = state.setIndex === 0;
+  renderSetNext();
   renderLevelOptions(
     el.setOptions,
     [1, 2, 3, 4, 5].map((score) => t(`audit.levels.${dimension}.${score}`)),
@@ -985,15 +980,24 @@ function renderSetQuestion() {
       };
       persistEvaluations();
       updateStepLocks();
+      renderSetNext();
     },
     () => changeSetQuestion(1),
   );
 }
 
+function renderSetNext() {
+  const last = state.setIndex === LIBRARY_DIMENSIONS.length - 1;
+  el.step2NextBtn.textContent = t(last ? "set.continue" : "nav.next");
+  el.step2NextBtn.disabled = last
+    ? !isLibraryAssessmentComplete()
+    : normalizeScore(state.libraryAssessment?.scores?.[LIBRARY_DIMENSIONS[state.setIndex]]) === null;
+}
+
 function changeSetQuestion(offset) {
   const next = state.setIndex + offset;
   if (next >= LIBRARY_DIMENSIONS.length) {
-    if (isLibraryAssessmentComplete()) el.step2NextBtn.focus({ preventScroll: true });
+    if (isLibraryAssessmentComplete()) goToStep(3);
     return;
   }
   if (next < 0) return;
