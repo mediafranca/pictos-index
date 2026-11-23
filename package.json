@@ -8,6 +8,7 @@
     "dev": "node scripts/dev-server.mjs",
     "validate-i18n": "node scripts/validate-i18n.mjs",
     "aggregate": "node scripts/aggregate-protocol.mjs",
+    "coding": "node scripts/coding-sheets.mjs",
     "test": "node --test scripts/"
   },
   "dependencies": {

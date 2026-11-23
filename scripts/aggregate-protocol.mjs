@@ -51,6 +51,7 @@ export function krippendorffAlpha(units, level = "ordinal") {
   const nc = o.map((row) => row.reduce((sum, x) => sum + x, 0));
   const n = nc.reduce((sum, x) => sum + x, 0);
   const delta = (c, d) => {
+    if (level === "nominal") return c === d ? 0 : 1;
     if (level === "interval") return (categories[c] - categories[d]) ** 2;
     const [lo, hi] = c < d ? [c, d] : [d, c];
     let sum = 0;
@@ -123,8 +124,8 @@ export function aggregate(library, exports) {
         const state = item.comprension_pragmatica?.estado;
         if (state === "respondida" || state === "omitida") {
           const skipped = state === "omitida";
-          // code: filled in by judges with the six-value scheme (CODING_SCHEME); a skip is 6.
-          blind.push({ evaluation: data.evaluation.id, form: data.protocol.form, position, skipped, guess: item.comprension_pragmatica.respuesta || "", code: skipped ? 6 : null });
+          // Judges code these with scripts/coding-sheets.mjs; a skip counts as code 6.
+          blind.push({ evaluation: data.evaluation.id, form: data.protocol.form, position, skipped, guess: item.comprension_pragmatica.respuesta || "" });
         }
       } else if (item.pass === "sighted" && item.scores) {
         DIMENSIONS.forEach((d) => { if (Number.isInteger(item.scores[d])) ratings[d].push(item.scores[d]); });

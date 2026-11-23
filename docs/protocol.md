@@ -49,7 +49,7 @@ The evaluation JSON (`pictos-index-library-evaluation-1.5.0`) adds:
 
 `scripts/aggregate-protocol.mjs` checks that every file comes from the same library, protocol version and split, and warns when the forms are unbalanced. It writes, for each item:
 
-- the blind interpretations, with form and position, each with an empty `code` for the judges to fill in (see below). Skipped interpretations are pre-coded 6.
+- the blind interpretations, with form and position, for the judges to code (see below).
 - the sighted ratings for each dimension: n, median and values.
 
 For each dimension it also writes Krippendorff's ordinal alpha over the sighted ratings (Krippendorff, 2011). `scripts/aggregate-protocol.test.mjs` checks this against Krippendorff's published example. No average is computed.
@@ -70,6 +70,24 @@ Judges code each open answer against the source phrase with the six-value scheme
 Ramírez adapted it from the comprehension-test procedures described by Brugger (1999), Olgyay, Frascara (2011) and Boersema & Adams (2017), simplifying seven-value variants. His figure labels it «Brugger–Frascara». PICTOS Index keeps that label only as an internal name. It does not designate a scale published or validated jointly by Brugger and Frascara.
 
 Suggested wording for publications: «Se aplicó el esquema de codificación de seis valores de Ramírez (2018, p. 80), referido internamente como "Brugger–Frascara".»
+
+### Procedure, one spreadsheet per judge
+
+1. Generate one sheet per judge:
+
+   ```sh
+   node scripts/coding-sheets.mjs sheets aggregate.json sheets/ --judges 2
+   ```
+
+   Each `juez-N.csv` lists every answer with an opaque id, the source phrase, the answer and an empty `codigo` column. Each sheet has its own random order and shows neither the evaluator, the form nor the position. Skipped answers are left out and count as code 6.
+2. Each judge opens their sheet in Excel or Google Sheets, writes a code from 1 to 6 in `codigo`, saves it as CSV and sends it back, without seeing the other judges' codes.
+3. Merge the sheets:
+
+   ```sh
+   node scripts/coding-sheets.mjs merge aggregate.json sheets/juez-1.csv sheets/juez-2.csv
+   ```
+
+   The report lists problems in each sheet (missing or invalid codes), the nominal alpha between judges, the disagreements to resolve, and for each item the distribution of the codes on which all judges agree. Answers with disagreements are counted as unresolved until the judges settle them and correct their sheets.
 
 Codes are categories, not an interval scale: 6 is not "worse" than 5. Agreement between judges should therefore be reported with nominal alpha, and each item's result as the distribution of codes rather than a mean.
 
