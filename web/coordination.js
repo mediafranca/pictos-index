@@ -61,12 +61,38 @@ function recompute() {
   if (state.aggregate && state.sheets.length >= 2) {
     try {
       state.coding = mergeCoding(state.aggregate, state.sheets);
+      trackRounds(state.coding);
     } catch (error) {
       console.error(error);
       state.coding = { error: t("coordination.sheetsUnreadable") };
     }
   }
   render();
+}
+
+// The first complete set of sheets measures reliability. Once judges reconcile and resend
+// their sheets, alpha measures forced convergence, so the first-round alpha is stored per
+// panel in this browser and never overwritten; each distinct complete set is a new round.
+const ROUNDS_PREFIX = "pictos-index:coding-rounds:";
+
+function fnv(text) {
+  let hash = 0x811c9dc5;
+  for (const ch of text) hash = Math.imul(hash ^ ch.codePointAt(0), 0x01000193);
+  return (hash >>> 0).toString(16);
+}
+
+function trackRounds(coding) {
+  const key = ROUNDS_PREFIX + fnv(codingRows(state.aggregate).map((row) => row.id).sort().join(","));
+  const rounds = JSON.parse(localStorage.getItem(key) || "null") || { firstRound: null, sheets: [] };
+  const sheets = fnv(state.sheets.map((sheet) => sheet.text).sort().join("\u0000"));
+  const complete = coding.judges.every((judge) => judge.problems.length === 0);
+  if (complete && !rounds.sheets.includes(sheets)) rounds.sheets.push(sheets);
+  if (complete && !rounds.firstRound) {
+    rounds.firstRound = { ...coding.agreement, judges: coding.judges.length, at: new Date().toISOString() };
+  }
+  localStorage.setItem(key, JSON.stringify(rounds));
+  coding.round = complete ? rounds.sheets.indexOf(sheets) + 1 : null;
+  coding.agreement.firstRound = rounds.firstRound;
 }
 
 function render() {
@@ -104,6 +130,7 @@ function render() {
   const problems = coding.judges.flatMap((judge) => judge.problems.map((p) => `${judge.name}: ${p}`));
   $("coordCodingSummary").innerHTML = `
     <p>${escapeHtml(t("coordination.codingSummary", { judges: coding.judges.length, alpha: formatAlpha(coding.agreement.alpha_nominal), disagreements: coding.disagreements.length }))}</p>
+    ${coding.agreement.firstRound ? `<p>${escapeHtml(t("coordination.firstRound", { alpha: formatAlpha(coding.agreement.firstRound.alpha_nominal), round: coding.round ?? "–" }))}</p>` : ""}
     ${problems.length ? list(problems, "coord-warnings") : ""}
     ${coding.disagreements.length ? `
       <table class="meta-table coord-disagreements"><caption>${escapeHtml(t("coordination.disagreements"))}</caption>

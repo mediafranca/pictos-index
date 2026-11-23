@@ -283,7 +283,8 @@
     "phrase": "Phrase",
     "answer": "Answer",
     "resultsBtn": "Download results per item (CSV)",
-    "codingBtn": "Download coding report (JSON)"
+    "codingBtn": "Download coding report (JSON)",
+    "firstRound": "Reliability, first complete round (fixed): alpha {alpha}. This upload is round {round}; an alpha after reconciliation measures convergence, not reliability. Report the first-round one."
   },
   "nav": {
     "back": "← Back",

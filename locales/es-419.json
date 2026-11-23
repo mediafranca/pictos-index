@@ -283,7 +283,8 @@
     "phrase": "Frase",
     "answer": "Respuesta",
     "resultsBtn": "Descargar resultados por ítem (CSV)",
-    "codingBtn": "Descargar informe de codificación (JSON)"
+    "codingBtn": "Descargar informe de codificación (JSON)",
+    "firstRound": "Fiabilidad, primera ronda completa (fija): alfa {alpha}. Esta carga es la ronda {round}; un alfa posterior a la reconciliación mide convergencia, no fiabilidad. Reporta el de la primera ronda."
   },
   "nav": {
     "back": "← Atrás",

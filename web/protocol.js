@@ -249,11 +249,18 @@ export function mergeCoding(aggregate, sheets) {
       const code = agreed.get(answerId(item.itemId, answer.evaluation));
       if (code) distribution[code] += 1; else unresolved += 1;
     });
-    return { itemId: item.itemId, utterance: item.utterance, answers: item.blind.length, distribution, unresolved };
+    // Comprehension rate over the settled answers (skipped ones count as code 6). The strict
+    // rule (code 1) is primary, the lenient one (codes 1 + 2) secondary; see docs/protocol.md.
+    const settled = item.blind.length - unresolved;
+    const rate = (count) => (settled ? Math.round((count / settled) * 1000) / 1000 : null);
+    return {
+      itemId: item.itemId, utterance: item.utterance, answers: item.blind.length, distribution, unresolved,
+      comprehension: { strict: rate(distribution[1]), lenient: rate(distribution[1] + distribution[2]) },
+    };
   });
 
   return {
-    schema: "pictos-index-coding-0.1",
+    schema: "pictos-index-coding-0.2",
     generated_at: new Date().toISOString(),
     coding_scheme: CODING_SCHEME,
     judges: judges.map(({ name, codes, problems }) => ({ name, coded: codes.size, problems })),
@@ -267,13 +274,14 @@ export function mergeCoding(aggregate, sheets) {
 export function resultsCsv(aggregate, coding = null) {
   const codes = Object.keys(CODING_SCHEME.codes);
   const head = ["item", "frase", "mitad", "interpretaciones",
-    ...(coding ? [...codes.map((c) => `codigo_${c}`), "sin_resolver"] : []),
+    ...(coding ? [...codes.map((c) => `codigo_${c}`), "sin_resolver", "acierto_estricto", "acierto_laxo"] : []),
     "sirve_si", "sirve_con_reservas", "sirve_no", "no_puede_juzgar"];
   const byItem = new Map((coding?.items || []).map((item) => [item.itemId, item]));
   const lines = aggregate.items.map((item) => {
     const coded = byItem.get(item.itemId);
     return [item.itemId, item.utterance ?? "", item.half ?? "", item.blind.length,
-      ...(coding ? [...codes.map((c) => coded?.distribution[c] ?? 0), coded?.unresolved ?? 0] : []),
+      ...(coding ? [...codes.map((c) => coded?.distribution[c] ?? 0), coded?.unresolved ?? 0,
+        coded?.comprehension.strict ?? "", coded?.comprehension.lenient ?? ""] : []),
       ...USE_ANSWERS.map((a) => item.use.distribution[a])];
   });
   return `\uFEFF${[head, ...lines].map((row) => row.map(quote).join(";")).join("\r\n")}\r\n`;

@@ -97,6 +97,19 @@ node scripts/coding-sheets.mjs merge aggregate.json sheets/juez-1.csv sheets/jue
 
 Codes are categories, not an interval scale: 6 is not "worse" than 5. Agreement between judges should therefore be reported with nominal alpha, and each item's result as the distribution of codes rather than a mean.
 
+### What counts as understood (fixed before the first panel)
+
+To compare with the acceptance criterion of ISO 9186-1 or with published comprehension indices, each item also reports a comprehension rate over its settled answers (skipped answers count as code 6; unresolved disagreements are left out until settled):
+
+- **Strict (primary):** code 1 only.
+- **Lenient (secondary):** codes 1 and 2.
+
+Both appear in the coding report (`items[].comprehension`) and in the results sheet (`acierto_estricto`, `acierto_laxo`). Report the strict rate as the result and the lenient one alongside it. This rule is declared here before any data exists, so it cannot be chosen after seeing the results.
+
+### Which alpha to report
+
+The nominal alpha of the **first complete round** of sheets measures reliability. Once judges settle disagreements and resend their sheets, alpha measures how far they converged, not how reliable the coding is. The coordination screen therefore stores the first-round alpha for each panel in the browser and never overwrites it, numbers each later set of sheets as a new round, and includes both in the coding report (`agreement.firstRound`, `round`). Report the first-round alpha. The command-line `merge` does not track rounds: keep the report of its first run.
+
 ## Known limits
 
 - Each person judges only half the library, so there is no full individual profile.
