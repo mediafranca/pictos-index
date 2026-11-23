@@ -8,13 +8,11 @@
   },
   "prototype": {
     "title": "Prototype under development · version {version}",
-    "body": "The index and its results are experimental. They do not replace comprehension studies, validation with users or a professional accessibility assessment.",
     "short": "Prototype under development · version {version}: results are experimental."
   },
   "a11y": {
     "skip": "Skip to content",
     "brandHome": "PICTOS Index, return to the home page",
-    "siteLink": "Go to PICTOS.net",
     "instrument": "Evaluation instrument",
     "steps": "Steps",
     "dimensions": "The six per-pictogram evaluation dimensions; together, they form the pictogram's profile"
@@ -25,14 +23,22 @@
     "lead": "PICTOS Index evaluates each pictogram in its own right, across six dimensions, and as part of a curated AAC library, attending to the formal coherence and visual grammar of the set. The result is a profile for each pictogram; the average currently computed is provisional and has not been validated.",
     "start": "Begin an evaluation",
     "howLink": "See the procedure",
-    "coordinateLink": "Coordinate a panel",
     "privacy": "Evaluation data are stored in this browser and exported only when the evaluator chooses.",
     "clarity": "Clarity",
     "recognition": "Recognition",
     "use": "Use",
     "accessibility": "Accessibility",
     "culture": "Culture",
-    "meaning": "Meaning"
+    "meaning": "Meaning",
+    "modesLink": "Evaluate with a panel",
+    "modesEyebrow": "Two ways to use it",
+    "modesTitle": "On your own or with a panel",
+    "soloTitle": "Evaluate on your own",
+    "soloBody": "You review a library by yourself: you interpret each pictogram, rate its six dimensions and download a report.",
+    "panelTitle": "Evaluate with a panel",
+    "panelBody": "To study a library with a group: each person answers on their phone via a QR code, and then two or more judges code their answers.",
+    "panelStart": "Coordinate a panel",
+    "panelGuide": "Read the protocol guide"
   },
   "how": {
     "eyebrow": "Procedure",
@@ -299,7 +305,13 @@
   },
   "nav": {
     "back": "← Back",
-    "next": "Next →"
+    "next": "Next →",
+    "label": "Sections",
+    "how": "How it works",
+    "panel": "Coordinate a panel",
+    "protocol": "Protocol",
+    "about": "About",
+    "protocolHref": "https://github.com/mediafranca/pictos-index/blob/main/docs/protocol.md"
   },
   "set": {
     "title": "Look at the set",
@@ -332,6 +344,8 @@
   },
   "footer": {
     "licences": "Code under the Apache 2.0 licence · Rubric under CC BY 4.0",
-    "source": "Source code on GitHub"
+    "source": "Source code on GitHub",
+    "label": "Links",
+    "protocol": "Protocol guide"
   }
 }

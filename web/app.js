@@ -133,11 +133,22 @@ function bindEvents() {
   });
   SYSTEM_LIGHT.addEventListener("change", applyTheme);
   applyTheme();
-  el.startEvaluationBtn.addEventListener("click", () => {
-    el.homeScreen.classList.add("hidden");
-    el.evaluatorShell.classList.remove("hidden");
-    goToStep(1, true);
+  [el.startEvaluationBtn, ...document.querySelectorAll("[data-start-evaluation]")].forEach((button) => {
+    button.addEventListener("click", () => {
+      el.homeScreen.classList.add("hidden");
+      el.evaluatorShell.classList.remove("hidden");
+      goToStep(1, true);
+    });
   });
+  // Section links lead to the home page even from inside the instrument.
+  document.querySelectorAll('.site-nav a[href^="./#"], .hero-actions a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", () => {
+      if (isCoordinationRequested() || !el.homeScreen.classList.contains("hidden")) return;
+      el.evaluatorShell.classList.add("hidden");
+      el.homeScreen.classList.remove("hidden");
+    });
+  });
+  if (isCoordinationRequested()) document.querySelector('[data-nav="panel"]')?.setAttribute("aria-current", "page");
   el.brandHome.addEventListener("click", (event) => {
     event.preventDefault();
     showHome();
