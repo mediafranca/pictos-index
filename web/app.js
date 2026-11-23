@@ -25,18 +25,27 @@ const LIBRARY_DIMENSIONS = ["coherence", "grammar"];
 const PROTOCOL_VERSION = "protocolo-experimental-0.2";
 // Pass 2 asks a single question, "¿Sirve aquí?", instead of the six ratings.
 const USE_ANSWERS = ["yes", "partly", "no", "cannot_judge"];
+// ?p=<n> numbers the participant and derives the form from its parity (odd A, even B),
+// so handing out consecutive numbers balances the forms; ?forma=A|B still works.
+const URL_PARAMS = new URLSearchParams(window.location.search);
+const PARTICIPANT = /^[1-9]\d*$/.test(URL_PARAMS.get("p") || "") ? Number(URL_PARAMS.get("p")) : null;
 const PROTOCOL_FORM = (() => {
-  const form = new URLSearchParams(window.location.search).get("forma")?.toUpperCase();
-  return form === "A" || form === "B" ? form : null;
+  const form = URL_PARAMS.get("forma")?.toUpperCase();
+  if (form === "A" || form === "B") return form;
+  return PARTICIPANT ? (PARTICIPANT % 2 ? "A" : "B") : null;
 })();
+// A pointer pick on a rating advances by itself; a keyboard pick waits for Enter,
+// because arrow keys move through a radio group and would skip questions.
+let pickedWithPointer = false;
 
 const state = {
   rubric: null,
   library: null,
   items: [],
-  previewIndex: 0,
   evalIndex: 0,
-  dimensionIndex: 0,
+  qIndex: 0,
+  setIndex: 0,
+  seenNotices: new Set(),
   assessment: null,
   evaluatorProfile: null,
   evaluations: new Map(),
@@ -50,13 +59,11 @@ document.addEventListener("DOMContentLoaded", init);
 async function init() {
   await initI18n();
   bindElements();
-  if (PROTOCOL_FORM) useProtocolStep4();
+  if (PROTOCOL_FORM) markProtocolMode();
   applyTranslations();
   el.languageSelect.value = getLocale();
   bindEvents();
   state.rubric = await loadRubric();
-  buildSliders();
-  buildLibraryScales();
   loadEvaluatorProfile();
   updateStepLocks();
   if (isCoordinationRequested()) {
@@ -67,108 +74,24 @@ async function init() {
   }
   showHome(false);
 }
-
 function bindElements() {
-  el.homeScreen = document.getElementById("homeScreen");
-  el.evaluatorShell = document.getElementById("evaluatorShell");
-  el.startEvaluationBtn = document.getElementById("startEvaluationBtn");
-  el.brandHome = document.getElementById("brandHome");
-  el.statusRegion = document.getElementById("statusRegion");
-  el.languageSelect = document.getElementById("languageSelect");
-
-  el.stepBtn1 = document.getElementById("stepBtn1");
-  el.stepBtn2 = document.getElementById("stepBtn2");
-  el.stepBtn3 = document.getElementById("stepBtn3");
-  el.stepBtn4 = document.getElementById("stepBtn4");
-
-  el.step1 = document.getElementById("step1");
-  el.step1Title = document.getElementById("step1Title");
-  el.step1Instruction = document.getElementById("step1Instruction");
-  el.step2 = document.getElementById("step2");
-  el.step3 = document.getElementById("step3");
-  el.step4 = document.getElementById("step4");
-  el.step1Nav = document.getElementById("step1Nav");
-  el.step2Nav = document.getElementById("step2Nav");
-  el.step3Nav = document.getElementById("step3Nav");
-  el.step4Nav = document.getElementById("step4Nav");
-
-  el.libraryFileInput = document.getElementById("libraryFileInput");
-  el.libraryLoader = document.getElementById("libraryLoader");
-  el.libraryLoaded = document.getElementById("libraryLoaded");
-  el.loadedLibraryName = document.getElementById("loadedLibraryName");
-  el.loadedLibraryFile = document.getElementById("loadedLibraryFile");
-  el.libraryHighlights = document.getElementById("libraryHighlights");
-  el.replaceLibraryBtn = document.getElementById("replaceLibraryBtn");
+  const ids = [
+    "homeScreen", "evaluatorShell", "startEvaluationBtn", "brandHome", "statusRegion", "languageSelect",
+    "stepBtn1", "stepBtn2", "stepBtn3", "stepBtn4", "step1", "step2", "step3", "step4",
+    "step1Nav", "step2Nav", "step3Nav", "step2Title", "step2NextBtn", "setBackBtn",
+    "evaluatorForm", "evalAacNoExperience",
+    "libraryFileInput", "libraryLoader", "libraryLoaded", "loadedLibraryName", "loadedLibraryMeta",
+    "replaceLibraryBtn", "libraryStatus", "auditGrid", "setQuestionTitle", "setQuestionBody", "setOptions",
+    "evalPosition", "evalProgressBar", "noticePanel", "noticeText", "noticeContext", "noticeBtn",
+    "questionPanel", "phraseLine", "evalImage", "guessStage", "guessText", "saveGuessBtn", "skipGuessBtn",
+    "dimensionStage", "dimensionTitle", "dimensionDescription", "dimensionOptions",
+    "useStage", "useScenario", "useReason", "useNextBtn", "evalBackBtn",
+    "doneIntro", "auditExportBtn", "auditPdfBtn",
+  ];
+  ids.forEach((id) => { el[id] = document.getElementById(id); });
   el.sampleLibraryButtons = Array.from(document.querySelectorAll("[data-sample-path]"));
-  el.libraryStatus = document.getElementById("libraryStatus");
-  el.librarySummary = document.getElementById("librarySummary");
-  el.libraryPreview = document.getElementById("libraryPreview");
-  el.previewPrevBtn = document.getElementById("previewPrevBtn");
-  el.previewNextBtn = document.getElementById("previewNextBtn");
-  el.previewImage = document.getElementById("previewImage");
-  el.previewCounter = document.getElementById("previewCounter");
-  el.step1NextBtn = document.getElementById("step1NextBtn");
-
-  el.evaluatorForm = document.getElementById("evaluatorForm");
   el.evalAacRelationInputs = Array.from(document.querySelectorAll('input[name="aacRelations"]'));
-  el.evalAacNoExperience = document.getElementById("evalAacNoExperience");
-  el.step2BackBtn = document.getElementById("step2BackBtn");
-
-  el.step3BackBtn = document.getElementById("step3BackBtn");
-  el.pictogramPosition = document.getElementById("pictogramPosition");
-  el.evalPrevBtn = document.getElementById("evalPrevBtn");
-  el.evalProgress = document.getElementById("evalProgress");
-  el.evaluationStateLabel = document.getElementById("evaluationStateLabel");
-  el.exportJsonBtn = document.getElementById("exportJsonBtn");
-  el.exportJsonLabel = document.getElementById("exportJsonLabel");
-
-  el.realPhraseLabel = document.getElementById("realPhraseLabel");
-  el.realPhraseText = document.getElementById("realPhraseText");
-  el.passNotice = document.getElementById("passNotice");
-  el.realPhraseSlot = document.getElementById("realPhraseSlot");
-  el.interpretationStage = document.getElementById("interpretationStage");
-  el.likertStage = document.getElementById("likertStage");
-  el.useStage = document.getElementById("useStage");
-  el.useImage = document.getElementById("useImage");
-  el.useScenario = document.getElementById("useScenario");
-  el.useReason = document.getElementById("useReason");
-
-  el.pragmaticImage = document.getElementById("pragmaticImage");
-  el.dimensionImage = document.getElementById("dimensionImage");
-
-  el.guessText = document.getElementById("guessText");
-  el.saveGuessBtn = document.getElementById("saveGuessBtn");
-  el.skipGuessBtn = document.getElementById("skipGuessBtn");
-  el.editGuessBtn = document.getElementById("editGuessBtn");
-  el.clearEvalBtn = document.getElementById("clearEvalBtn");
-
-  el.evalNextBtn = document.getElementById("evalNextBtn");
-  el.evalNextLabel = document.getElementById("evalNextLabel");
-
-  el.slidersContainer = document.getElementById("slidersContainer");
-  el.rubricDetails = document.getElementById("rubricDetails");
-  el.dimensionPrevBtn = document.getElementById("dimensionPrevBtn");
-  el.dimensionNextBtn = document.getElementById("dimensionNextBtn");
-  el.dimensionCounter = document.getElementById("dimensionCounter");
-  el.activeDimensionTitle = document.getElementById("activeDimensionTitle");
-  el.activeDimensionDescription = document.getElementById("activeDimensionDescription");
-  el.scalePrompt = document.getElementById("scalePrompt");
-  el.hexChart = document.getElementById("hexChart");
-  el.scoreBadge = document.getElementById("scoreBadge");
-
-  el.auditGrid = document.getElementById("auditGrid");
-  el.auditOrderInputs = Array.from(document.querySelectorAll('input[name="auditOrder"]'));
-  el.auditLabelsToggle = document.getElementById("auditLabelsToggle");
-  el.auditLabelsText = el.auditLabelsToggle.closest("label")?.querySelector("span");
-  el.coherenceScale = document.getElementById("coherenceScale");
-  el.grammarScale = document.getElementById("grammarScale");
-  el.coherenceDescription = document.getElementById("coherenceDescription");
-  el.grammarDescription = document.getElementById("grammarDescription");
-  el.step4BackBtn = document.getElementById("step4BackBtn");
-  el.auditExportBtn = document.getElementById("auditExportBtn");
-  el.auditPdfBtn = document.getElementById("auditPdfBtn");
 }
-
 function bindEvents() {
   el.languageSelect.addEventListener("change", onLanguageChange);
   el.startEvaluationBtn.addEventListener("click", () => {
@@ -181,50 +104,39 @@ function bindEvents() {
     showHome();
   });
 
-  el.stepBtn1.addEventListener("click", () => goToStep(1));
-  el.stepBtn2.addEventListener("click", () => {
-    if (!el.stepBtn2.disabled) goToStep(2);
+  [el.stepBtn1, el.stepBtn2, el.stepBtn3, el.stepBtn4].forEach((button, index) => {
+    button.addEventListener("click", () => {
+      if (!button.disabled) goToStep(index + 1);
+    });
   });
-  el.stepBtn3.addEventListener("click", () => {
-    if (!el.stepBtn3.disabled) goToStep(3);
-  });
-  el.stepBtn4.addEventListener("click", () => {
-    if (!el.stepBtn4.disabled) goToStep(4);
-  });
+
+  el.evaluatorForm.addEventListener("submit", onEvaluatorSubmit);
+  el.evalAacRelationInputs.forEach((input) => input.addEventListener("change", onAacRelationChange));
 
   el.libraryFileInput.addEventListener("change", onLibraryFileChange);
   el.replaceLibraryBtn.addEventListener("click", () => el.libraryFileInput.click());
   el.sampleLibraryButtons.forEach((button) => {
     button.addEventListener("click", () => onLoadSampleLibrary(button));
   });
-  el.previewPrevBtn.addEventListener("click", () => changePreviewIndex(state.previewIndex - 1));
-  el.previewNextBtn.addEventListener("click", () => changePreviewIndex(state.previewIndex + 1));
-  el.step1NextBtn.addEventListener("click", () => goToStep(2));
+  el.setBackBtn.addEventListener("click", () => changeSetQuestion(-1));
+  el.step2NextBtn.addEventListener("click", () => goToStep(3));
 
-  el.evaluatorForm.addEventListener("submit", onEvaluatorSubmit);
-  el.evalAacRelationInputs.forEach((input) => input.addEventListener("change", onAacRelationChange));
-  el.step2BackBtn.addEventListener("click", () => goToStep(1));
-
-  el.step3BackBtn.addEventListener("click", () => goToStep(2));
-  el.step4BackBtn.addEventListener("click", () => goToStep(3));
-  el.evalPrevBtn.addEventListener("click", () => changeEvalItem(state.evalIndex - 1));
-  el.dimensionPrevBtn.addEventListener("click", () => changeDimension(-1));
-  el.dimensionNextBtn.addEventListener("click", () => changeDimension(1));
-
-  el.saveGuessBtn.addEventListener("click", onSaveGuess);
-  el.skipGuessBtn.addEventListener("click", onSkipGuess);
-  el.editGuessBtn.addEventListener("click", onEditGuess);
+  el.noticeBtn.addEventListener("click", () => {
+    state.seenNotices.add(el.noticePanel.dataset.notice);
+    renderCurrentEvalItem();
+  });
+  el.guessText.addEventListener("input", () => {
+    el.saveGuessBtn.disabled = !el.guessText.value.trim();
+  });
+  el.saveGuessBtn.addEventListener("click", () => saveGuess(false));
+  el.skipGuessBtn.addEventListener("click", () => saveGuess(true));
   document.querySelectorAll('input[name="useAnswer"]').forEach((radio) => radio.addEventListener("change", onUseAnswerChange));
-  el.useReason.addEventListener("change", onUseAnswerChange);
-  el.clearEvalBtn.addEventListener("click", clearCurrentEvaluation);
-  el.evalNextBtn.addEventListener("click", advanceToNextPictogram);
+  el.useReason.addEventListener("input", onUseAnswerChange);
+  el.useNextBtn.addEventListener("click", nextQuestion);
+  el.evalBackBtn.addEventListener("click", previousQuestion);
 
-  el.exportJsonBtn.addEventListener("click", exportEvaluationJson);
   el.auditExportBtn.addEventListener("click", exportEvaluationJson);
   el.auditPdfBtn.addEventListener("click", exportEvaluationPdf);
-  el.auditOrderInputs.forEach((input) => input.addEventListener("change", renderAuditGrid));
-  el.auditLabelsToggle.addEventListener("change", renderAuditGrid);
-  document.addEventListener("keydown", onEvaluationKeydown);
 }
 
 async function loadRubric() {
@@ -251,19 +163,11 @@ function createFallbackRubric() {
     dimensions: {},
   };
 }
-
 function onLanguageChange(event) {
   if (!setLocale(event.target.value)) return;
   applyTranslations();
-  buildSliders();
-  buildLibraryScales();
-
-  if (state.library) {
-    renderLibrarySummary();
-    renderPreview();
-  }
-  if (state.items.length && !el.step3.classList.contains("hidden")) renderCurrentEvalItem(true);
-  if (state.items.length && !el.step4.classList.contains("hidden")) renderLibraryAudit();
+  if (state.library) renderLibrarySummary();
+  if (state.items.length && !el.step3.classList.contains("hidden")) renderCurrentEvalItem();
 }
 
 function showHome(moveFocus = true) {
@@ -276,36 +180,23 @@ function showHome(moveFocus = true) {
   window.scrollTo({ top: 0, behavior: "smooth" });
   if (moveFocus) document.getElementById("homeTitle").focus({ preventScroll: true });
 }
-
 function goToStep(step, moveFocus = true) {
-  el.step1.classList.toggle("hidden", step !== 1);
-  el.step2.classList.toggle("hidden", step !== 2);
-  el.step3.classList.toggle("hidden", step !== 3);
-  el.step4.classList.toggle("hidden", step !== 4);
-
-  el.step1Nav.classList.toggle("hidden", step !== 1);
-  el.step2Nav.classList.toggle("hidden", step !== 2);
-  el.step3Nav.classList.toggle("hidden", step !== 3);
-  el.step4Nav.classList.toggle("hidden", step !== 4);
-
-  el.stepBtn1.classList.toggle("active", step === 1);
-  el.stepBtn2.classList.toggle("active", step === 2);
-  el.stepBtn3.classList.toggle("active", step === 3);
-  el.stepBtn4.classList.toggle("active", step === 4);
-
-  [el.stepBtn1, el.stepBtn2, el.stepBtn3, el.stepBtn4].forEach((button, index) => {
+  const steps = [el.step1, el.step2, el.step3, el.step4];
+  const navs = [el.step1Nav, el.step2Nav, el.step3Nav, null];
+  const pills = [el.stepBtn1, el.stepBtn2, el.stepBtn3, el.stepBtn4];
+  steps.forEach((screen, index) => screen.classList.toggle("hidden", index + 1 !== step));
+  navs.forEach((nav, index) => nav?.classList.toggle("hidden", index + 1 !== step));
+  pills.forEach((button, index) => {
+    button.classList.toggle("active", index + 1 === step);
     if (index + 1 === step) button.setAttribute("aria-current", "step");
     else button.removeAttribute("aria-current");
   });
 
-  if (step === 3) renderCurrentEvalItem();
-  if (step === 4) renderLibraryAudit();
+  if (step === 3) enterPictograms();
 
   if (moveFocus) {
-    const heading = document.getElementById(`step${step}Title`);
-    heading?.focus({ preventScroll: true });
+    document.getElementById(`step${step}Title`)?.focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: "smooth" });
-    announce(t("status.step", { step }));
   }
 }
 
@@ -316,16 +207,15 @@ function announce(message) {
     el.statusRegion.textContent = message;
   });
 }
-
 function updateStepLocks() {
-  const hasLibrary = state.items.length > 0;
   const hasProfile = isProfileComplete(state.evaluatorProfile);
-  const pictogramsComplete = hasLibrary && countCompletedItems() === state.items.length;
+  const setReady = state.items.length > 0 && isLibraryAssessmentComplete();
+  const pictogramsComplete = setReady && countCompletedItems() === state.items.length;
 
-  el.stepBtn2.disabled = !hasLibrary;
-  el.stepBtn3.disabled = !(hasLibrary && hasProfile);
-  el.stepBtn4.disabled = !(hasLibrary && hasProfile && pictogramsComplete);
-  el.step1NextBtn.disabled = !hasLibrary;
+  el.stepBtn2.disabled = !hasProfile;
+  el.stepBtn3.disabled = !(hasProfile && setReady);
+  el.stepBtn4.disabled = !(hasProfile && pictogramsComplete);
+  el.step2NextBtn.disabled = !setReady;
 }
 
 function isProfileComplete(profile) {
@@ -397,12 +287,13 @@ function loadLibraryPayload(payload, fileName) {
     author: payload.config && (payload.config.credits || payload.config.author) ? (payload.config.credits || payload.config.author) : "",
     imageFormats,
     domainContext: String(payload.config?.domainContext || "").trim() || null,
-    key: buildLibraryStorageKey(payload, items) + (PROTOCOL_FORM ? `:${PROTOCOL_VERSION}:${PROTOCOL_FORM}` : ""),
+    key: buildLibraryStorageKey(payload, items)
+      + (PROTOCOL_FORM ? `:${PROTOCOL_VERSION}:${PROTOCOL_FORM}` : "")
+      + (PARTICIPANT ? `:p${PARTICIPANT}` : ""),
   };
 
-  state.previewIndex = 0;
   state.evalIndex = 0;
-  state.dimensionIndex = 0;
+  state.qIndex = 0;
   state.assessment = null;
   state.evaluations = new Map();
   state.libraryAssessment = createEmptyLibraryAssessment();
@@ -411,19 +302,16 @@ function loadLibraryPayload(payload, fileName) {
   if (!state.assessment) state.assessment = createAssessmentIdentity();
   if (PROTOCOL_FORM) applyProtocolPlan(payload);
 
+  state.setIndex = isLibraryAssessmentComplete() ? LIBRARY_DIMENSIONS.length - 1 : 0;
   renderLibrarySummary();
-  renderPreview();
   updateStepLocks();
+  announce(t("library.successStatus", { count: state.items.length }));
 }
 
-// Reorders state.items into the two passes and tags each item with its pass.
-// In the protocol, step 4 only hands in the answers: the library audit is a separate
-// exercise and stays out of the evaluator path.
-function useProtocolStep4() {
+// In the protocol the PDF report (six ratings per pictogram) does not apply.
+function markProtocolMode() {
   document.body.classList.add("protocol-mode");
-  el.stepBtn4.querySelector("[data-i18n]").dataset.i18n = "app.stepSubmit";
-  el.step4.querySelector("#step4Title").dataset.i18n = "protocolDone.title";
-  el.step4.querySelector(".audit-intro").dataset.i18n = "protocolDone.intro";
+  el.doneIntro.dataset.i18n = "done.introProtocol";
 }
 
 function applyProtocolPlan(payload) {
@@ -443,6 +331,7 @@ function applyProtocolPlan(payload) {
   state.protocol = {
     version: PROTOCOL_VERSION,
     form: PROTOCOL_FORM,
+    participant: PARTICIPANT,
     partitionSeed,
     orderSeed: state.assessment.orderSeed,
     halves: { 1: half1.map((item) => item.id), 2: half2.map((item) => item.id) },
@@ -593,77 +482,32 @@ function utf8ToBase64(value) {
   for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
   return btoa(binary);
 }
-
+// Once a library loads, the step shows it from afar, as a grid without phrases, and asks
+// about the set before any single pictogram is seen.
 function renderLibrarySummary() {
   if (!state.library) return;
-
   el.libraryStatus.textContent = t("library.successStatus", { count: state.items.length });
-  el.libraryStatus.classList.add("sr-only");
-  el.step1Title.textContent = t("library.ready");
-  el.step1Instruction.textContent = t("library.confirmation");
-  el.step1NextBtn.textContent = t("library.use");
+  el.step2Title.textContent = t("set.title");
   el.libraryLoader.classList.add("hidden");
   el.libraryLoaded.classList.remove("hidden");
   el.loadedLibraryName.textContent = state.library.name || t("library.untitled");
-  el.loadedLibraryFile.textContent = state.library.fileName;
+  el.loadedLibraryMeta.textContent = [
+    t("library.pictogramCount", { count: state.items.length }),
+    state.library.domainContext,
+  ].filter(Boolean).join(" · ");
 
-  const imageFormatsLabel = Object.entries(state.library.imageFormats)
-    .map(([format, count]) => `${count} ${format}`)
-    .join(" · ");
-  const highlights = [
-    [t("library.highlights.pictograms"), String(state.items.length)],
-    [t("library.highlights.images"), imageFormatsLabel],
-    [t("library.highlights.model"), state.library.model || t("library.notReported")],
-    [t("library.highlights.format"), state.library.schemaVersion ? `PICTOS v${state.library.schemaVersion}` : t("library.legacy")],
-  ];
-  el.libraryHighlights.innerHTML = highlights
-    .map(([label, value]) => `<div class="library-highlight"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`)
-    .join("");
-
-  const rows = [
-    [t("library.metadata.library"), state.library.name || t("library.noName")],
-    [t("library.metadata.file"), state.library.fileName],
-    [t("library.metadata.type"), state.library.type],
-    [t("library.metadata.format"), state.library.schemaVersion ? `PICTOS v${state.library.schemaVersion}` : t("library.legacy")],
-    [t("library.metadata.application"), state.library.version || t("library.unknown")],
-    [t("library.metadata.model"), state.library.model || t("library.notReported")],
-    [t("library.metadata.items"), String(state.items.length)],
-    [t("library.metadata.images"), imageFormatsLabel],
-    [t("library.metadata.author"), state.library.author || t("library.notReported")],
-    [t("library.metadata.timestamp"), state.library.timestamp || t("library.notReported")],
-  ];
-
-  el.librarySummary.innerHTML = `
-    <table class="meta-table">
-      <tbody>
-        ${rows
-          .map(
-            ([key, value]) => `<tr><th>${escapeHtml(key)}</th><td>${escapeHtml(value)}</td></tr>`,
-          )
-          .join("")}
-      </tbody>
-    </table>
-  `;
-  el.librarySummary.classList.remove("hidden");
-  el.libraryPreview.classList.remove("hidden");
+  el.auditGrid.innerHTML = "";
+  state.items.forEach((item) => {
+    const figure = document.createElement("figure");
+    figure.className = "audit-card";
+    const image = document.createElement("img");
+    image.alt = t("audit.unlabelledImage");
+    setImage(image, item.imageSrc, t("evaluation.imageFallback"));
+    figure.append(image);
+    el.auditGrid.append(figure);
+  });
+  renderSetQuestion();
 }
-
-function changePreviewIndex(next) {
-  if (next < 0 || next >= state.items.length) return;
-  state.previewIndex = next;
-  renderPreview();
-}
-
-function renderPreview() {
-  if (!state.items.length) return;
-  const item = state.items[state.previewIndex];
-
-  setImage(el.previewImage, item.imageSrc, `${t("library.previewAlt")} ${item.id}`);
-  el.previewCounter.textContent = `${state.previewIndex + 1} / ${state.items.length}`;
-  el.previewPrevBtn.disabled = state.previewIndex === 0;
-  el.previewNextBtn.disabled = state.previewIndex === state.items.length - 1;
-}
-
 function onEvaluatorSubmit(event) {
   event.preventDefault();
 
@@ -681,7 +525,7 @@ function onEvaluatorSubmit(event) {
   localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
   persistEvaluations();
   updateStepLocks();
-  goToStep(3);
+  goToStep(2);
 }
 
 function getSelectedAacRelations() {
@@ -754,410 +598,221 @@ function loadEvaluatorProfile() {
   }
 }
 
-function changeEvalItem(nextIndex) {
-  if (nextIndex < 0 || nextIndex >= state.items.length) return;
-  state.evalIndex = nextIndex;
+function questionsFor(item) {
+  if (item.pass === "blind") return ["guess"];
+  if (item.pass === "sighted") return ["use"];
+  return ["guess", ...DIMENSIONS.map((dimension) => dimension.key)];
+}
+
+function isQuestionAnswered(record, question) {
+  if (!record) return false;
+  if (question === "guess") return record.guessSkipped || Boolean(record.guess && record.guess.trim());
+  if (question === "use") return USE_ANSWERS.includes(record.use);
+  return normalizeScore(record.scores?.[question]) !== null;
+}
+
+function firstOpenQuestion(item) {
+  const record = state.evaluations.get(item.id);
+  const index = questionsFor(item).findIndex((question) => !isQuestionAnswered(record, question));
+  return index === -1 ? 0 : index;
+}
+
+function firstSightedIndex() {
+  return state.items.findIndex((item) => item.pass === "sighted");
+}
+
+// Resume at the first unanswered question of the first unfinished pictogram.
+function enterPictograms() {
+  const pending = state.items.findIndex((item) => !isRecordComplete(state.evaluations.get(item.id)));
+  state.evalIndex = pending === -1 ? 0 : pending;
+  state.qIndex = firstOpenQuestion(state.items[state.evalIndex]);
   renderCurrentEvalItem();
 }
 
-function renderCurrentEvalItem(preserveDimension = false) {
-  if (!state.items.length) return;
+// A short notice opens each part of the session, then gets out of the way.
+function pendingNotice(item) {
+  if (!state.seenNotices.has("start") && state.evalIndex === 0 && state.qIndex === 0 && countCompletedItems() === 0) {
+    return "start";
+  }
+  if (item.pass === "sighted" && state.evalIndex === firstSightedIndex()
+    && !state.seenNotices.has("sighted") && !isRecordComplete(state.evaluations.get(item.id))) {
+    return "sighted";
+  }
+  return null;
+}
 
+function renderCurrentEvalItem() {
+  if (!state.items.length) return;
   const item = state.items[state.evalIndex];
   const record = ensureRecord(item.id);
+  const questions = questionsFor(item);
+  const question = questions[state.qIndex];
 
-  setImage(el.pragmaticImage, item.imageSrc, `${t("evaluation.imageAlt")} ${item.id}`);
-  setImage(el.dimensionImage, item.imageSrc, `${t("evaluation.dimensionImageAlt")} ${item.id}`);
-  el.useStage.classList.toggle("hidden", item.pass !== "sighted");
+  el.evalPosition.textContent = questions.length > 1
+    ? t("evaluation.questionPosition", {
+      current: state.evalIndex + 1, total: state.items.length, question: state.qIndex + 1, questions: questions.length,
+    })
+    : t("evaluation.pictogramPosition", { current: state.evalIndex + 1, total: state.items.length });
+  el.evalProgressBar.value = (state.evalIndex + state.qIndex / questions.length) / state.items.length;
 
-  // A blind item's phrase is kept out of the DOM, not just hidden.
-  el.realPhraseText.textContent = item.pass === "blind" ? "" : item.utterance;
-  el.pictogramPosition.textContent = t("evaluation.pictogramPosition", {
-    current: state.evalIndex + 1,
-    total: state.items.length,
-  });
-  const firstSighted = state.items.findIndex((candidate) => candidate.pass === "sighted");
-  el.evalPrevBtn.disabled = state.evalIndex === 0 || state.evalIndex === firstSighted;
-  renderPassNotice(item, state.evalIndex === firstSighted);
-
-  updateEvaluationStatus();
-  updateStepLocks();
-
-  if (item.pass === "blind") {
-    setRealPhraseVisibility(false);
-    el.interpretationStage.classList.remove("hidden");
-    el.likertStage.classList.add("hidden");
-    el.guessText.value = record.guess || "";
-    const answered = Boolean(record.guessSkipped || (record.guess && record.guess.trim()));
-    el.evalNextBtn.disabled = !answered;
-    el.evalNextBtn.classList.toggle("ready", answered);
-    setNextLabel();
+  const notice = pendingNotice(item);
+  el.noticePanel.classList.toggle("hidden", !notice);
+  el.questionPanel.classList.toggle("hidden", Boolean(notice));
+  el.step3Nav.classList.toggle("hidden", Boolean(notice));
+  if (notice) {
+    el.noticePanel.dataset.notice = notice;
+    const key = notice === "sighted" ? "notice.sighted" : item.pass ? "notice.blind" : "notice.start";
+    el.noticeText.textContent = t(key);
+    el.noticeContext.textContent = state.library?.domainContext
+      ? t("evaluation.domainContext", { context: state.library.domainContext })
+      : "";
+    el.noticeBtn.focus({ preventScroll: true });
     return;
   }
 
-  el.editGuessBtn.classList.toggle("hidden", item.pass === "sighted");
-  if (item.pass === "sighted") {
-    setRealPhraseVisibility(true);
-    el.interpretationStage.classList.add("hidden");
-    el.likertStage.classList.add("hidden");
-    setImage(el.useImage, item.imageSrc, `${t("evaluation.imageAlt")} ${item.id}`);
+  setImage(el.evalImage, item.imageSrc, `${t("evaluation.imageAlt")} ${item.id}`);
+  // A blind item's phrase never enters the DOM; otherwise it shows once the guess is in.
+  const showPhrase = item.pass !== "blind" && question !== "guess";
+  el.phraseLine.textContent = showPhrase ? t("evaluation.sourcePhraseLine", { phrase: item.utterance }) : "";
+  el.phraseLine.classList.toggle("hidden", !showPhrase || item.pass === "sighted");
+  el.guessStage.classList.toggle("hidden", question !== "guess");
+  el.useStage.classList.toggle("hidden", question !== "use");
+  el.dimensionStage.classList.toggle("hidden", question === "guess" || question === "use");
+  el.evalBackBtn.disabled = !canGoBack();
+
+  if (question === "guess") {
+    el.guessText.value = record.guess || "";
+    el.saveGuessBtn.disabled = !el.guessText.value.trim();
+    el.guessText.focus({ preventScroll: true });
+  } else if (question === "use") {
     el.useScenario.textContent = t("evaluation.useScenario", { phrase: item.utterance });
     document.querySelectorAll('input[name="useAnswer"]').forEach((radio) => {
       radio.checked = radio.value === record.use;
     });
     el.useReason.value = record.useReason || "";
-    const answered = USE_ANSWERS.includes(record.use);
-    el.evalNextBtn.disabled = !answered;
-    el.evalNextBtn.classList.toggle("ready", answered);
-    setNextLabel();
-    return;
+    el.useNextBtn.disabled = !USE_ANSWERS.includes(record.use);
+  } else {
+    const meta = getDimensionMeta(question);
+    el.dimensionTitle.textContent = meta.name;
+    el.dimensionDescription.textContent = meta.description;
+    renderLevelOptions(
+      el.dimensionOptions,
+      [1, 2, 3, 4, 5].map((score) => getDimensionLevelText(question, score)),
+      normalizeScore(record.scores?.[question]),
+      (score) => onDimensionScore(question, score),
+      nextQuestion,
+    );
   }
+}
 
-  const hasGuess = Boolean(record.guess && record.guess.trim());
-  const skipped = Boolean(record.guessSkipped);
+// Five options, each with what its score means. A pointer pick advances by itself;
+// with the keyboard, arrows choose and Enter advances.
+function renderLevelOptions(container, levels, selected, onPick, onAdvance) {
+  container.innerHTML = "";
+  container.onpointerdown = () => { pickedWithPointer = true; };
+  container.onkeydown = (event) => {
+    if (event.key !== "Enter" || !container.querySelector("input:checked")) return;
+    event.preventDefault();
+    onAdvance();
+  };
+  levels.forEach((text, index) => {
+    const score = index + 1;
+    const option = document.createElement("label");
+    option.className = "level-option";
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = `${container.id}-level`;
+    input.value = String(score);
+    input.checked = selected === score;
+    input.addEventListener("change", () => {
+      onPick(score);
+      if (pickedWithPointer) window.setTimeout(onAdvance, 250);
+      pickedWithPointer = false;
+    });
+    const number = document.createElement("span");
+    number.className = "level-number";
+    number.textContent = String(score);
+    const description = document.createElement("span");
+    description.textContent = text;
+    option.append(input, number, description);
+    container.append(option);
+  });
+  (container.querySelector("input:checked") || container.querySelector("input"))?.focus({ preventScroll: true });
+}
 
-  if (!hasGuess && !skipped) {
-    setRealPhraseVisibility(false);
-    el.interpretationStage.classList.remove("hidden");
-    el.likertStage.classList.add("hidden");
-    el.guessText.value = record.guess || "";
-    el.evalNextBtn.disabled = true;
-    updatePictogramNavigation({});
-    return;
-  }
+function saveRecord(item, record) {
+  record.updatedAt = new Date().toISOString();
+  state.evaluations.set(item.id, record);
+  persistEvaluations();
+  updateStepLocks();
+}
 
-  setRealPhraseVisibility(true);
-  el.interpretationStage.classList.add("hidden");
-  el.likertStage.classList.remove("hidden");
+function saveGuess(skipped) {
+  const item = state.items[state.evalIndex];
+  const record = ensureRecord(item.id);
+  const guess = el.guessText.value.trim();
+  if (!skipped && !guess) return;
+  record.guess = skipped ? "" : guess;
+  record.guessSkipped = skipped;
+  record.guessUpdatedAt = new Date().toISOString();
+  saveRecord(item, record);
+  nextQuestion();
+}
 
-  const scores = normalizeScores(record.scores);
-  const firstUnscoredIndex = DIMENSIONS.findIndex((dimension) => normalizeScore(scores[dimension.key]) === null);
-  if (!preserveDimension) state.dimensionIndex = firstUnscoredIndex === -1 ? 0 : firstUnscoredIndex;
-  setScoresToUI(scores);
-  updateLikertPanels(scores);
-  updatePictogramNavigation(scores);
+function onDimensionScore(key, score) {
+  const item = state.items[state.evalIndex];
+  const record = ensureRecord(item.id);
+  record.scores = { ...normalizeScores(record.scores), [key]: score };
+  record.average = averageScore(record.scores);
+  saveRecord(item, record);
 }
 
 function onUseAnswerChange() {
   const item = state.items[state.evalIndex];
   if (!item || item.pass !== "sighted") return;
   const record = ensureRecord(item.id);
-  const chosen = document.querySelector('input[name="useAnswer"]:checked')?.value || null;
-  const firstAnswer = !record.use && chosen;
-  record.use = chosen;
+  record.use = document.querySelector('input[name="useAnswer"]:checked')?.value || null;
   record.useReason = el.useReason.value.trim();
-  record.updatedAt = new Date().toISOString();
-  state.evaluations.set(item.id, record);
-  persistEvaluations();
-  el.evalNextBtn.disabled = !chosen;
-  el.evalNextBtn.classList.toggle("ready", Boolean(chosen));
-  updateEvaluationStatus();
-  updateStepLocks();
-  if (firstAnswer) announce(t("evaluation.useSaved"));
+  saveRecord(item, record);
+  el.useNextBtn.disabled = !record.use;
 }
 
-function renderPassNotice(item, isTransition) {
-  const parts = [];
-  if (item.pass) {
-    parts.push(t("evaluation.protocolForm", { form: PROTOCOL_FORM }));
-    parts.push(t(item.pass === "blind" ? "evaluation.passBlind" : "evaluation.passSighted"));
-  }
-  if (state.library?.domainContext) parts.push(t("evaluation.domainContext", { context: state.library.domainContext }));
-  if (isTransition) parts.unshift(t("evaluation.passSightedStart"));
-  el.passNotice.textContent = parts.join(" · ");
-  el.passNotice.classList.toggle("hidden", parts.length === 0);
-  el.passNotice.classList.toggle("transition", isTransition);
-  if (isTransition) announce(t("evaluation.passSightedStart"));
-}
-
-function setRealPhraseVisibility(isVisible) {
-  el.realPhraseSlot.classList.toggle("concealed", !isVisible);
-  el.realPhraseSlot.setAttribute("aria-hidden", String(!isVisible));
-}
-
-function onSaveGuess() {
-  if (!state.items.length) return;
-  const guess = el.guessText.value.trim();
-
-  if (!guess) {
-    alert(t("evaluation.guessRequired"));
-    return;
-  }
-
+function nextQuestion() {
   const item = state.items[state.evalIndex];
-  const record = ensureRecord(item.id);
-  record.guess = guess;
-  record.guessSkipped = false;
-  record.guessUpdatedAt = new Date().toISOString();
-  record.scores = normalizeScores(record.scores);
-  record.average = averageScore(record.scores);
-  record.updatedAt = new Date().toISOString();
-
-  state.evaluations.set(item.id, record);
-  persistEvaluations();
-  renderCurrentEvalItem();
-  if (item.pass === "blind") el.evalNextBtn.focus({ preventScroll: true });
-}
-
-function onSkipGuess() {
-  if (!state.items.length) return;
-
-  const item = state.items[state.evalIndex];
-  const record = ensureRecord(item.id);
-  record.guess = "";
-  record.guessSkipped = true;
-  record.guessUpdatedAt = new Date().toISOString();
-  record.scores = normalizeScores(record.scores);
-  record.average = averageScore(record.scores);
-  record.updatedAt = new Date().toISOString();
-
-  state.evaluations.set(item.id, record);
-  persistEvaluations();
-  renderCurrentEvalItem();
-  if (item.pass === "blind") el.evalNextBtn.focus({ preventScroll: true });
-}
-
-function onEditGuess() {
-  if (!state.items.length) return;
-  const item = state.items[state.evalIndex];
-  const record = ensureRecord(item.id);
-
-  record.guessSkipped = false;
-  state.evaluations.set(item.id, record);
-  persistEvaluations();
-
-  el.guessText.value = record.guess || "";
-  setRealPhraseVisibility(false);
-  el.interpretationStage.classList.remove("hidden");
-  el.likertStage.classList.add("hidden");
-}
-
-function clearCurrentEvaluation() {
-  if (!state.items.length) return;
-  const item = state.items[state.evalIndex];
-  state.evaluations.delete(item.id);
-  state.dimensionIndex = 0;
-  persistEvaluations();
-  renderCurrentEvalItem();
-}
-
-function buildSliders() {
-  el.slidersContainer.innerHTML = "";
-
-  DIMENSIONS.forEach((dimension, dimensionIndex) => {
-    const meta = getDimensionMeta(dimension.key);
-
-    const card = document.createElement("article");
-    card.className = "dimension-card hidden";
-    card.dataset.dimensionIndex = String(dimensionIndex);
-
-    const scale = document.createElement("div");
-    scale.className = "radio-scale";
-    scale.setAttribute("role", "radiogroup");
-    scale.setAttribute("aria-label", meta.name);
-
-    for (let score = 1; score <= 5; score += 1) {
-      const option = document.createElement("label");
-      option.className = "radio-option";
-
-      const number = document.createElement("span");
-      number.className = "radio-number";
-      number.textContent = String(score);
-
-      const radio = document.createElement("input");
-      radio.type = "radio";
-      radio.name = `score-${dimension.key}`;
-      radio.value = String(score);
-      radio.dataset.key = dimension.key;
-      const scaleMeta = getScaleMeta(score);
-      radio.setAttribute("aria-label", t("evaluation.scoreLabel", { score, label: scaleMeta.label }));
-      radio.addEventListener("change", onDimensionScoreChange);
-
-      option.append(number, radio);
-      scale.append(option);
-    }
-
-    card.append(scale);
-    el.slidersContainer.append(card);
-  });
-}
-
-function changeDimension(offset) {
-  const nextIndex = state.dimensionIndex + offset;
-  if (nextIndex < 0 || nextIndex >= DIMENSIONS.length) return;
-  state.dimensionIndex = nextIndex;
-  renderActiveDimension(readScoresFromUI());
-  el.activeDimensionTitle.focus({ preventScroll: true });
-}
-
-function renderActiveDimension(scores) {
-  const dimension = DIMENSIONS[state.dimensionIndex];
-  const meta = getDimensionMeta(dimension.key);
-  const cards = Array.from(el.slidersContainer.querySelectorAll(".dimension-card"));
-
-  cards.forEach((card, index) => card.classList.toggle("hidden", index !== state.dimensionIndex));
-  el.dimensionCounter.textContent = t("evaluation.dimensionPosition", {
-    pictogram: state.evalIndex + 1,
-    pictograms: state.items.length,
-    dimension: state.dimensionIndex + 1,
-    dimensions: DIMENSIONS.length,
-  });
-  el.activeDimensionTitle.textContent = meta.name;
-  el.activeDimensionDescription.textContent = meta.description;
-  el.activeDimensionTitle.tabIndex = -1;
-  el.dimensionPrevBtn.disabled = state.dimensionIndex === 0;
-  el.dimensionNextBtn.disabled = state.dimensionIndex === DIMENSIONS.length - 1;
-  const currentScore = normalizeScore(scores[dimension.key]);
-  el.dimensionNextBtn.classList.toggle(
-    "ready",
-    currentScore !== null && state.dimensionIndex < DIMENSIONS.length - 1,
-  );
-  el.scalePrompt.textContent = currentScore === null
-    ? t("evaluation.rate")
-    : t("evaluation.rated", { label: getScaleMeta(currentScore).label });
-  renderRubricDetails(scores);
-}
-
-function onEvaluationKeydown(event) {
-  if (event.key !== "Enter" || el.likertStage.classList.contains("hidden")) return;
-  if (!event.target.matches('input[type="radio"]')) return;
-
-  const scores = readScoresFromUI();
-  const dimension = DIMENSIONS[state.dimensionIndex];
-  if (normalizeScore(scores[dimension.key]) === null) return;
-
-  event.preventDefault();
-  if (state.dimensionIndex < DIMENSIONS.length - 1) {
-    changeDimension(1);
-    return;
-  }
-  if (hasAllDimensionsScored(scores)) advanceToNextPictogram();
-}
-
-function onDimensionScoreChange() {
-  const item = state.items[state.evalIndex];
-  if (!item) return;
-
-  const scores = readScoresFromUI();
-  const record = ensureRecord(item.id);
-  const activeDimension = DIMENSIONS[state.dimensionIndex];
-  const completedLastDimension = state.dimensionIndex === DIMENSIONS.length - 1
-    && normalizeScore(record.scores?.[activeDimension.key]) === null
-    && normalizeScore(scores[activeDimension.key]) !== null
-    && hasAllDimensionsScored(scores);
-  record.scores = scores;
-  record.average = averageScore(scores);
-  record.updatedAt = new Date().toISOString();
-
-  state.evaluations.set(item.id, record);
-  persistEvaluations();
-  updateLikertPanels(scores);
-  updatePictogramNavigation(scores);
-  updateEvaluationStatus();
-  updateStepLocks();
-
-  // Completing the sixth dimension reveals the profile and average; leave time to read
-  // them and hand the next step to the person instead of advancing automatically.
-  if (completedLastDimension) el.evalNextBtn.focus({ preventScroll: true });
-}
-
-function updateEvaluationStatus() {
-  const completed = countCompletedItems();
-  const isComplete = state.items.length > 0
-    && completed === state.items.length
-    && isLibraryAssessmentComplete();
-  el.evalProgress.textContent = t("evaluation.progress", { completed, total: state.items.length });
-  el.evaluationStateLabel.textContent = isComplete
-    ? t("evaluation.completeState")
-    : t("evaluation.partialState");
-  el.exportJsonLabel.textContent = isComplete
-    ? t("evaluation.downloadComplete")
-    : t("evaluation.downloadPartial");
-  el.exportJsonBtn.setAttribute(
-    "aria-label",
-    isComplete ? t("evaluation.downloadComplete") : t("evaluation.downloadPartial"),
-  );
-}
-
-function updatePictogramNavigation(scores) {
-  const allScored = hasAllDimensionsScored(scores);
-  el.evalNextBtn.disabled = !allScored;
-  el.evalNextBtn.classList.toggle("ready", allScored);
-  setNextLabel();
-}
-
-function setNextLabel() {
-  const isLast = state.evalIndex >= state.items.length - 1;
-  el.evalNextLabel.textContent = isLast
-    ? t("evaluation.save", { current: state.evalIndex + 1, total: state.items.length })
-    : t("evaluation.itemNext");
-  el.evalNextBtn.setAttribute(
-    "aria-label",
-    isLast ? t("evaluation.save", { current: state.evalIndex + 1, total: state.items.length }) : t("evaluation.itemNext"),
-  );
-}
-
-function advanceToNextPictogram() {
-  if (state.evalIndex < state.items.length - 1) {
-    changeEvalItem(state.evalIndex + 1);
-    return;
-  }
-  if (countCompletedItems() === state.items.length) goToStep(4);
-}
-
-function updateLikertPanels(scores) {
-  syncRadioSelectionStyles();
-
-  drawHexChart(scores);
-  renderActiveDimension(scores);
-
-  const avg = averageScore(scores);
-  if (avg === null) {
-    el.scoreBadge.textContent = "PICTOS Index —";
-    el.scoreBadge.style.backgroundColor = "#6b7280";
-    el.scoreBadge.style.color = getContrastingTextColor("#6b7280");
-    return;
-  }
-
-  const rounded = normalizeScore(Math.round(avg));
-  const badgeColor = getScaleMeta(rounded).color;
-  el.scoreBadge.textContent = `PICTOS Index ${avg.toFixed(2)}`;
-  el.scoreBadge.style.backgroundColor = badgeColor;
-  el.scoreBadge.style.color = getContrastingTextColor(badgeColor);
-}
-
-function getContrastingTextColor(backgroundColor) {
-  const hex = String(backgroundColor).trim().replace(/^#/, "");
-  const normalized = hex.length === 3 ? hex.split("").map((value) => value + value).join("") : hex;
-  if (!/^[0-9a-f]{6}$/i.test(normalized)) return "#ffffff";
-
-  const channels = normalized.match(/.{2}/g).map((value) => Number.parseInt(value, 16) / 255);
-  const linear = channels.map((value) => (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4));
-  const luminance = 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
-  const darkContrast = (luminance + 0.05) / 0.05;
-  const lightContrast = 1.05 / (luminance + 0.05);
-  return darkContrast >= lightContrast ? "#0b0613" : "#ffffff";
-}
-
-function renderRubricDetails(scores) {
-  el.rubricDetails.innerHTML = "";
-  const dimension = DIMENSIONS[state.dimensionIndex];
-  const score = normalizeScore(scores[dimension.key]);
-  const card = document.createElement("article");
-  card.className = "rubric-item";
-
-  if (score === null) {
-    card.innerHTML = `<p>${escapeHtml(t("evaluation.rubricEmpty"))}</p>`;
+  if (!isQuestionAnswered(state.evaluations.get(item.id), questionsFor(item)[state.qIndex])) return;
+  if (state.qIndex < questionsFor(item).length - 1) {
+    state.qIndex += 1;
+  } else if (state.evalIndex < state.items.length - 1) {
+    state.evalIndex += 1;
+    state.qIndex = 0;
   } else {
-    const rubricText = getDimensionLevelText(dimension.key, score);
-    card.innerHTML = `<p>${escapeHtml(rubricText)}</p>`;
+    const pending = state.items.findIndex((candidate) => !isRecordComplete(state.evaluations.get(candidate.id)));
+    if (pending === -1) {
+      goToStep(4);
+      return;
+    }
+    state.evalIndex = pending;
+    state.qIndex = firstOpenQuestion(state.items[pending]);
   }
-  el.rubricDetails.append(card);
+  renderCurrentEvalItem();
 }
 
-function drawHexChart(scores) {
-  drawHexChartOnCanvas(el.hexChart, scores);
+// Going back never crosses from the second part of the protocol into the blind one.
+function canGoBack() {
+  return state.qIndex > 0 || (state.evalIndex > 0 && state.evalIndex !== firstSightedIndex());
 }
+
+function previousQuestion() {
+  if (!canGoBack()) return;
+  if (state.qIndex > 0) {
+    state.qIndex -= 1;
+  } else {
+    state.evalIndex -= 1;
+    state.qIndex = questionsFor(state.items[state.evalIndex]).length - 1;
+  }
+  renderCurrentEvalItem();
+}
+
 
 function drawHexChartOnCanvas(canvas, scores) {
   const ctx = canvas.getContext("2d");
@@ -1232,25 +887,6 @@ function drawHexChartOnCanvas(canvas, scores) {
   });
 }
 
-function readScoresFromUI() {
-  const scores = {};
-  DIMENSIONS.forEach((dimension) => {
-    const selected = document.querySelector(`input[name="score-${dimension.key}"]:checked`);
-    scores[dimension.key] = selected ? normalizeScore(selected.value) : null;
-  });
-  return scores;
-}
-
-function setScoresToUI(scores) {
-  DIMENSIONS.forEach((dimension) => {
-    const selectedScore = normalizeScore(scores ? scores[dimension.key] : null);
-    const radios = document.querySelectorAll(`input[name="score-${dimension.key}"]`);
-    radios.forEach((radio) => {
-      radio.checked = selectedScore !== null && Number(radio.value) === selectedScore;
-    });
-  });
-  syncRadioSelectionStyles();
-}
 
 function normalizeScores(rawScores) {
   const normalized = {};
@@ -1301,157 +937,50 @@ function countRatedDimensions(scores) {
 function hasAllDimensionsScored(scores) {
   return countRatedDimensions(scores) === DIMENSIONS.length;
 }
-
-function syncRadioSelectionStyles() {
-  DIMENSIONS.forEach((dimension) => {
-    const options = document.querySelectorAll(`input[name="score-${dimension.key}"]`);
-    options.forEach((input) => {
-      const label = input.closest(".radio-option");
-      if (!label) return;
-      label.classList.toggle("active", input.checked);
-    });
-  });
-}
-
 function createEmptyLibraryAssessment() {
   return {
     scores: { coherence: null, grammar: null },
     updatedAt: null,
   };
 }
-
-function buildLibraryScales() {
-  LIBRARY_DIMENSIONS.forEach((dimension) => {
-    const container = document.getElementById(`${dimension}Scale`);
-    if (!container) return;
-    container.innerHTML = "";
-
-    for (let score = 1; score <= 5; score += 1) {
-      const description = t(`audit.levels.${dimension}.${score}`);
-      const option = document.createElement("label");
-      option.className = "radio-option";
-
-      const number = document.createElement("span");
-      number.className = "radio-number";
-      number.textContent = String(score);
-
-      const radio = document.createElement("input");
-      radio.type = "radio";
-      radio.name = `library-score-${dimension}`;
-      radio.value = String(score);
-      radio.checked = normalizeScore(state.libraryAssessment?.scores?.[dimension]) === score;
-      radio.setAttribute("aria-label", t("audit.scoreLabel", {
-        dimension: t(`audit.${dimension}Title`),
-        score,
-        description,
-      }));
-      radio.addEventListener("change", onLibraryScoreChange);
-
-      option.append(number, radio);
-      container.append(option);
-    }
-  });
-  syncLibraryScoreStyles();
-  renderLibraryRatingDescriptions();
+function renderSetQuestion() {
+  const dimension = LIBRARY_DIMENSIONS[state.setIndex];
+  el.setQuestionTitle.textContent = t(`audit.${dimension}Title`);
+  el.setQuestionBody.textContent = t(`audit.${dimension}Body`);
+  el.setBackBtn.disabled = state.setIndex === 0;
+  renderLevelOptions(
+    el.setOptions,
+    [1, 2, 3, 4, 5].map((score) => t(`audit.levels.${dimension}.${score}`)),
+    normalizeScore(state.libraryAssessment?.scores?.[dimension]),
+    (score) => {
+      state.libraryAssessment = {
+        scores: { ...state.libraryAssessment.scores, [dimension]: score },
+        updatedAt: new Date().toISOString(),
+      };
+      persistEvaluations();
+      updateStepLocks();
+    },
+    () => changeSetQuestion(1),
+  );
 }
 
-function readLibraryScores() {
-  const scores = {};
-  LIBRARY_DIMENSIONS.forEach((dimension) => {
-    const selected = document.querySelector(`input[name="library-score-${dimension}"]:checked`);
-    scores[dimension] = selected ? normalizeScore(selected.value) : null;
-  });
-  return scores;
-}
-
-function onLibraryScoreChange() {
-  state.libraryAssessment = {
-    scores: readLibraryScores(),
-    updatedAt: new Date().toISOString(),
-  };
-  syncLibraryScoreStyles();
-  renderLibraryRatingDescriptions();
-  persistEvaluations();
-  updateAuditState();
-}
-
-function syncLibraryScoreStyles() {
-  LIBRARY_DIMENSIONS.forEach((dimension) => {
-    document.querySelectorAll(`input[name="library-score-${dimension}"]`).forEach((input) => {
-      input.closest(".radio-option")?.classList.toggle("active", input.checked);
-    });
-  });
-}
-
-function renderLibraryRatingDescriptions() {
-  LIBRARY_DIMENSIONS.forEach((dimension) => {
-    const target = document.getElementById(`${dimension}Description`);
-    if (!target) return;
-    const score = normalizeScore(state.libraryAssessment?.scores?.[dimension]);
-    target.textContent = score === null
-      ? t("audit.chooseRating")
-      : t(`audit.levels.${dimension}.${score}`);
-  });
-}
-
-function renderLibraryAudit() {
-  buildLibraryScales();
-  renderAuditGrid();
-  updateAuditState();
-}
-
-function renderAuditGrid() {
-  if (!el.auditGrid) return;
-  const order = el.auditOrderInputs.find((input) => input.checked)?.value || "original";
-  const showLabels = Boolean(el.auditLabelsToggle.checked);
-  if (el.auditLabelsText) {
-    el.auditLabelsText.textContent = showLabels ? t("audit.hideLabels") : t("audit.showLabels");
+function changeSetQuestion(offset) {
+  const next = state.setIndex + offset;
+  if (next >= LIBRARY_DIMENSIONS.length) {
+    if (isLibraryAssessmentComplete()) el.step2NextBtn.focus({ preventScroll: true });
+    return;
   }
-
-  const items = [...state.items];
-  if (order === "category") {
-    const collator = new Intl.Collator(getLocale(), { sensitivity: "base", numeric: true });
-    items.sort((a, b) => {
-      const categoryOrder = collator.compare(a.category || t("audit.unknownCategory"), b.category || t("audit.unknownCategory"));
-      return categoryOrder || collator.compare(a.utterance, b.utterance);
-    });
-  }
-
-  el.auditGrid.innerHTML = "";
-  items.forEach((item) => {
-    const figure = document.createElement("figure");
-    figure.className = "audit-card";
-    figure.classList.toggle("with-label", showLabels);
-
-    const image = document.createElement("img");
-    image.alt = showLabels ? item.utterance : t("audit.unlabelledImage");
-    setImage(image, item.imageSrc, t("evaluation.imageFallback"));
-    figure.append(image);
-
-    if (showLabels) {
-      const caption = document.createElement("figcaption");
-      caption.textContent = item.utterance;
-      const category = document.createElement("span");
-      category.textContent = (item.category || t("audit.unknownCategory")).replaceAll("_", " ");
-      caption.append(category);
-      figure.append(caption);
-    }
-    el.auditGrid.append(figure);
-  });
+  if (next < 0) return;
+  state.setIndex = next;
+  renderSetQuestion();
 }
+
 
 function isLibraryAssessmentComplete() {
-  if (PROTOCOL_FORM) return true;
   return LIBRARY_DIMENSIONS.every(
     (dimension) => normalizeScore(state.libraryAssessment?.scores?.[dimension]) !== null,
   );
 }
-
-function updateAuditState() {
-  if (el.auditExportBtn) el.auditExportBtn.disabled = !isLibraryAssessmentComplete();
-  if (el.auditPdfBtn) el.auditPdfBtn.disabled = !isLibraryAssessmentComplete();
-}
-
 function polarPoint(cx, cy, radius, index, total) {
   const angle = -Math.PI / 2 + (index * (Math.PI * 2)) / total;
   return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
@@ -1489,17 +1018,6 @@ function getDimensionLevelText(key, score) {
   const suffix = getLocale() === "en-GB" ? "en" : "es";
   return level && level[`text_${suffix}`] ? level[`text_${suffix}`] : t("evaluation.noLevelDescription");
 }
-
-function getScaleMeta(score) {
-  const raw = state.rubric && state.rubric.scale ? state.rubric.scale[String(score)] : null;
-  const suffix = getLocale() === "en-GB" ? "en" : "es";
-  return {
-    label: raw && raw[`label_${suffix}`] ? raw[`label_${suffix}`] : t(`rubric.scale.${score}.label`),
-    general: raw && raw[`general_${suffix}`] ? raw[`general_${suffix}`] : t(`rubric.scale.${score}.general`),
-    color: raw && raw.color ? raw.color : "#111827",
-  };
-}
-
 function buildLibraryStorageKey(payload, items) {
   const basis = [
     payload.type || "",
@@ -1725,7 +1243,7 @@ async function exportEvaluationPdf() {
     alert(t("alerts.pdfError"));
   } finally {
     el.auditPdfBtn.textContent = t("audit.downloadPdf");
-    updateAuditState();
+    el.auditPdfBtn.disabled = false;
   }
 }
 

@@ -139,7 +139,7 @@ export function aggregate(library, exports) {
     library: { name: library.config?.name ?? null, domainContext: library.config?.domainContext ?? null, items: rows.length },
     forms,
     coding_scheme: CODING_SCHEME,
-    evaluations: consistent.map(({ file, data }) => ({ file, id: data.evaluation.id, form: data.protocol.form, completedAt: data.evaluation.completedAt ?? null })),
+    evaluations: consistent.map(({ file, data }) => ({ file, id: data.evaluation.id, participant: data.protocol.participant ?? null, form: data.protocol.form, completedAt: data.evaluation.completedAt ?? null })),
     warnings,
     agreement,
     items,

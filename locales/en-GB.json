@@ -3,7 +3,9 @@
     "title": "PICTOS Index · Pictogram quality",
     "description": "PICTOS Index is an instrument for evaluating the quality of pictograms and pictogram libraries for Augmentative and Alternative Communication."
   },
-  "language": { "label": "Interface language" },
+  "language": {
+    "label": "Interface language"
+  },
   "prototype": {
     "title": "Prototype under development",
     "body": "The index and its results are experimental. They do not replace comprehension studies, validation with users or a professional accessibility assessment.",
@@ -70,19 +72,16 @@
   "app": {
     "eyebrow": "Instrument",
     "title": "Evaluate a library",
-    "lead": "Four stages. Progress is stored locally in this browser.",
-    "stepLibrary": "Library",
-    "stepEvaluator": "Evaluator",
+    "stepLibrary": "The set",
+    "stepEvaluator": "You",
     "stepEvaluation": "Pictograms",
     "stepSubmit": "Submit",
-    "stepAudit": "Library",
     "stepCount": "Stage {step} of {total}"
   },
   "library": {
     "title": "Load the library",
     "instruction": "Select a JSON file exported from PICTOS.net. The instrument supports raster and SVG images from the current format.",
     "instructionBefore": "Select a JSON file exported from",
-    "instructionAfter": "The instrument supports raster and SVG images from the current format.",
     "uploadTitle": "Load your own file",
     "uploadHint": "JSON format exported from PICTOS.net.",
     "uploadHintBefore": "JSON format exported from",
@@ -92,41 +91,15 @@
     "exampleTransport": "Viajar en transporte público",
     "exampleHealth": "Consulta de salud",
     "eighteenPictograms": "18 pictograms",
-    "empty": "No library has been loaded yet.",
-    "importSuccess": "Import successful",
-    "ready": "Library ready for evaluation",
     "change": "Change library",
-    "previewAlt": "Pictogram preview",
-    "previous": "Previous pictogram",
-    "next": "Next pictogram",
-    "confirmation": "Review a sample and confirm that this is the library you want to evaluate.",
-    "details": "View import details",
     "continue": "Continue to step 2",
-    "use": "Use this library",
     "successStatus": "Library imported successfully: {count} pictograms ready for evaluation.",
     "untitled": "Untitled library",
     "noName": "Untitled",
     "unknown": "Unknown",
     "notReported": "Not provided",
     "legacy": "Legacy",
-    "highlights": {
-      "pictograms": "Pictograms",
-      "images": "Images",
-      "model": "Model",
-      "format": "Format"
-    },
-    "metadata": {
-      "library": "Library",
-      "file": "File",
-      "type": "Type",
-      "format": "Format",
-      "application": "Application",
-      "model": "Model",
-      "items": "Items",
-      "images": "Images",
-      "author": "Author",
-      "timestamp": "Date and time"
-    }
+    "pictogramCount": "{count} pictograms"
   },
   "profile": {
     "title": "Tell us about your relationship with AAC",
@@ -140,19 +113,14 @@
     "noticeTitle": "Your data remains in this browser.",
     "noticeBody": "It will be included only in a file you choose to export; it is not sent automatically.",
     "back": "Return to step 1",
-    "continue": "Save and continue to step 3",
+    "continue": "Continue",
     "required": "Select at least one relationship with AAC.",
     "exclusiveAnnouncement": "No previous experience selected; the other options have been disabled."
   },
   "evaluation": {
     "title": "Pictogram evaluation",
     "pictogramPosition": "Pictogram {current} of {total}",
-    "protocolForm": "Form {form}",
-    "passBlind": "Pass 1 of 2: without the phrase",
-    "passSighted": "Pass 2 of 2: with the phrase",
-    "passSightedStart": "The pass without phrases is over. You will now see other pictograms, each with its phrase.",
     "domainContext": "Context of use: {context}",
-    "useEyebrow": "Does it work here?",
     "useScenario": "In this situation, someone wants to say: «{phrase}».",
     "useQuestion": "Does this pictogram help them say it in this situation?",
     "useYes": "Yes, it works",
@@ -160,65 +128,24 @@
     "useNo": "It does not work",
     "useCannot": "I cannot judge",
     "useReason": "Why? (optional)",
-    "useHint": "Think of the situation described and of the person who needs to say that phrase, not of the pictogram in the abstract.",
-    "useSaved": "Answer saved.",
-    "sourcePhrase": "Original source phrase:",
-    "firstImpression": "First impression",
     "question": "What does this pictogram communicate?",
     "placeholder": "Write what you understand it to communicate...",
-    "hint": "Respond before viewing the source phrase. There is no answer you are expected to guess.",
-    "skip": "Skip the interpretation",
-    "confirm": "Confirm the interpretation",
+    "skip": "I do not know what it communicates",
+    "confirm": "Confirm",
     "imageAlt": "Current pictogram",
-    "dimensionImageAlt": "Pictogram being evaluated",
-    "dimensionPrevious": "Previous dimension",
-    "dimensionNext": "Next dimension",
-    "dimensionCount": "Dimension {current} of {total}",
-    "dimensionPosition": "Pictogram {pictogram} of {pictograms} · Dimension {dimension} of {dimensions}",
-    "rate": "Rate from 1 to 5",
-    "rated": "You rated: {label}",
-    "scoreLabel": "{score} out of 5: {label}",
-    "rubricEmpty": "The explanation for the score will appear here.",
-    "editGuess": "Return to the interpretation",
-    "clear": "Clear this item",
-    "itemNavigation": "Pictogram navigation",
-    "itemPrevious": "Previous pictogram",
-    "itemNext": "Next pictogram",
-    "progress": "{completed} of {total} evaluated",
-    "partialState": "Partial evaluation",
-    "completeState": "Pictograms evaluated",
-    "downloadPartial": "Download partial evaluation",
-    "downloadComplete": "Download complete evaluation",
-    "back": "Return to step 2",
-    "save": "Continue to the library evaluation",
-    "saveNext": "Next pictogram",
-    "guessRequired": "Write what the pictogram communicates or choose Skip.",
     "itemFallback": "Item {number}",
     "imageFallback": "Pictogram unavailable",
-    "level": "Level {score}",
-    "noLevelDescription": "No description is available for this level."
-  },
-  "protocolDone": {
-    "title": "You have finished",
-    "intro": "Download your answers and send the JSON file to the panel coordinator. Nothing else is needed."
+    "noLevelDescription": "No description is available for this level.",
+    "questionPosition": "Pictogram {current} of {total} · question {question} of {questions}",
+    "sourcePhraseLine": "Source phrase: “{phrase}”"
   },
   "audit": {
-    "title": "Library audit",
-    "intro": "View the pictograms as a system. This evaluation describes the set and does not change the pictograms' PICTOS Index.",
-    "gridControls": "Grid controls",
-    "orderLabel": "Order",
-    "orderOriginal": "Original order",
-    "orderCategory": "By category",
-    "showLabels": "Show labels",
-    "hideLabels": "Hide labels",
     "unknownCategory": "Uncategorised",
     "unlabelledImage": "Unlabelled pictogram",
     "coherenceTitle": "Formal coherence",
     "coherenceBody": "Are the pictograms recognisable as members of the same set?",
     "grammarTitle": "Visual grammar",
     "grammarBody": "Does the set apply shared, recognisable visual rules?",
-    "chooseRating": "Select a rating.",
-    "scoreLabel": "{dimension}: {score} out of 5. {description}",
     "levels": {
       "coherence": {
         "1": "No common set is apparent.",
@@ -235,9 +162,6 @@
         "5": "The visual grammar is clear, stable and recognisable."
       }
     },
-    "separateTitle": "Separate result.",
-    "separateBody": "Coherence and grammar are not averaged into the PICTOS Index.",
-    "back": "Return to the pictograms",
     "download": "Download complete evaluation",
     "downloadPdf": "Download PDF report",
     "downloadJson": "Download JSON data",
@@ -270,22 +194,57 @@
     "category": "Category",
     "footer": "PICTOS Index · Experimental prototype"
   },
-  "status": { "step": "Stage {step} of 4" },
+  "status": {
+    "step": "Stage {step} of 4"
+  },
   "rubric": {
     "dimensions": {
-      "clarity": { "name": "Clarity", "description": "Clarity is the degree to which the pictogram is visually legible and free from ambiguity." },
-      "recognizability": { "name": "Recognisability", "description": "Recognisability is how easily a person can identify what the pictogram represents without additional context." },
-      "semantic_transparency": { "name": "Semantic transparency", "description": "Semantic transparency is the degree to which the pictogram accurately communicates the meaning of the target phrase." },
-      "pragmatic_fit": { "name": "Pragmatic fit", "description": "Pragmatic fit is the usefulness of the pictogram in real-world AAC communication situations." },
-      "cultural_adequacy": { "name": "Cultural adequacy", "description": "Cultural adequacy is the relevance of the pictogram to the cultural and linguistic context of its intended audience." },
-      "cognitive_accessibility": { "name": "Cognitive accessibility", "description": "Cognitive accessibility is how easily people with different cognitive abilities can understand and use the pictogram." }
+      "clarity": {
+        "name": "Clarity",
+        "description": "Clarity is the degree to which the pictogram is visually legible and free from ambiguity."
+      },
+      "recognizability": {
+        "name": "Recognisability",
+        "description": "Recognisability is how easily a person can identify what the pictogram represents without additional context."
+      },
+      "semantic_transparency": {
+        "name": "Semantic transparency",
+        "description": "Semantic transparency is the degree to which the pictogram accurately communicates the meaning of the target phrase."
+      },
+      "pragmatic_fit": {
+        "name": "Pragmatic fit",
+        "description": "Pragmatic fit is the usefulness of the pictogram in real-world AAC communication situations."
+      },
+      "cultural_adequacy": {
+        "name": "Cultural adequacy",
+        "description": "Cultural adequacy is the relevance of the pictogram to the cultural and linguistic context of its intended audience."
+      },
+      "cognitive_accessibility": {
+        "name": "Cognitive accessibility",
+        "description": "Cognitive accessibility is how easily people with different cognitive abilities can understand and use the pictogram."
+      }
     },
     "scale": {
-      "1": { "label": "Not functional", "general": "Quality absent or severely compromised." },
-      "2": { "label": "Insufficient", "general": "Quality only marginally present." },
-      "3": { "label": "Works", "general": "Quality partly present." },
-      "4": { "label": "Good", "general": "Quality present, with minor problems." },
-      "5": { "label": "Excellent", "general": "Quality fully present." }
+      "1": {
+        "label": "Not functional",
+        "general": "Quality absent or severely compromised."
+      },
+      "2": {
+        "label": "Insufficient",
+        "general": "Quality only marginally present."
+      },
+      "3": {
+        "label": "Works",
+        "general": "Quality partly present."
+      },
+      "4": {
+        "label": "Good",
+        "general": "Quality present, with minor problems."
+      },
+      "5": {
+        "label": "Excellent",
+        "general": "Quality fully present."
+      }
     }
   },
   "coordination": {
@@ -293,7 +252,7 @@
     "title": "Coordinate a panel",
     "lead": "Each person evaluates in their own browser and downloads their evaluation. Here those files are brought together, the judges' sheets are prepared and the returned sheets are read. Nothing leaves this browser.",
     "step1Title": "1. Hand out the links",
-    "step1Body": "Send each person one of these links, alternating forms so there are as many A as B. Everyone must load the same library.",
+    "step1Body": "Give each person a link with their number: ?p=1, ?p=2, ?p=3… Odd numbers answer form A and even numbers form B, so numbering in order balances the forms. Everyone must load the same library.",
     "step2Title": "2. Collect the evaluations",
     "library": "Evaluated library",
     "ownLibrary": "Another library (load a file)",
@@ -325,5 +284,25 @@
     "answer": "Answer",
     "resultsBtn": "Download results per item (CSV)",
     "codingBtn": "Download coding report (JSON)"
+  },
+  "nav": {
+    "back": "← Back",
+    "next": "Next"
+  },
+  "set": {
+    "title": "Look at the set",
+    "intro": "Before seeing each pictogram on its own, look at them all together and answer two questions about the set.",
+    "continue": "Start with the pictograms"
+  },
+  "notice": {
+    "continue": "Continue",
+    "start": "You will see the pictograms one at a time. For each one, first write what you think it communicates. Then you will see its phrase and answer six short questions.",
+    "blind": "Part one. You will see pictograms without their phrase. Write what you think each one communicates; if you do not know, say so and move on.",
+    "sighted": "Part two. Now you will see other pictograms, each with the phrase it means to say. You will say whether it works in that situation."
+  },
+  "done": {
+    "title": "You have finished",
+    "intro": "Download the PDF report or the JSON data. Your answers also stay saved in this browser.",
+    "introProtocol": "Download your answers and send the JSON file to the panel coordinator. Nothing else is needed."
   }
 }

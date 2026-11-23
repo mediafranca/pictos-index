@@ -12,8 +12,7 @@ export function isCoordinationRequested() {
 
 export function initCoordination() {
   const base = `${window.location.origin}${window.location.pathname}`;
-  $("coordLinkA").textContent = `${base}?forma=A`;
-  $("coordLinkB").textContent = `${base}?forma=B`;
+  $("coordLinkP").textContent = `${base}?p=1, ${base}?p=2, ${base}?p=3 …`;
 
   $("coordSampleSelect").addEventListener("change", onSampleChange);
   $("coordLibraryInput").addEventListener("change", async (event) => {

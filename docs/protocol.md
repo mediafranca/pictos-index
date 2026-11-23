@@ -26,10 +26,8 @@ The six ratings of the individual flow (clarity, recognisability, semantic trans
 ## How to run it
 
 1. Choose a library that declares `config.domainContext`. That context is shown during both passes, so what is measured is **situated** transparency. Report it as such.
-2. Send each evaluator a link with their form, alternating so that the two forms have equal numbers:
-   - `https://mediafranca.net/pictos-index/?forma=A`
-   - `https://mediafranca.net/pictos-index/?forma=B`
-3. Each person loads the same library file, completes both passes and the library audit, and downloads the evaluation JSON.
+2. Send each evaluator a link with a consecutive participant number: `?p=1`, `?p=2`, `?p=3`… Odd numbers get form A and even numbers form B, so the forms stay balanced and every export carries `protocol.participant`. (`?forma=A` or `?forma=B` still works for a manual assignment, without a participant number.)
+3. Each person loads the same library file. They first see the whole library as a grid without phrases and rate its formal coherence and visual grammar, then complete both passes and download the evaluation JSON. Seeing the set first does not reveal any phrase, so the blind pass stays blind.
 4. Open the coordination screen (`?coordinar`, also linked from the home page), choose the library and load every evaluation file. The screen shows how many evaluations each form has, any warnings and the agreement on «¿Sirve aquí?», and downloads the aggregate report.
 
 The same steps can be run from the command line:

@@ -137,8 +137,7 @@
           <li class="workspace-panel">
             <h2 data-i18n="coordination.step1Title">1. Repartir los enlaces</h2>
             <p data-i18n="coordination.step1Body">Envía a cada persona uno de estos enlaces, alternando las formas para que haya tantas A como B. Todas deben cargar la misma librería.</p>
-            <p><strong>A</strong> <code id="coordLinkA"></code></p>
-            <p><strong>B</strong> <code id="coordLinkB"></code></p>
+            <p><code id="coordLinkP"></code></p>
           </li>
 
           <li class="workspace-panel">
@@ -197,105 +196,18 @@
         <header class="app-header">
           <p class="eyebrow" data-i18n="app.eyebrow">Instrumento</p>
           <h1 data-i18n="app.title">Evaluar una librería</h1>
-          <p class="lead" data-i18n="app.lead">Cuatro momentos. El avance queda guardado localmente en este navegador.</p>
           <p class="app-prototype-note" data-i18n="prototype.short">Prototipo en construcción: los resultados son experimentales.</p>
         </header>
 
       <nav class="stepper" aria-label="Pasos" data-i18n-aria-label="a11y.steps">
-        <button id="stepBtn1" class="step-pill active" type="button"><span>1</span><span data-i18n="app.stepLibrary">Librería</span></button>
-        <button id="stepBtn2" class="step-pill" type="button" disabled><span>2</span><span data-i18n="app.stepEvaluator">Evaluador</span></button>
-        <button id="stepBtn3" class="step-pill" type="button" disabled><span>3</span><span data-i18n="app.stepEvaluation">Evaluación</span></button>
-        <button id="stepBtn4" class="step-pill" type="button" disabled><span>4</span><span data-i18n="app.stepAudit">Biblioteca</span></button>
+        <button id="stepBtn1" class="step-pill active" type="button"><span>1</span><span data-i18n="app.stepEvaluator">Tú</span></button>
+        <button id="stepBtn2" class="step-pill" type="button" disabled><span>2</span><span data-i18n="app.stepLibrary">Conjunto</span></button>
+        <button id="stepBtn3" class="step-pill" type="button" disabled><span>3</span><span data-i18n="app.stepEvaluation">Pictogramas</span></button>
+        <button id="stepBtn4" class="step-pill" type="button" disabled><span>4</span><span data-i18n="app.stepSubmit">Entrega</span></button>
       </nav>
 
       <section id="step1" class="screen" aria-labelledby="step1Title">
-        <p class="step-kicker" data-i18n="status.step" data-i18n-vars='{"step":1}'>Momento 1 de 4</p>
-        <h2 id="step1Title" tabindex="-1" data-i18n="library.title">Carga la librería</h2>
-        <p id="step1Instruction" class="muted">
-          <span data-i18n="library.instructionBefore">Selecciona un archivo JSON exportado desde</span>
-          <a class="inline-link" href="https://pictos.net" target="_blank" rel="noopener noreferrer">PICTOS.net</a>.
-          <span data-i18n="library.instructionAfter">El instrumento admite imágenes raster y SVG del formato actual.</span>
-        </p>
-
-        <div id="libraryLoader" class="library-loader">
-          <div class="step1-left">
-            <div class="load-row">
-              <label class="file-field" for="libraryFileInput">
-                <strong data-i18n="library.uploadTitle">Cargar un archivo propio</strong>
-                <span><span data-i18n="library.uploadHintBefore">Formato JSON exportado desde</span> <a class="inline-link" href="https://pictos.net" target="_blank" rel="noopener noreferrer">PICTOS.net</a>.</span>
-              </label>
-              <input id="libraryFileInput" type="file" accept=".json,application/json" />
-
-              <div class="sample-picker" aria-labelledby="samplePickerTitle">
-                <h3 id="samplePickerTitle" data-i18n="library.samplesTitle">O prueba con una librería breve</h3>
-                <p data-i18n="library.samplesBody">Tres situaciones de uso declaradas, con el mismo estilo gráfico.</p>
-                <div class="sample-grid">
-                  <button class="sample-card" type="button" data-sample-path="./examples/restoran-graph-2026-11-23.json">
-                    <strong data-i18n="library.exampleRestaurant">Almorzar en el restorán</strong>
-                    <span>Raster · GPT Image</span>
-                    <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
-                  </button>
-                  <button class="sample-card" type="button" data-sample-path="./examples/transporte-graph-2026-11-23.json">
-                    <strong data-i18n="library.exampleTransport">Viajar en transporte público</strong>
-                    <span>Raster · GPT Image</span>
-                    <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
-                  </button>
-                  <button class="sample-card" type="button" data-sample-path="./examples/salud-graph-2026-11-23.json">
-                    <strong data-i18n="library.exampleHealth">Consulta de salud</strong>
-                    <span>Raster · GPT Image</span>
-                    <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <p id="libraryStatus" class="status-text" role="status" data-i18n="library.empty">Aún no hay una librería cargada.</p>
-
-        <div id="libraryLoaded" class="library-loaded hidden">
-          <header class="import-success">
-            <div class="success-mark" aria-hidden="true">✓</div>
-            <div class="import-success-copy">
-              <p class="eyebrow" data-i18n="library.importSuccess">Importación correcta</p>
-              <h3 id="loadedLibraryName">Librería lista para evaluar</h3>
-              <p id="loadedLibraryFile" class="muted"></p>
-            </div>
-            <button id="replaceLibraryBtn" class="secondary-btn" type="button" data-i18n="library.change">Cambiar librería</button>
-          </header>
-
-          <div class="library-review">
-            <div id="libraryPreview" class="library-preview hidden">
-            <button id="previewPrevBtn" type="button" class="arrow-btn" aria-label="Pictograma anterior" data-i18n-aria-label="library.previous">◀</button>
-
-            <figure class="preview-figure">
-              <img id="previewImage" alt="Vista de pictograma" data-i18n-alt="library.previewAlt" class="preview-image" />
-              <div id="previewCounter" class="preview-counter"></div>
-            </figure>
-
-            <button id="previewNextBtn" type="button" class="arrow-btn" aria-label="Siguiente pictograma" data-i18n-aria-label="library.next">▶</button>
-            </div>
-
-            <div class="library-confirmation">
-              <div id="libraryHighlights" class="library-highlights"></div>
-              <p class="confirmation-copy" data-i18n="library.confirmation">Revisa una muestra y confirma que corresponde a la librería que quieres evaluar.</p>
-              <details class="library-details">
-                <summary data-i18n="library.details">Ver detalles de importación</summary>
-                <div id="librarySummary" class="summary-card"></div>
-              </details>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div id="step1Nav" class="moment-nav nav-right">
-        <button id="step1NextBtn" class="primary-btn" type="button" disabled data-i18n="library.continue">Continuar al paso 2</button>
-      </div>
-
-      <section id="step2" class="screen hidden" aria-labelledby="step2Title">
-        <p class="step-kicker" data-i18n="status.step" data-i18n-vars='{"step":2}'>Momento 2 de 4</p>
-        <h2 id="step2Title" tabindex="-1" data-i18n="profile.title">Cuéntanos tu relación con la CAA</h2>
+        <h2 id="step1Title" tabindex="-1" data-i18n="profile.title">Cuéntanos tu relación con la CAA</h2>
         <p class="muted" data-i18n="profile.help">Puedes marcar más de una opción.</p>
 
         <form id="evaluatorForm" class="evaluator-grid">
@@ -332,85 +244,111 @@
         </form>
       </section>
 
+      <div id="step1Nav" class="moment-nav nav-right">
+        <button id="step1NextBtn" class="primary-btn" type="submit" form="evaluatorForm" data-i18n="profile.continue">Continuar</button>
+      </div>
+
+      <section id="step2" class="screen hidden" aria-labelledby="step2Title">
+        <h2 id="step2Title" tabindex="-1" data-i18n="library.title">Carga la librería</h2>
+
+        <div id="libraryLoader" class="library-loader">
+          <p class="muted">
+            <span data-i18n="library.instructionBefore">Selecciona un archivo JSON exportado desde</span>
+            <a class="inline-link" href="https://pictos.net" target="_blank" rel="noopener noreferrer">PICTOS.net</a>.
+          </p>
+          <div class="step1-left">
+            <div class="load-row">
+              <label class="file-field" for="libraryFileInput">
+                <strong data-i18n="library.uploadTitle">Cargar un archivo propio</strong>
+                <span><span data-i18n="library.uploadHintBefore">Formato JSON exportado desde</span> <a class="inline-link" href="https://pictos.net" target="_blank" rel="noopener noreferrer">PICTOS.net</a>.</span>
+              </label>
+              <input id="libraryFileInput" type="file" accept=".json,application/json" />
+
+              <div class="sample-picker" aria-labelledby="samplePickerTitle">
+                <h3 id="samplePickerTitle" data-i18n="library.samplesTitle">O prueba con una librería breve</h3>
+                <p data-i18n="library.samplesBody">Tres situaciones de uso declaradas, con el mismo estilo gráfico.</p>
+                <div class="sample-grid">
+                  <button class="sample-card" type="button" data-sample-path="./examples/restoran-graph-2026-11-23.json">
+                    <strong data-i18n="library.exampleRestaurant">Almorzar en el restorán</strong>
+                    <span>Raster · GPT Image</span>
+                    <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
+                  </button>
+                  <button class="sample-card" type="button" data-sample-path="./examples/transporte-graph-2026-11-23.json">
+                    <strong data-i18n="library.exampleTransport">Viajar en transporte público</strong>
+                    <span>Raster · GPT Image</span>
+                    <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
+                  </button>
+                  <button class="sample-card" type="button" data-sample-path="./examples/salud-graph-2026-11-23.json">
+                    <strong data-i18n="library.exampleHealth">Consulta de salud</strong>
+                    <span>Raster · GPT Image</span>
+                    <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div id="libraryLoaded" class="hidden">
+          <p class="loaded-line">
+            <strong id="loadedLibraryName"></strong>
+            <span id="loadedLibraryMeta" class="muted"></span>
+            <button id="replaceLibraryBtn" class="link-btn" type="button" data-i18n="library.change">Cambiar librería</button>
+          </p>
+          <p class="muted" data-i18n="set.intro">Antes de ver cada pictograma por separado, míralos todos juntos.</p>
+          <div id="auditGrid" class="audit-grid"></div>
+
+          <fieldset id="setQuestion" class="question-box">
+            <legend id="setQuestionTitle" class="question-title"></legend>
+            <p id="setQuestionBody" class="question-concept"></p>
+            <div id="setOptions" class="level-options"></div>
+          </fieldset>
+        </div>
+        <p id="libraryStatus" class="sr-only" role="status"></p>
+      </section>
+
       <div id="step2Nav" class="moment-nav hidden">
-        <button id="step2BackBtn" class="secondary-btn" type="button" data-i18n="profile.back">Volver al paso 1</button>
-        <button id="step2NextBtn" class="primary-btn" type="submit" form="evaluatorForm" data-i18n="profile.continue">Guardar y continuar al paso 3</button>
+        <button id="setBackBtn" class="secondary-btn" type="button" data-i18n="nav.back">← Atrás</button>
+        <button id="step2NextBtn" class="primary-btn" type="button" disabled data-i18n="set.continue">Comenzar con los pictogramas</button>
       </div>
 
       <section id="step3" class="screen hidden" aria-labelledby="step3Title">
         <h2 id="step3Title" class="sr-only" tabindex="-1" data-i18n="evaluation.title">Evaluación de pictogramas</h2>
-        <p id="pictogramPosition" class="pictogram-position" aria-live="polite"></p>
-        <p id="passNotice" class="pass-notice hidden"></p>
-
-        <div id="realPhraseSlot" class="phrase-slot concealed" aria-hidden="true">
-          <p id="realPhraseLabel" class="real-phrase-label" data-i18n="evaluation.sourcePhrase">Frase real de origen:</p>
-          <p id="realPhraseText" class="real-phrase"></p>
+        <div class="eval-progress">
+          <p id="evalPosition" class="muted small" aria-live="polite"></p>
+          <progress id="evalProgressBar" max="1" value="0"></progress>
         </div>
 
-        <div id="interpretationStage" class="evaluation-workspace">
+        <div id="noticePanel" class="notice-panel hidden">
+          <p id="noticeText"></p>
+          <p id="noticeContext" class="muted"></p>
+          <button id="noticeBtn" class="primary-btn" type="button" data-i18n="notice.continue">Continuar</button>
+        </div>
+
+        <div id="questionPanel" class="question-panel">
+          <p id="phraseLine" class="real-phrase hidden"></p>
           <div class="stage-image-card workspace-panel">
-            <img id="pragmaticImage" alt="Pictograma actual" data-i18n-alt="evaluation.imageAlt" class="stage-image" />
+            <img id="evalImage" alt="Pictograma actual" class="stage-image" />
           </div>
 
-          <div class="stage-input-card workspace-panel">
-            <p class="eyebrow" data-i18n="evaluation.firstImpression">Primera impresión</p>
-            <label>
-              <span data-i18n="evaluation.question">¿Qué comunica este pictograma?</span>
-              <textarea id="guessText" rows="5" placeholder="Escribe lo que entiendes que comunica..." data-i18n-placeholder="evaluation.placeholder"></textarea>
-            </label>
-            <p class="field-hint" data-i18n="evaluation.hint">Responde antes de ver la frase de origen. No hay respuestas que debas adivinar.</p>
+          <div id="guessStage" class="question-box">
+            <label for="guessText" class="question-title" data-i18n="evaluation.question">¿Qué comunica este pictograma?</label>
+            <textarea id="guessText" rows="4" placeholder="Escribe lo que entiendes que comunica..." data-i18n-placeholder="evaluation.placeholder"></textarea>
             <div class="pragmatic-actions">
-              <button id="skipGuessBtn" type="button" class="secondary-btn" data-i18n="evaluation.skip">Omitir la interpretación</button>
-              <button id="saveGuessBtn" type="button" class="primary-btn" data-i18n="evaluation.confirm">Confirmar la interpretación</button>
-            </div>
-          </div>
-        </div>
-
-        <div id="likertStage" class="dimension-layout hidden">
-          <div class="evaluation-workspace">
-            <div class="stage-image-card workspace-panel">
-              <img id="dimensionImage" alt="Pictograma para evaluación" data-i18n-alt="evaluation.dimensionImageAlt" class="stage-image" />
-            </div>
-
-            <div class="chart-box workspace-panel">
-              <canvas id="hexChart" width="360" height="320"></canvas>
-              <div id="scoreBadge" class="score-badge">PICTOS Index 0.00</div>
+              <button id="skipGuessBtn" type="button" class="secondary-btn" data-i18n="evaluation.skip">No sé qué comunica</button>
+              <button id="saveGuessBtn" type="button" class="primary-btn" disabled data-i18n="evaluation.confirm">Confirmar</button>
             </div>
           </div>
 
-          <section class="dimension-step" aria-labelledby="activeDimensionTitle">
-            <div class="dimension-step-head">
-              <button id="dimensionPrevBtn" type="button" class="arrow-btn dimension-chevron" aria-label="Dimensión anterior" data-i18n-aria-label="evaluation.dimensionPrevious">‹</button>
-              <div class="dimension-heading">
-                <p id="dimensionCounter" class="eyebrow">Dimensión 1 de 6</p>
-                <h3 id="activeDimensionTitle" class="right-title"></h3>
-                <p id="activeDimensionDescription" class="dimension-description"></p>
-              </div>
-              <button id="dimensionNextBtn" type="button" class="arrow-btn dimension-chevron" aria-label="Dimensión siguiente" data-i18n-aria-label="evaluation.dimensionNext">›</button>
-            </div>
+          <fieldset id="dimensionStage" class="question-box hidden">
+            <legend id="dimensionTitle" class="question-title"></legend>
+            <p id="dimensionDescription" class="question-concept"></p>
+            <div id="dimensionOptions" class="level-options"></div>
+          </fieldset>
 
-            <div class="dimension-response">
-              <div>
-                <p id="scalePrompt" class="scale-prompt" aria-live="polite" data-i18n="evaluation.rate">Evalúa de 1 a 5</p>
-                <div id="slidersContainer" class="sliders-column"></div>
-              </div>
-              <div id="rubricDetails" class="rubric-details" aria-live="polite"></div>
-            </div>
-          </section>
-
-          <div class="screen-actions tight">
-            <button id="editGuessBtn" class="secondary-btn" type="button" data-i18n="evaluation.editGuess">Volver a la interpretación</button>
-            <button id="clearEvalBtn" class="secondary-btn" type="button" data-i18n="evaluation.clear">Limpiar este ítem</button>
-          </div>
-        </div>
-
-        <div id="useStage" class="evaluation-workspace hidden">
-          <div class="stage-image-card workspace-panel">
-            <img id="useImage" alt="Pictograma actual" data-i18n-alt="evaluation.imageAlt" class="stage-image" />
-          </div>
-
-          <div class="stage-input-card workspace-panel">
-            <p class="eyebrow" data-i18n="evaluation.useEyebrow">¿Sirve aquí?</p>
+          <div id="useStage" class="question-box hidden">
             <p id="useScenario" class="use-scenario"></p>
             <fieldset class="use-options">
               <legend data-i18n="evaluation.useQuestion">¿Este pictograma le sirve para decirlo en esta situación?</legend>
@@ -421,80 +359,27 @@
             </fieldset>
             <label>
               <span data-i18n="evaluation.useReason">¿Por qué? (opcional)</span>
-              <textarea id="useReason" rows="3"></textarea>
+              <textarea id="useReason" rows="2"></textarea>
             </label>
-            <p class="field-hint" data-i18n="evaluation.useHint">Piensa en la situación descrita y en quien necesita decir esa frase, no en el pictograma en abstracto.</p>
-          </div>
-        </div>
-
-        <div class="evaluation-bottom-bar">
-          <button id="evalPrevBtn" type="button" class="secondary-btn pictogram-nav-btn" aria-label="Pictograma anterior" data-i18n-aria-label="evaluation.itemPrevious">
-            <span class="pictogram-chevron" aria-hidden="true">←</span>
-            <span data-i18n="evaluation.itemPrevious">Pictograma anterior</span>
-          </button>
-          <div class="evaluation-bottom-status">
-            <div>
-              <strong id="evaluationStateLabel" data-i18n="evaluation.partialState">Evaluación parcial</strong>
-              <div id="evalProgress" class="muted small"></div>
+            <div class="pragmatic-actions nav-right">
+              <button id="useNextBtn" type="button" class="primary-btn" disabled data-i18n="nav.next">Siguiente</button>
             </div>
-            <button id="exportJsonBtn" type="button" class="download-link">
-              <img src="./web/assets/download.svg" alt="" aria-hidden="true" class="icon-svg" />
-              <span id="exportJsonLabel" data-i18n="evaluation.downloadPartial">Descargar evaluación parcial</span>
-            </button>
           </div>
-          <button id="evalNextBtn" class="secondary-btn pictogram-nav-btn" type="button" disabled aria-label="Pictograma siguiente" data-i18n-aria-label="evaluation.itemNext">
-            <span id="evalNextLabel" data-i18n="evaluation.itemNext">Pictograma siguiente</span>
-            <span class="pictogram-chevron" aria-hidden="true">→</span>
-          </button>
         </div>
       </section>
 
       <div id="step3Nav" class="moment-nav hidden">
-        <button id="step3BackBtn" class="secondary-btn" type="button" data-i18n="evaluation.back">Volver al paso 2</button>
+        <button id="evalBackBtn" class="secondary-btn" type="button" data-i18n="nav.back">← Atrás</button>
       </div>
 
       <section id="step4" class="screen hidden" aria-labelledby="step4Title">
-        <p class="step-kicker" data-i18n="status.step" data-i18n-vars='{"step":4}'>Momento 4 de 4</p>
-        <h2 id="step4Title" tabindex="-1" data-i18n="audit.title">Auditoría de la biblioteca</h2>
-        <p class="muted audit-intro" data-i18n="audit.intro">Mira los pictogramas como un sistema. Esta evaluación describe el conjunto y no modifica el PICTOS Index de los pictogramas.</p>
-
-        <div class="audit-toolbar" aria-label="Controles de la retícula" data-i18n-aria-label="audit.gridControls">
-          <fieldset class="audit-sort">
-            <legend data-i18n="audit.orderLabel">Ordenar</legend>
-            <label><input type="radio" name="auditOrder" value="original" checked /><span data-i18n="audit.orderOriginal">Orden original</span></label>
-            <label><input type="radio" name="auditOrder" value="category" /><span data-i18n="audit.orderCategory">Por categoría</span></label>
-          </fieldset>
-          <label class="audit-label-toggle"><input id="auditLabelsToggle" type="checkbox" /><span data-i18n="audit.showLabels">Mostrar etiquetas</span></label>
-        </div>
-
-        <div id="auditGrid" class="audit-grid"></div>
-
-        <form id="libraryAuditForm" class="audit-form">
-          <div class="audit-dimensions">
-            <fieldset class="audit-dimension">
-              <legend data-i18n="audit.coherenceTitle">Coherencia formal</legend>
-              <p data-i18n="audit.coherenceBody">¿Los pictogramas se reconocen como integrantes de un mismo conjunto?</p>
-              <div id="coherenceScale" class="radio-scale audit-scale"></div>
-              <p id="coherenceDescription" class="audit-rating-description" aria-live="polite" data-i18n="audit.chooseRating">Selecciona una valoración.</p>
-            </fieldset>
-            <fieldset class="audit-dimension">
-              <legend data-i18n="audit.grammarTitle">Gramática visual</legend>
-              <p data-i18n="audit.grammarBody">¿El conjunto aplica reglas visuales compartidas y reconocibles?</p>
-              <div id="grammarScale" class="radio-scale audit-scale"></div>
-              <p id="grammarDescription" class="audit-rating-description" aria-live="polite" data-i18n="audit.chooseRating">Selecciona una valoración.</p>
-            </fieldset>
-          </div>
-          <p class="audit-separation-note"><strong data-i18n="audit.separateTitle">Resultado separado.</strong> <span data-i18n="audit.separateBody">Coherencia y gramática no se promedian con el PICTOS Index.</span></p>
-        </form>
-      </section>
-
-      <div id="step4Nav" class="moment-nav hidden">
-        <button id="step4BackBtn" class="secondary-btn" type="button" data-i18n="audit.back">Volver a los pictogramas</button>
+        <h2 id="step4Title" tabindex="-1" data-i18n="done.title">Has terminado</h2>
+        <p id="doneIntro" class="muted" data-i18n="done.intro">Descarga el informe PDF o los datos JSON.</p>
         <div class="final-downloads">
           <button id="auditPdfBtn" class="primary-btn" type="button" data-i18n="audit.downloadPdf">Descargar informe PDF</button>
           <button id="auditExportBtn" class="secondary-btn" type="button" data-i18n="audit.downloadJson">Descargar datos JSON</button>
         </div>
-      </div>
+      </section>
       </section>
       <div id="statusRegion" class="sr-only" role="status" aria-live="polite"></div>
     </main>

@@ -3,7 +3,9 @@
     "title": "PICTOS Index · Calidad pictográfica",
     "description": "PICTOS Index es un instrumento para evaluar la calidad de pictogramas y de librerías pictográficas destinadas a la Comunicación Aumentativa y Alternativa."
   },
-  "language": { "label": "Idioma de la interfaz" },
+  "language": {
+    "label": "Idioma de la interfaz"
+  },
   "prototype": {
     "title": "Prototipo en construcción",
     "body": "El índice y sus resultados son experimentales. No sustituyen estudios de comprensión, validación con personas usuarias ni una evaluación profesional de accesibilidad.",
@@ -70,19 +72,16 @@
   "app": {
     "eyebrow": "Instrumento",
     "title": "Evaluar una librería",
-    "lead": "Cuatro momentos. El avance queda guardado localmente en este navegador.",
-    "stepLibrary": "Librería",
-    "stepEvaluator": "Evaluador",
+    "stepLibrary": "Conjunto",
+    "stepEvaluator": "Tú",
     "stepEvaluation": "Pictogramas",
     "stepSubmit": "Entrega",
-    "stepAudit": "Biblioteca",
     "stepCount": "Momento {step} de {total}"
   },
   "library": {
     "title": "Carga la librería",
     "instruction": "Selecciona un archivo JSON exportado desde PICTOS.net. El instrumento admite imágenes raster y SVG del formato actual.",
     "instructionBefore": "Selecciona un archivo JSON exportado desde",
-    "instructionAfter": "El instrumento admite imágenes raster y SVG del formato actual.",
     "uploadTitle": "Cargar un archivo propio",
     "uploadHint": "Formato JSON exportado desde PICTOS.net.",
     "uploadHintBefore": "Formato JSON exportado desde",
@@ -92,41 +91,15 @@
     "exampleTransport": "Viajar en transporte público",
     "exampleHealth": "Consulta de salud",
     "eighteenPictograms": "18 pictogramas",
-    "empty": "Aún no hay una librería cargada.",
-    "importSuccess": "Importación correcta",
-    "ready": "Librería lista para evaluar",
     "change": "Cambiar librería",
-    "previewAlt": "Vista de pictograma",
-    "previous": "Pictograma anterior",
-    "next": "Pictograma siguiente",
-    "confirmation": "Revisa una muestra y confirma que corresponde a la librería que quieres evaluar.",
-    "details": "Ver detalles de importación",
     "continue": "Continuar al paso 2",
-    "use": "Usar esta librería",
     "successStatus": "Librería importada correctamente: {count} pictogramas listos para evaluar.",
     "untitled": "Librería sin nombre",
     "noName": "Sin nombre",
     "unknown": "Desconocida",
     "notReported": "No informado",
     "legacy": "Legado",
-    "highlights": {
-      "pictograms": "Pictogramas",
-      "images": "Imágenes",
-      "model": "Modelo",
-      "format": "Formato"
-    },
-    "metadata": {
-      "library": "Librería",
-      "file": "Archivo",
-      "type": "Tipo",
-      "format": "Formato",
-      "application": "Aplicación",
-      "model": "Modelo",
-      "items": "Elementos",
-      "images": "Imágenes",
-      "author": "Autoría",
-      "timestamp": "Fecha y hora"
-    }
+    "pictogramCount": "{count} pictogramas"
   },
   "profile": {
     "title": "Cuéntanos tu relación con la CAA",
@@ -140,19 +113,14 @@
     "noticeTitle": "Tus datos permanecen en este navegador.",
     "noticeBody": "Sólo se incluirán en el archivo que decidas exportar; no se envían automáticamente.",
     "back": "Volver al paso 1",
-    "continue": "Guardar y continuar al paso 3",
+    "continue": "Continuar",
     "required": "Selecciona al menos una relación con la CAA.",
     "exclusiveAnnouncement": "Se seleccionó sin experiencia previa; se desactivaron las demás opciones."
   },
   "evaluation": {
     "title": "Evaluación de pictogramas",
     "pictogramPosition": "Pictograma {current} de {total}",
-    "protocolForm": "Forma {form}",
-    "passBlind": "Pasada 1 de 2: sin la frase",
-    "passSighted": "Pasada 2 de 2: con la frase",
-    "passSightedStart": "Terminó la pasada sin frases. Ahora verás otros pictogramas, cada uno con su frase.",
     "domainContext": "Contexto de uso: {context}",
-    "useEyebrow": "¿Sirve aquí?",
     "useScenario": "En esta situación, alguien quiere decir: «{phrase}».",
     "useQuestion": "¿Este pictograma le sirve para decirlo en esta situación?",
     "useYes": "Sí, sirve",
@@ -160,65 +128,24 @@
     "useNo": "No sirve",
     "useCannot": "No puedo juzgarlo",
     "useReason": "¿Por qué? (opcional)",
-    "useHint": "Piensa en la situación descrita y en quien necesita decir esa frase, no en el pictograma en abstracto.",
-    "useSaved": "Respuesta guardada.",
-    "sourcePhrase": "Frase real de origen:",
-    "firstImpression": "Primera impresión",
     "question": "¿Qué comunica este pictograma?",
     "placeholder": "Escribe lo que entiendes que comunica...",
-    "hint": "Responde antes de ver la frase de origen. No hay respuestas que debas adivinar.",
-    "skip": "Omitir la interpretación",
-    "confirm": "Confirmar la interpretación",
+    "skip": "No sé qué comunica",
+    "confirm": "Confirmar",
     "imageAlt": "Pictograma actual",
-    "dimensionImageAlt": "Pictograma para evaluación",
-    "dimensionPrevious": "Dimensión anterior",
-    "dimensionNext": "Dimensión siguiente",
-    "dimensionCount": "Dimensión {current} de {total}",
-    "dimensionPosition": "Pictograma {pictogram} de {pictograms} · Dimensión {dimension} de {dimensions}",
-    "rate": "Evalúa de 1 a 5",
-    "rated": "Evaluaste: {label}",
-    "scoreLabel": "{score} de 5: {label}",
-    "rubricEmpty": "La explicación de la nota aparecerá aquí.",
-    "editGuess": "Volver a la interpretación",
-    "clear": "Limpiar este ítem",
-    "itemNavigation": "Navegación entre pictogramas",
-    "itemPrevious": "Pictograma anterior",
-    "itemNext": "Pictograma siguiente",
-    "progress": "{completed} evaluados de {total}",
-    "partialState": "Evaluación parcial",
-    "completeState": "Pictogramas evaluados",
-    "downloadPartial": "Descargar evaluación parcial",
-    "downloadComplete": "Descargar evaluación completa",
-    "back": "Volver al paso 2",
-    "save": "Continuar a la evaluación de la biblioteca",
-    "saveNext": "Pictograma siguiente",
-    "guessRequired": "Escribe qué comunica el pictograma o usa Omitir.",
     "itemFallback": "Elemento {number}",
     "imageFallback": "Pictograma sin imagen",
-    "level": "Nivel {score}",
-    "noLevelDescription": "Sin descripción para este nivel."
-  },
-  "protocolDone": {
-    "title": "Has terminado",
-    "intro": "Descarga tus respuestas y envía el archivo JSON a quien coordina el panel. No hace falta nada más."
+    "noLevelDescription": "Sin descripción para este nivel.",
+    "questionPosition": "Pictograma {current} de {total} · pregunta {question} de {questions}",
+    "sourcePhraseLine": "Frase de origen: «{phrase}»"
   },
   "audit": {
-    "title": "Auditoría de la biblioteca",
-    "intro": "Mira los pictogramas como un sistema. Esta evaluación describe el conjunto y no modifica el PICTOS Index de los pictogramas.",
-    "gridControls": "Controles de la retícula",
-    "orderLabel": "Ordenar",
-    "orderOriginal": "Orden original",
-    "orderCategory": "Por categoría",
-    "showLabels": "Mostrar etiquetas",
-    "hideLabels": "Ocultar etiquetas",
     "unknownCategory": "Sin categoría",
     "unlabelledImage": "Pictograma sin etiqueta",
     "coherenceTitle": "Coherencia formal",
     "coherenceBody": "¿Los pictogramas se reconocen como integrantes de un mismo conjunto?",
     "grammarTitle": "Gramática visual",
     "grammarBody": "¿El conjunto aplica reglas visuales compartidas y reconocibles?",
-    "chooseRating": "Selecciona una valoración.",
-    "scoreLabel": "{dimension}: {score} de 5. {description}",
     "levels": {
       "coherence": {
         "1": "No se percibe un conjunto común.",
@@ -235,9 +162,6 @@
         "5": "La gramática visual es clara, estable y reconocible."
       }
     },
-    "separateTitle": "Resultado separado.",
-    "separateBody": "Coherencia y gramática no se promedian con el PICTOS Index.",
-    "back": "Volver a los pictogramas",
     "download": "Descargar evaluación completa",
     "downloadPdf": "Descargar informe PDF",
     "downloadJson": "Descargar datos JSON",
@@ -270,22 +194,57 @@
     "category": "Categoría",
     "footer": "PICTOS Index · Prototipo experimental"
   },
-  "status": { "step": "Momento {step} de 4" },
+  "status": {
+    "step": "Momento {step} de 4"
+  },
   "rubric": {
     "dimensions": {
-      "clarity": { "name": "Claridad", "description": "La claridad es el grado en que el pictograma resulta visualmente legible y libre de ambigüedad." },
-      "recognizability": { "name": "Reconocibilidad", "description": "La reconocibilidad es la facilidad con que una persona puede identificar lo que representa el pictograma sin contexto adicional." },
-      "semantic_transparency": { "name": "Transparencia semántica", "description": "La transparencia semántica es el grado en que el pictograma comunica con precisión el significado de la frase objetivo." },
-      "pragmatic_fit": { "name": "Adecuación pragmática", "description": "La adecuación pragmática es la utilidad del pictograma en situaciones reales de comunicación mediante CAA." },
-      "cultural_adequacy": { "name": "Adecuación cultural", "description": "La adecuación cultural es la pertinencia del pictograma para el contexto cultural y lingüístico de sus destinatarios." },
-      "cognitive_accessibility": { "name": "Accesibilidad cognitiva", "description": "La accesibilidad cognitiva es la facilidad con que personas con distintas capacidades cognitivas pueden comprender y usar el pictograma." }
+      "clarity": {
+        "name": "Claridad",
+        "description": "La claridad es el grado en que el pictograma resulta visualmente legible y libre de ambigüedad."
+      },
+      "recognizability": {
+        "name": "Reconocibilidad",
+        "description": "La reconocibilidad es la facilidad con que una persona puede identificar lo que representa el pictograma sin contexto adicional."
+      },
+      "semantic_transparency": {
+        "name": "Transparencia semántica",
+        "description": "La transparencia semántica es el grado en que el pictograma comunica con precisión el significado de la frase objetivo."
+      },
+      "pragmatic_fit": {
+        "name": "Adecuación pragmática",
+        "description": "La adecuación pragmática es la utilidad del pictograma en situaciones reales de comunicación mediante CAA."
+      },
+      "cultural_adequacy": {
+        "name": "Adecuación cultural",
+        "description": "La adecuación cultural es la pertinencia del pictograma para el contexto cultural y lingüístico de sus destinatarios."
+      },
+      "cognitive_accessibility": {
+        "name": "Accesibilidad cognitiva",
+        "description": "La accesibilidad cognitiva es la facilidad con que personas con distintas capacidades cognitivas pueden comprender y usar el pictograma."
+      }
     },
     "scale": {
-      "1": { "label": "No funcional", "general": "Cualidad ausente o gravemente comprometida." },
-      "2": { "label": "Insuficiente", "general": "Cualidad presente sólo de forma limitada." },
-      "3": { "label": "Funciona", "general": "Cualidad presente de forma parcial." },
-      "4": { "label": "Bien", "general": "Cualidad presente, con problemas menores." },
-      "5": { "label": "Excelente", "general": "Cualidad plenamente presente." }
+      "1": {
+        "label": "No funcional",
+        "general": "Cualidad ausente o gravemente comprometida."
+      },
+      "2": {
+        "label": "Insuficiente",
+        "general": "Cualidad presente sólo de forma limitada."
+      },
+      "3": {
+        "label": "Funciona",
+        "general": "Cualidad presente de forma parcial."
+      },
+      "4": {
+        "label": "Bien",
+        "general": "Cualidad presente, con problemas menores."
+      },
+      "5": {
+        "label": "Excelente",
+        "general": "Cualidad plenamente presente."
+      }
     }
   },
   "coordination": {
@@ -293,7 +252,7 @@
     "title": "Coordinar un panel",
     "lead": "Cada persona evalúa en su propio navegador y descarga su evaluación. Aquí se reúnen esos archivos, se preparan las planillas para los jueces y se leen las planillas devueltas. Nada sale de este navegador.",
     "step1Title": "1. Repartir los enlaces",
-    "step1Body": "Envía a cada persona uno de estos enlaces, alternando las formas para que haya tantas A como B. Todas deben cargar la misma librería.",
+    "step1Body": "Da a cada persona un enlace con su número: ?p=1, ?p=2, ?p=3… Los impares responden la forma A y los pares la B, así que numerar en orden equilibra las formas. Todas deben cargar la misma librería.",
     "step2Title": "2. Reunir las evaluaciones",
     "library": "Librería evaluada",
     "ownLibrary": "Otra librería (cargar archivo)",
@@ -325,5 +284,25 @@
     "answer": "Respuesta",
     "resultsBtn": "Descargar resultados por ítem (CSV)",
     "codingBtn": "Descargar informe de codificación (JSON)"
+  },
+  "nav": {
+    "back": "← Atrás",
+    "next": "Siguiente"
+  },
+  "set": {
+    "title": "Mira el conjunto",
+    "intro": "Antes de ver cada pictograma por separado, míralos todos juntos y responde dos preguntas sobre el conjunto.",
+    "continue": "Comenzar con los pictogramas"
+  },
+  "notice": {
+    "continue": "Continuar",
+    "start": "Verás los pictogramas uno a uno. Para cada uno, primero escribe qué crees que comunica. Después verás su frase y responderás seis preguntas breves.",
+    "blind": "Primera parte. Verás pictogramas sin su frase. Escribe qué crees que comunica cada uno; si no lo sabes, dilo y sigue.",
+    "sighted": "Segunda parte. Ahora verás otros pictogramas, cada uno con la frase que quiere decir. Dirás si sirve en esa situación."
+  },
+  "done": {
+    "title": "Has terminado",
+    "intro": "Descarga el informe PDF o los datos JSON. Tus respuestas quedan también guardadas en este navegador.",
+    "introProtocol": "Descarga tus respuestas y envía el archivo JSON a quien coordina el panel. No hace falta nada más."
   }
 }
