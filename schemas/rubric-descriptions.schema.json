@@ -124,6 +124,16 @@
           "type": "string",
           "description": "Dimension-specific description for this level in English",
           "minLength": 10
+        },
+        "emphasis_es": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Phrases of the Spanish text shown in bold to make the level scannable; each must appear verbatim in it"
+        },
+        "emphasis_en": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Phrases of the English text shown in bold; each must appear verbatim in it"
         }
       },
       "additionalProperties": false

@@ -46,6 +46,14 @@ for (const [dimensionKey, dimension] of Object.entries(rubric.dimensions || {}))
     }
   }
   for (const score of ["1", "2", "3", "4", "5"]) {
+    for (const lang of ["es", "en"]) {
+      for (const phrase of dimension.levels?.[score]?.[`emphasis_${lang}`] || []) {
+        if (!dimension.levels[score][`text_${lang}`]?.includes(phrase)) {
+          failed = true;
+          console.error(`Rubric ${dimensionKey} level ${score}: emphasis_${lang} «${phrase}» is not in text_${lang}`);
+        }
+      }
+    }
     if (!dimension.levels?.[score]?.text_es || !dimension.levels?.[score]?.text_en) {
       failed = true;
       console.error(`Rubric ${dimensionKey} level ${score} is not bilingual`);

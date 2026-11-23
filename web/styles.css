@@ -414,12 +414,14 @@ textarea { min-height: 9rem; resize: vertical; }
 .question-box { min-width: 0; margin: 1rem 0 0; padding: 1rem; display: grid; gap: .6rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-raised); }
 .question-box legend { padding: 0 .25rem; }
 .question-title { color: var(--ink); font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 700; }
-.question-concept { margin: 0; color: var(--ink-soft); line-height: 1.55; }
+.question-concept { margin: 0; color: var(--ink-soft); font-size: .94rem; line-height: 1.5; }
 .level-options { display: grid; gap: .45rem; }
 .level-option {
   display: grid; grid-template-columns: auto 2rem minmax(0, 1fr); align-items: center; gap: .6rem;
-  padding: .6rem .75rem; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); color: var(--ink-soft); cursor: pointer;
+  padding: .55rem .75rem; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); color: var(--ink-soft);
+  font-size: .9rem; line-height: 1.45; cursor: pointer;
 }
+.level-option strong { color: var(--ink-strong); font-weight: 700; }
 .level-option:hover { border-color: var(--violet-bright); }
 .level-option:has(input:checked) { border-color: var(--violet-bright); background: color-mix(in srgb, var(--violet) 22%, var(--surface-raised)); color: var(--ink); }
 .level-option input { width: 1.1rem; height: 1.1rem; margin: 0; accent-color: var(--violet); }
@@ -439,7 +441,13 @@ textarea { min-height: 9rem; resize: vertical; }
 .question-box > label:not(.question-title) { display: grid; gap: .4rem; color: var(--ink-soft); font-size: .86rem; font-weight: 600; }
 #step4 .final-downloads { margin-top: 1.25rem; justify-content: flex-start; }
 .protocol-mode #auditPdfBtn { display: none; }
-@media (max-width: 960px) { .question-panel { grid-template-columns: 1fr; } .question-panel > .stage-image-card { position: static; } }
+/* One column: the pictogram stays pinned at the top, smaller, and the scale scrolls under it. */
+@media (max-width: 960px) {
+  .question-panel { grid-template-columns: 1fr; }
+  .question-panel > .stage-image-card { top: 0; z-index: 2; min-height: 0; padding: .4rem; box-shadow: 0 8px 18px rgb(0 0 0 / .18); }
+  .question-panel .stage-image { height: clamp(7rem, 24vh, 10rem); padding: .4rem; }
+  .level-option { grid-template-columns: auto auto minmax(0, 1fr); gap: .5rem; padding: .5rem .6rem; }
+}
 .done-status { margin: .75rem 0 0; padding: .8rem 1rem; border-left: 3px solid var(--ok); background: var(--surface-raised); color: var(--ink); font-weight: 650; overflow-wrap: anywhere; }
 
 /* Keyboard: a clear ring on the whole option, and the shortcuts shown only while the keyboard is in use. */

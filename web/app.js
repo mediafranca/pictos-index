@@ -729,7 +729,10 @@ function renderCurrentEvalItem() {
     el.dimensionDescription.textContent = meta.description;
     renderLevelOptions(
       el.dimensionOptions,
-      [1, 2, 3, 4, 5].map((score) => getDimensionLevelText(question, score)),
+      [1, 2, 3, 4, 5].map((score) => ({
+        text: getDimensionLevelText(question, score),
+        emphasis: getDimensionLevelEmphasis(question, score),
+      })),
       normalizeScore(record.scores?.[question]),
       (score) => onDimensionScore(question, score),
       nextQuestion,
@@ -760,7 +763,7 @@ function renderLevelOptions(container, levels, selected, onPick, onAdvance, focu
     number.className = "level-number";
     number.textContent = String(score);
     const description = document.createElement("span");
-    description.textContent = text;
+    description.append(emphasize(text.text ?? text, text.emphasis));
     option.append(input, number, description);
     container.append(option);
   });
@@ -1062,6 +1065,32 @@ function getDimensionMeta(key) {
       ? raw[`description_${suffix}`]
       : t(`rubric.dimensions.${key}.description`),
   };
+}
+
+function getDimensionLevelEmphasis(key, score) {
+  const level = state.rubric?.dimensions?.[key]?.levels?.[String(score)];
+  return level?.[getLocale() === "en-GB" ? "emphasis_en" : "emphasis_es"] || [];
+}
+
+// Wraps the given phrases of a text in <strong>, building nodes rather than HTML.
+function emphasize(text, phrases = []) {
+  const fragment = document.createDocumentFragment();
+  if (!phrases.length) {
+    fragment.append(text);
+    return fragment;
+  }
+  const pattern = new RegExp(`(${phrases.map((phrase) => phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`);
+  text.split(pattern).forEach((part, index) => {
+    if (!part) return;
+    if (index % 2) {
+      const strong = document.createElement("strong");
+      strong.textContent = part;
+      fragment.append(strong);
+    } else {
+      fragment.append(part);
+    }
+  });
+  return fragment;
 }
 
 function getDimensionLevelText(key, score) {
