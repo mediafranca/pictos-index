@@ -40,11 +40,11 @@
     "loadTitle": "Look at the library as a whole",
     "loadBody": "The whole library is viewed without phrases, and its formal coherence and visual grammar are rated.",
     "relationTitle": "State the evaluator’s position",
-    "relationBody": "The evaluator’s relationship with AAC is recorded, so that each judgement can be interpreted in light of the experience from which it is made.",
+    "relationBody": "The evaluator’s relationship with AAC is recorded, so each judgement can be read from that experience.",
     "evaluateTitle": "Evaluate each pictogram",
-    "evaluateBody": "Before the source phrase is shown, the evaluator records how they interpret the pictogram. Its six dimensions are then rated on a scale from 1 to 5, one question per screen.",
+    "evaluateBody": "Each pictogram is interpreted without its phrase, and its six dimensions are then rated from 1 to 5.",
     "submitTitle": "Hand in the results",
-    "submitBody": "The PDF report or the JSON data is downloaded. In a panel, the JSON file downloads by itself at the end and is sent to the coordinator."
+    "submitBody": "The report or the data are downloaded. In a panel, the file downloads by itself and goes to the coordinator."
   },
   "principles": {
     "eyebrow": "Rationale",
@@ -55,18 +55,21 @@
     "eyebrow": "About the PICTOS Index",
     "title": "An open instrument for pictographic evaluation",
     "whatTitle": "What it is",
-    "whatBody": "An open instrument for evaluating pictograms and pictogram libraries for AAC. It combines a free interpretation task, a six-dimension rubric for each pictogram and an assessment of the set. As generative models produce pictograms in growing numbers, it places judgement about their quality with the people who use them, support their use or design them.",
+    "whatBody": "An instrument for evaluating AAC pictograms and libraries: a free interpretation, a six-dimension rubric and an assessment of the set. As generative models produce ever more pictograms, it leaves judgement about their quality to those who use, support or design them.",
     "originTitle": "Origin",
     "originBefore": "It originates in the doctoral research of",
-    "originAfter": "on design for Augmentative and Alternative Communication at Auckland University of Technology (AUT). It is the evaluative counterpart to PICTOS.net: the latter generates pictograms from a semantic analysis of the utterance; PICTOS Index examines whether the result communicates what it intends. It updates and replaces VCSCI, its first formulation as an index of visual communicability and semantic correspondence.",
+    "originAfter": "on design for Augmentative and Alternative Communication at Auckland University of Technology (AUT). It is the evaluative counterpart to PICTOS.net, which generates the pictograms, and replaces VCSCI, its first formulation.",
     "custodyTitle": "Custody and licensing",
     "custodyBefore": "It is in the custody of",
-    "custodyAfter": ", a Valparaíso-based initiative dedicated to developing and safeguarding open tools for human communication. The code is distributed under the Apache 2.0 licence and the rubric under CC BY 4.0, permitting their study, use, replication and modification.",
+    "custodyAfter": ", a Valparaíso initiative that develops and safeguards open tools for human communication. The code is under the Apache 2.0 licence and the rubric under CC BY 4.0: both may be studied, used, replicated and modified.",
     "reposTitle": "Related repositories",
-    "repoNet": "Generative pictograms with semantic reasoning",
-    "repoNlu": "Understanding contract, based on NSM and FrameNet",
-    "repoComposition": "Visual composition contract",
-    "repoSvg": "Semantic SVG with accessibility metadata"
+    "netBody": "It generates pictograms for AAC from a phrase and its context of use. Before drawing, it reasons about what the phrase means; it then composes the image and delivers it as an accessible SVG. PICTOS Index evaluates what PICTOS.net produces.",
+    "netCode": "Code on GitHub",
+    "schemasTitle": "The schemas of the generative process",
+    "schemasIntro": "The PICTOS.net process moves through three phases, and each one is fixed in a formal schema: a contract the next phase can verify.",
+    "schemaNlu": "the formal understanding of the phrase’s communicative intent, based on NSM and FrameNet.",
+    "schemaComposition": "the structure of the visual candidates, setting a semantic correspondence between word and image.",
+    "schemaSvg": "the SVG as the source of truth: it holds its whole generative lineage and serves both as accessible code and as visual support."
   },
   "app": {
     "eyebrow": "Instrument",

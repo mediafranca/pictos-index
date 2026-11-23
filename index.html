@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b0613" />
     <!-- The instrument version (SemVer): shown in the header and stamped on every export. Keep in step with package.json. -->
-    <meta name="pictos-index-version" content="4.0.0" />
+    <meta name="pictos-index-version" content="4.0.1" />
     <meta
       name="description" data-i18n-content="meta.description"
       content="PICTOS Index es un instrumento para evaluar la calidad comunicativa de librerías pictográficas."
@@ -137,12 +137,25 @@
           </div>
 
           <h3 class="about-links-title" data-i18n="about.reposTitle">Repositorios relacionados</h3>
-          <ul class="about-links">
-            <li><a href="https://github.com/mediafranca/pictos-net" target="_blank" rel="noopener noreferrer"><strong>pictos-net</strong><span data-i18n="about.repoNet">Pictogramas generativos con razonamiento semántico</span></a></li>
-            <li><a href="https://github.com/mediafranca/pictos-nlu-schema" target="_blank" rel="noopener noreferrer"><strong>pictos-nlu-schema</strong><span data-i18n="about.repoNlu">Contrato de comprensión, basado en NSM y FrameNet</span></a></li>
-            <li><a href="https://github.com/mediafranca/pictos-composition-schema" target="_blank" rel="noopener noreferrer"><strong>pictos-composition-schema</strong><span data-i18n="about.repoComposition">Contrato de composición visual</span></a></li>
-            <li><a href="https://github.com/mediafranca/pictos-svg-schema" target="_blank" rel="noopener noreferrer"><strong>pictos-svg-schema</strong><span data-i18n="about.repoSvg">SVG semántico con metadatos de accesibilidad</span></a></li>
-          </ul>
+          <div class="about-repos">
+            <article class="pictos-card">
+              <img src="./web/assets/pictos-iso.svg" alt="" width="56" height="56" />
+              <div>
+                <h4><a href="https://pictos.net" target="_blank" rel="noopener noreferrer">PICTOS.net</a></h4>
+                <p data-i18n="about.netBody"></p>
+                <a class="small" href="https://github.com/mediafranca/pictos-net" target="_blank" rel="noopener noreferrer" data-i18n="about.netCode">Código en GitHub</a>
+              </div>
+            </article>
+            <div class="about-schemas">
+              <h4 data-i18n="about.schemasTitle">Los esquemas del proceso generativo</h4>
+              <p data-i18n="about.schemasIntro"></p>
+              <ol>
+                <li><a href="https://github.com/mediafranca/pictos-nlu-schema" target="_blank" rel="noopener noreferrer"><code>pictos-nlu-schema</code></a>: <span data-i18n="about.schemaNlu"></span></li>
+                <li><a href="https://github.com/mediafranca/pictos-composition-schema" target="_blank" rel="noopener noreferrer"><code>pictos-composition-schema</code></a>: <span data-i18n="about.schemaComposition"></span></li>
+                <li><a href="https://github.com/mediafranca/pictos-svg-schema" target="_blank" rel="noopener noreferrer"><code>pictos-svg-schema</code></a>: <span data-i18n="about.schemaSvg"></span></li>
+              </ol>
+            </div>
+          </div>
         </section>
       </section>
 

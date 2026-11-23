@@ -40,11 +40,11 @@
     "loadTitle": "Mirar la librería como conjunto",
     "loadBody": "Se mira la librería completa, sin frases, y se valoran su coherencia formal y su gramática visual.",
     "relationTitle": "Declarar la posición de quien evalúa",
-    "relationBody": "Se registra la relación de quien evalúa con la CAA, para interpretar cada juicio según la experiencia desde la que se emite.",
+    "relationBody": "Se registra la relación de quien evalúa con la CAA, para leer cada juicio desde su experiencia.",
     "evaluateTitle": "Evaluar cada pictograma",
-    "evaluateBody": "Antes de conocer la frase de origen, se registra cómo se interpreta el pictograma. Luego se califican sus seis dimensiones en una escala de 1 a 5, una pregunta por pantalla.",
+    "evaluateBody": "Se interpreta cada pictograma sin ver su frase y luego se califican sus seis dimensiones, de 1 a 5.",
     "submitTitle": "Entregar los resultados",
-    "submitBody": "Se descarga el informe PDF o los datos JSON. En un panel, el archivo JSON se descarga solo al terminar y se envía a quien coordina."
+    "submitBody": "Se descarga el informe o los datos. En un panel, el archivo se descarga solo y se envía a quien coordina."
   },
   "principles": {
     "eyebrow": "Fundamento",
@@ -55,18 +55,21 @@
     "eyebrow": "Acerca del PICTOS Index",
     "title": "Un instrumento abierto de evaluación pictográfica",
     "whatTitle": "Qué es",
-    "whatBody": "Un instrumento abierto para evaluar pictogramas y librerías pictográficas destinadas a la CAA. Combina una tarea de interpretación libre, una rúbrica de seis dimensiones por pictograma y una valoración del conjunto. Ante la creciente producción de pictogramas con modelos generativos, deja el juicio sobre su calidad en manos de las personas que los usan, acompañan su uso o los diseñan.",
+    "whatBody": "Un instrumento para evaluar pictogramas y librerías de CAA: una interpretación libre, una rúbrica de seis dimensiones y una valoración del conjunto. Ante la producción creciente de pictogramas con modelos generativos, deja el juicio sobre su calidad a quienes los usan, acompañan o diseñan.",
     "originTitle": "Procedencia",
     "originBefore": "Se origina en la investigación doctoral de",
-    "originAfter": "sobre diseño para la Comunicación Aumentativa y Alternativa, en Auckland University of Technology (AUT). Es el complemento evaluativo de PICTOS.net: este genera pictogramas a partir de un análisis semántico del enunciado; PICTOS Index examina si el resultado comunica lo que se propone. Actualiza y reemplaza a VCSCI, su primera formulación como índice de comunicabilidad visual y correspondencia semántica.",
+    "originAfter": "sobre diseño para la Comunicación Aumentativa y Alternativa, en Auckland University of Technology (AUT). Es el complemento evaluativo de PICTOS.net, que genera los pictogramas, y reemplaza a VCSCI, su primera formulación.",
     "custodyTitle": "Custodia y licencias",
     "custodyBefore": "Está bajo la custodia de",
-    "custodyAfter": ", iniciativa con sede en Valparaíso dedicada a desarrollar y resguardar herramientas abiertas para la comunicación humana. El código se distribuye bajo licencia Apache 2.0 y la rúbrica bajo CC BY 4.0, lo que permite estudiarlos, usarlos, replicarlos y modificarlos.",
+    "custodyAfter": ", iniciativa de Valparaíso que desarrolla y resguarda herramientas abiertas para la comunicación humana. El código está bajo licencia Apache 2.0 y la rúbrica bajo CC BY 4.0: se pueden estudiar, usar, replicar y modificar.",
     "reposTitle": "Repositorios relacionados",
-    "repoNet": "Pictogramas generativos con razonamiento semántico",
-    "repoNlu": "Contrato de comprensión, basado en NSM y FrameNet",
-    "repoComposition": "Contrato de composición visual",
-    "repoSvg": "SVG semántico con metadatos de accesibilidad"
+    "netBody": "Genera pictogramas para la CAA a partir de una frase y de su situación de uso. Antes de dibujar, razona sobre lo que la frase quiere decir; luego compone la imagen y la entrega como un SVG accesible. PICTOS Index evalúa lo que PICTOS.net produce.",
+    "netCode": "Código en GitHub",
+    "schemasTitle": "Los esquemas del proceso generativo",
+    "schemasIntro": "El proceso de PICTOS.net avanza en tres fases, y cada una se fija en un esquema formal: un contrato que la fase siguiente puede verificar.",
+    "schemaNlu": "la comprensión formal de la intención comunicativa de la frase, basada en NSM y FrameNet.",
+    "schemaComposition": "la estructura de los candidatos visuales, que establece una correspondencia semántica entre palabra e imagen.",
+    "schemaSvg": "el SVG como fuente de verdad: contiene toda su estirpe generativa y sirve a la vez como código accesible y como apoyo visual."
   },
   "app": {
     "eyebrow": "Instrumento",
