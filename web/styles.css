@@ -526,3 +526,7 @@ textarea { min-height: 9rem; resize: vertical; }
 .use-options legend { margin-bottom: .45rem; font-weight: 650; }
 .use-options label { display: flex; align-items: center; gap: .55rem; padding: .55rem .7rem; border: 1px solid var(--line-strong); border-radius: .6rem; cursor: pointer; }
 .use-options label:has(input:checked) { border-color: var(--violet-bright); background: var(--surface-soft); }
+
+/* Protocol mode: step 4 only downloads the answers. */
+.protocol-mode #step4 :is(.audit-toolbar, .audit-grid, .audit-form),
+.protocol-mode #auditPdfBtn { display: none; }

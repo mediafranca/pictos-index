@@ -74,6 +74,7 @@
     "stepLibrary": "Librería",
     "stepEvaluator": "Evaluador",
     "stepEvaluation": "Pictogramas",
+    "stepSubmit": "Entrega",
     "stepAudit": "Biblioteca",
     "stepCount": "Momento {step} de {total}"
   },
@@ -196,6 +197,10 @@
     "imageFallback": "Pictograma sin imagen",
     "level": "Nivel {score}",
     "noLevelDescription": "Sin descripción para este nivel."
+  },
+  "protocolDone": {
+    "title": "Has terminado",
+    "intro": "Descarga tus respuestas y envía el archivo JSON a quien coordina el panel. No hace falta nada más."
   },
   "audit": {
     "title": "Auditoría de la biblioteca",

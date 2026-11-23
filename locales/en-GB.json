@@ -74,6 +74,7 @@
     "stepLibrary": "Library",
     "stepEvaluator": "Evaluator",
     "stepEvaluation": "Pictograms",
+    "stepSubmit": "Submit",
     "stepAudit": "Library",
     "stepCount": "Stage {step} of {total}"
   },
@@ -196,6 +197,10 @@
     "imageFallback": "Pictogram unavailable",
     "level": "Level {score}",
     "noLevelDescription": "No description is available for this level."
+  },
+  "protocolDone": {
+    "title": "You have finished",
+    "intro": "Download your answers and send the JSON file to the panel coordinator. Nothing else is needed."
   },
   "audit": {
     "title": "Library audit",

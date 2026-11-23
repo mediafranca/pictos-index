@@ -17,7 +17,7 @@ Each item gets blind interpretations from one form and use judgements from the o
 
 ## Three questions, one per pictogram
 
-1. **¿Se ve bien?** Form. Nobody is asked: it is measured automatically with [pictos-auto-index](https://github.com/mediafranca/pictos-auto-index) (stroke, units, closed regions, dispersion and confusability within the library).
+1. **¿Se ve bien?** Form. Nobody is asked: it is measured automatically with [pictos-auto-index](https://pictos-index-protocolo.netlify.app) (stroke, units, closed regions, dispersion and confusability within the library).
 2. **¿Qué significa?** Pass 1. An open interpretation without the phrase, later coded by judges.
 3. **¿Sirve aquí?** Pass 2. With the phrase and the declared context of use, the person answers whether the pictogram helps someone say that phrase in that situation: *yes*, *with reservations*, *no*, or *I cannot judge*, with an optional reason.
 

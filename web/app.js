@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", init);
 async function init() {
   await initI18n();
   bindElements();
+  if (PROTOCOL_FORM) useProtocolStep4();
   applyTranslations();
   el.languageSelect.value = getLocale();
   bindEvents();
@@ -416,6 +417,15 @@ function loadLibraryPayload(payload, fileName) {
 }
 
 // Reorders state.items into the two passes and tags each item with its pass.
+// In the protocol, step 4 only hands in the answers: the library audit is a separate
+// exercise and stays out of the evaluator path.
+function useProtocolStep4() {
+  document.body.classList.add("protocol-mode");
+  el.stepBtn4.querySelector("[data-i18n]").dataset.i18n = "app.stepSubmit";
+  el.step4.querySelector("#step4Title").dataset.i18n = "protocolDone.title";
+  el.step4.querySelector(".audit-intro").dataset.i18n = "protocolDone.intro";
+}
+
 function applyProtocolPlan(payload) {
   if (!Number.isInteger(state.assessment.orderSeed)) {
     state.assessment.orderSeed = crypto.getRandomValues(new Uint32Array(1))[0];
@@ -1431,6 +1441,7 @@ function renderAuditGrid() {
 }
 
 function isLibraryAssessmentComplete() {
+  if (PROTOCOL_FORM) return true;
   return LIBRARY_DIMENSIONS.every(
     (dimension) => normalizeScore(state.libraryAssessment?.scores?.[dimension]) !== null,
   );
