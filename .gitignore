@@ -57,3 +57,6 @@ coverage/
 # Large generated datasets (use Git LFS or external storage)
 # Uncomment if you have many pictograms:
 # pictograms/**/*.svg
+
+# Netlify CLI link
+.netlify/
