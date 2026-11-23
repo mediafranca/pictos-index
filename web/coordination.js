@@ -1,9 +1,11 @@
 // Coordination screen (?coordinar): joins the evaluations of a panel, hands out one
 // CSV per judge and reads the judges' sheets back. Everything stays in the browser.
-import { getLocale, t } from "./i18n.js";
+import { getLocale, marked, t } from "./i18n.js";
 import { aggregate, codingRows, mergeCoding, resultsCsv, shuffle, toCsv } from "./protocol.js";
+import qrcode from "./vendor/qrcode.mjs";
 
-const state = { library: null, libraryName: "", evaluations: [], aggregate: null, sheets: [], coding: null };
+// libraryRef: what the evaluators' links carry in ?lib= (null for a local file).
+const state = { library: null, libraryName: "", libraryRef: null, evaluations: [], aggregate: null, sheets: [], coding: null };
 const $ = (id) => document.getElementById(id);
 
 export function isCoordinationRequested() {
@@ -11,16 +13,22 @@ export function isCoordinationRequested() {
 }
 
 export function initCoordination() {
-  const base = `${window.location.origin}${window.location.pathname}`;
-  $("coordLinkP").textContent = `${base}?p=1, ${base}?p=2, ${base}?p=3 …`;
-
   $("coordSampleSelect").addEventListener("change", onSampleChange);
+  $("coordUrlBtn").addEventListener("click", () => useLibraryAddress($("coordLibraryUrl").value.trim()));
+  $("coordLibraryUrl").addEventListener("keydown", (event) => {
+    if (event.key === "Enter") useLibraryAddress($("coordLibraryUrl").value.trim());
+  });
   $("coordLibraryInput").addEventListener("change", async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    setLibrary(JSON.parse(await file.text()), file.name);
-    $("coordSampleSelect").value = "";
+    try {
+      setLibrary(JSON.parse(await file.text()), file.name, null);
+    } catch {
+      showLibraryStatus(t("coordination.notALibrary"), true);
+    }
   });
+  $("coordPeople").addEventListener("input", renderLinks);
+  $("coordPrintBtn").addEventListener("click", () => window.print());
   $("coordEvalInput").addEventListener("change", async (event) => {
     state.evaluations = await Promise.all([...event.target.files].map(async (file) => ({ file: file.name, data: JSON.parse(await file.text()) })));
     recompute();
@@ -37,17 +45,116 @@ export function initCoordination() {
   render();
 }
 
-async function onSampleChange(event) {
-  const path = event.target.value;
-  if (!path) return;
-  const response = await fetch(path);
-  setLibrary(await response.json(), path.split("/").pop());
+function onSampleChange(event) {
+  const choice = event.target.value;
+  $("coordUrlRow").classList.toggle("hidden", choice !== "url");
+  $("coordLibraryInput").classList.toggle("hidden", choice !== "file");
+  if (choice === "url") $("coordLibraryUrl").focus();
+  if (choice === "file") $("coordLibraryInput").click();
+  if (choice && choice !== "url" && choice !== "file") useLibraryAddress(choice);
 }
 
-function setLibrary(library, name) {
+// Reads the library the way an evaluator's browser will, so a bad address (private,
+// a preview page, no cross-origin reads) shows up here and not in the panel.
+async function useLibraryAddress(address) {
+  if (!address) return;
+  let url;
+  try {
+    url = new URL(address, window.location.href);
+    if (!/^https?:$/.test(url.protocol)) throw new Error("protocol");
+  } catch {
+    showLibraryStatus(t("coordination.badUrl"), true);
+    return;
+  }
+  showLibraryStatus(t("coordination.checking"));
+  let library;
+  try {
+    const response = await fetch(url, { mode: "cors" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    library = await response.json();
+  } catch (error) {
+    console.error(error);
+    showLibraryStatus(t("coordination.unreachable"), true);
+    return;
+  }
+  if (!Array.isArray(library?.rows) || !library.rows.length) {
+    showLibraryStatus(t("coordination.notALibrary"), true);
+    return;
+  }
+  // Same-site libraries travel as a short relative path; others as the full address.
+  const ref = url.origin === window.location.origin
+    ? url.pathname.replace(new URL(".", window.location.href).pathname, "")
+    : url.href;
+  setLibrary(library, decodeURIComponent(url.pathname.split("/").pop()), ref);
+}
+
+function showLibraryStatus(text, isError = false) {
+  $("coordLibraryName").textContent = text;
+  $("coordLibraryName").classList.toggle("coord-warnings", isError);
+  if (isError) {
+    state.library = null;
+    state.libraryRef = null;
+    recompute();
+  }
+}
+
+function setLibrary(library, name, ref) {
   state.library = library;
   state.libraryName = name;
+  state.libraryRef = ref;
   recompute();
+}
+
+function participantLink(number) {
+  const url = new URL(window.location.pathname, window.location.origin);
+  url.searchParams.set("p", String(number));
+  if (state.libraryRef) url.searchParams.set("lib", state.libraryRef);
+  return url.href;
+}
+
+// One card per participant: number, form, QR code and the link itself.
+function renderLinks() {
+  const container = $("coordLinks");
+  container.replaceChildren();
+  const count = Math.min(200, Math.max(0, Math.floor(Number($("coordPeople").value) || 0)));
+  $("coordPrintBtn").disabled = !state.library || !count;
+  if (!state.library) {
+    $("coordLinksNote").textContent = t("coordination.linksNeedLibrary");
+    return;
+  }
+  $("coordLinksNote").textContent = state.libraryRef ? t("coordination.linksReady") : t("coordination.linksLocalFile");
+  for (let number = 1; number <= count; number += 1) {
+    const link = participantLink(number);
+    const form = number % 2 ? "A" : "B";
+    const card = document.createElement("article");
+    card.className = "coord-card";
+
+    const title = document.createElement("h3");
+    title.textContent = t("coordination.cardTitle", { n: number, form });
+    const qr = qrcode(0, "M");
+    qr.addData(link);
+    qr.make();
+    const image = document.createElement("img");
+    image.className = "coord-qr";
+    image.alt = t("coordination.qrAlt", { n: number });
+    image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(qr.createSvgTag({ cellSize: 4, margin: 8, scalable: true }))}`;
+    const hint = document.createElement("p");
+    hint.className = "coord-card-hint";
+    hint.append(marked(t("coordination.cardHint")));
+    const code = document.createElement("code");
+    code.textContent = link;
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "secondary-btn";
+    copy.textContent = t("coordination.copy");
+    copy.setAttribute("aria-label", t("coordination.copyLabel", { n: number }));
+    copy.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(link);
+      copy.textContent = t("coordination.copied");
+    });
+    card.append(title, image, hint, code, copy);
+    container.append(card);
+  }
 }
 
 function recompute() {
@@ -96,9 +203,13 @@ function trackRounds(coding) {
 }
 
 function render() {
-  $("coordLibraryName").textContent = state.library
-    ? `${state.library.config?.name || state.libraryName} · ${state.library.rows?.length ?? 0} ${t("coordination.items")}`
-    : t("coordination.noLibrary");
+  if (state.library) {
+    $("coordLibraryName").textContent = `${state.library.config?.name || state.libraryName} · ${state.library.rows?.length ?? 0} ${t("coordination.items")}`;
+    $("coordLibraryName").classList.remove("coord-warnings");
+  } else if (!$("coordLibraryName").classList.contains("coord-warnings")) {
+    $("coordLibraryName").textContent = t("coordination.noLibrary");
+  }
+  renderLinks();
 
   const agg = state.aggregate;
   const ready = Boolean(agg && agg.evaluations.length);

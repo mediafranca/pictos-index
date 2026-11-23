@@ -149,25 +149,61 @@
         <h1 id="coordTitle" tabindex="-1" data-i18n="coordination.title">Coordinar un panel</h1>
         <p class="hero-lead" data-i18n="coordination.lead">Cada persona evalúa en su propio navegador y descarga su evaluación. Aquí se reúnen esos archivos, se preparan las planillas para los jueces y se leen las planillas devueltas. Nada sale de este navegador.</p>
 
+        <section class="coord-how workspace-panel" aria-labelledby="coordHowTitle">
+          <h2 id="coordHowTitle" data-i18n="coordination.howTitle">Cómo funciona un panel</h2>
+          <ol>
+            <li data-i18n="coordination.how1">Elige la librería que se evaluará. Si no es una de ejemplo, tiene que estar **publicada en internet** (más abajo te decimos dónde).</li>
+            <li data-i18n="coordination.how2">Indica cuántas personas evaluarán. Cada una recibe **su propio enlace o código QR**, que se abre en un teléfono o en un computador. El enlace ya trae la librería: no hay que cargar nada.</li>
+            <li data-i18n="coordination.how3">Cada persona evalúa sola, a su ritmo. Al terminar, su navegador **descarga un archivo con sus respuestas**, que te envía por correo, WhatsApp u otro medio.</li>
+            <li data-i18n="coordination.how4">Reúne aquí esos archivos para ver los resultados y preparar la codificación.</li>
+          </ol>
+          <p class="muted" data-i18n="coordination.howPrivacy">No hay servidor ni base de datos: las respuestas van directamente de cada persona a ti.</p>
+        </section>
+
         <ol class="coord-steps">
           <li class="workspace-panel">
-            <h2 data-i18n="coordination.step1Title">1. Repartir los enlaces</h2>
-            <p data-i18n="coordination.step1Body">Envía a cada persona uno de estos enlaces, alternando las formas para que haya tantas A como B. Todas deben cargar la misma librería.</p>
-            <p><code id="coordLinkP"></code></p>
+            <h2 data-i18n="coordination.step1Title">1. Elegir la librería y repartir los enlaces</h2>
+            <label><span data-i18n="coordination.library">Librería del panel</span>
+              <select id="coordSampleSelect">
+                <option value="" data-i18n="coordination.chooseLibrary">Elige una librería…</option>
+                <option value="examples/restoran-graph-2026-11-23.json" data-i18n="library.exampleRestaurant">Almorzar en el restorán</option>
+                <option value="examples/transporte-graph-2026-11-23.json" data-i18n="library.exampleTransport">Viajar en transporte público</option>
+                <option value="examples/salud-graph-2026-11-23.json" data-i18n="library.exampleHealth">Consulta de salud</option>
+                <option value="url" data-i18n="coordination.publishedLibrary">Otra librería, publicada en internet</option>
+                <option value="file" data-i18n="coordination.ownLibrary">Otra librería, en este computador</option>
+              </select>
+            </label>
+            <div id="coordUrlRow" class="coord-url hidden">
+              <label><span data-i18n="coordination.libraryUrl">Dirección pública del archivo JSON</span>
+                <input id="coordLibraryUrl" type="url" inputmode="url" placeholder="https://…" />
+              </label>
+              <button id="coordUrlBtn" class="secondary-btn" type="button" data-i18n="coordination.useUrl">Usar esta dirección</button>
+            </div>
+            <input id="coordLibraryInput" class="hidden" type="file" accept=".json,application/json" aria-label="Archivo de la librería" data-i18n-aria-label="coordination.libraryFile" />
+            <p id="coordLibraryName" class="muted small" aria-live="polite"></p>
+            <details class="coord-instructions">
+              <summary data-i18n="coordination.whereTitle">¿Dónde publico mi librería?</summary>
+              <ul>
+                <li data-i18n="coordination.where1">La dirección tiene que entregar **el archivo JSON mismo**, no una página que lo muestre, y permitir que otra página lo lea.</li>
+                <li data-i18n="coordination.where2">**Funciona:** un repositorio de GitHub (abre el archivo y usa el botón «Raw»), un Gist de GitHub o un sitio en Netlify.</li>
+                <li data-i18n="coordination.where3">**No funciona:** Google Drive, Dropbox ni OneDrive, porque muestran una vista previa en vez del archivo.</li>
+                <li data-i18n="coordination.where4">**No cambies el archivo** mientras dure el panel: si cambia, las evaluaciones ya no se pueden comparar. En GitHub, usa la dirección de un commit concreto.</li>
+                <li data-i18n="coordination.where5">Una librería pesa varios megabytes (las de ejemplo, unos 20 MB). Para evaluar desde un teléfono, conviene usar wifi.</li>
+              </ul>
+            </details>
+
+            <label class="coord-inline"><span data-i18n="coordination.people">Personas que evaluarán</span>
+              <input id="coordPeople" type="number" min="1" max="200" value="8" />
+            </label>
+            <p id="coordLinksNote" class="muted small"></p>
+            <div id="coordLinks" class="coord-links"></div>
+            <div class="coord-actions">
+              <button id="coordPrintBtn" class="secondary-btn" type="button" disabled data-i18n="coordination.print">Imprimir tarjetas con código QR</button>
+            </div>
           </li>
 
           <li class="workspace-panel">
             <h2 data-i18n="coordination.step2Title">2. Reunir las evaluaciones</h2>
-            <label><span data-i18n="coordination.library">Librería evaluada</span>
-              <select id="coordSampleSelect">
-                <option value="" data-i18n="coordination.ownLibrary">Otra librería (cargar archivo)</option>
-                <option value="./examples/restoran-graph-2026-11-23.json" data-i18n="library.exampleRestaurant">Almorzar en el restorán</option>
-                <option value="./examples/transporte-graph-2026-11-23.json" data-i18n="library.exampleTransport">Viajar en transporte público</option>
-                <option value="./examples/salud-graph-2026-11-23.json" data-i18n="library.exampleHealth">Consulta de salud</option>
-              </select>
-            </label>
-            <input id="coordLibraryInput" type="file" accept=".json,application/json" aria-label="Archivo de la librería" data-i18n-aria-label="coordination.libraryFile" />
-            <p id="coordLibraryName" class="muted small"></p>
             <label><span data-i18n="coordination.evaluations">Evaluaciones descargadas por cada persona (JSON, puedes elegir varias)</span>
               <input id="coordEvalInput" type="file" accept=".json,application/json" multiple />
             </label>
@@ -397,6 +433,7 @@
         <div class="final-downloads">
           <button id="auditPdfBtn" class="primary-btn" type="button" data-i18n="audit.downloadPdf">Descargar informe PDF</button>
           <button id="auditExportBtn" class="secondary-btn" type="button" data-i18n="audit.downloadJson">Descargar datos JSON</button>
+          <button id="shareJsonBtn" class="primary-btn hidden" type="button" data-i18n="done.share">Enviar el archivo…</button>
         </div>
       </section>
       </section>

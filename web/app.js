@@ -29,6 +29,19 @@ const USE_ANSWERS = ["yes", "partly", "no", "cannot_judge"];
 // so handing out consecutive numbers balances the forms; ?forma=A|B still works.
 const URL_PARAMS = new URLSearchParams(window.location.search);
 const PARTICIPANT = /^[1-9]\d*$/.test(URL_PARAMS.get("p") || "") ? Number(URL_PARAMS.get("p")) : null;
+// ?lib=<address> brings the library with the link, so every evaluator of a panel
+// gets the same file without loading anything: a path on this site or a public
+// https address that allows cross-origin reads.
+const LIBRARY_URL = (() => {
+  const raw = URL_PARAMS.get("lib");
+  if (!raw) return null;
+  try {
+    const url = new URL(raw, window.location.href);
+    return url.protocol === "https:" || url.protocol === "http:" ? url : null;
+  } catch {
+    return null;
+  }
+})();
 const PROTOCOL_FORM = (() => {
   const form = URL_PARAMS.get("forma")?.toUpperCase();
   if (form === "A" || form === "B") return form;
@@ -75,6 +88,7 @@ async function init() {
   state.rubric = await loadRubric();
   loadEvaluatorProfile();
   updateStepLocks();
+  if (LIBRARY_URL && !isCoordinationRequested()) loadLinkedLibrary();
   if (isCoordinationRequested()) {
     initCoordination();
     el.homeScreen.classList.add("hidden");
@@ -95,7 +109,7 @@ function bindElements() {
     "questionPanel", "phraseLine", "evalImage", "guessStage", "guessText", "saveGuessBtn", "skipGuessBtn",
     "dimensionStage", "dimensionTitle", "dimensionDescription", "dimensionOptions",
     "useStage", "useScenario", "useReason", "evalBackBtn",
-    "doneIntro", "doneStatus", "auditExportBtn", "auditPdfBtn",
+    "doneIntro", "doneStatus", "auditExportBtn", "auditPdfBtn", "shareJsonBtn",
   ];
   ids.forEach((id) => { el[id] = document.getElementById(id); });
   el.sampleLibraryButtons = Array.from(document.querySelectorAll("[data-sample-path]"));
@@ -266,6 +280,25 @@ async function onLibraryFileChange(event) {
   }
 }
 
+// The panel's library comes with the link: fetch it now, while the person fills in
+// the first step, and do not offer to change it.
+async function loadLinkedLibrary() {
+  el.libraryLoader.classList.add("hidden");
+  el.replaceLibraryBtn.classList.add("hidden");
+  el.libraryStatus.classList.remove("sr-only");
+  el.libraryStatus.textContent = t("library.linkLoading");
+  try {
+    const response = await fetch(LIBRARY_URL, { mode: "cors" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    loadLibraryPayload(payload, decodeURIComponent(LIBRARY_URL.pathname.split("/").pop() || "library.json"));
+    el.libraryStatus.classList.add("sr-only");
+  } catch (error) {
+    console.error(error);
+    el.libraryStatus.textContent = t("library.linkError");
+  }
+}
+
 async function onLoadSampleLibrary(button) {
   const path = button.dataset.samplePath;
   if (!path) return;
@@ -333,8 +366,9 @@ function loadLibraryPayload(payload, fileName) {
   renderLibrarySummary();
   updateStepLocks();
   announce(t("library.successStatus", { count: state.items.length }));
-  // The button that loaded the library is now hidden: keep the focus on this step.
-  el.step2Title.focus({ preventScroll: true });
+  // The button that loaded the library is now hidden: keep the focus on this step
+  // (unless the library came with the link and the person is still on another step).
+  if (!el.step2.classList.contains("hidden")) el.step2Title.focus({ preventScroll: true });
 }
 
 // In the protocol the PDF report (six ratings per pictogram) does not apply.
@@ -1225,7 +1259,17 @@ function exportEvaluationJson() {
   const participant = PARTICIPANT ? `-p${PARTICIPANT}` : "";
   const outName = `${baseName}-pictos-index-eval${participant}-${completion}-${new Date().toISOString().slice(0, 10)}.json`;
   downloadJson(payload, outName);
+  offerShare(payload, outName);
   return outName;
+}
+
+// On phones a downloaded file is hard to find and send: where the browser can share
+// files, offer to send it straight away (mail, messaging…).
+function offerShare(payload, fileName) {
+  const file = new File([JSON.stringify(payload, null, 2)], fileName, { type: "application/json" });
+  if (!navigator.canShare?.({ files: [file] })) return;
+  el.shareJsonBtn.classList.remove("hidden");
+  el.shareJsonBtn.onclick = () => navigator.share({ files: [file], title: fileName }).catch(() => {});
 }
 
 function buildExportPayload() {
