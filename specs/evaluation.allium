@@ -1,5 +1,7 @@
 -- allium: 3
 -- evaluation.allium
+-- Status: describes the individual evaluation of version 3. It predates the
+--   panel protocol of version 4 (docs/protocol.md), which it does not cover.
 
 -- Scope: One person evaluating one pictogram library in the browser, from
 --   loading the library to exporting the result.

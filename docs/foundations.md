@@ -4,7 +4,7 @@ This document states what each dimension of the PICTOS Index draws on, what the 
 
 ## Status
 
-PICTOS Index is a prototype with two modes. In the **individual evaluation**, one evaluator interprets each pictogram and rates it on six ordinal dimensions (1–5). In the **panel protocol** ([protocol.md](protocol.md)), several evaluators split the library into a blind half and a sighted half, and judges code the blind interpretations. In both, the library is rated separately on formal coherence and visual grammar. None of this has been validated yet: the panel collects the data a reliability study needs (inter-rater agreement for the coding and for «¿Sirve aquí?»), but there are no studies of dimensional structure, norms or criterion validity.
+PICTOS Index is a prototype with two modes. In the **individual evaluation**, one evaluator interprets each pictogram and rates it on six ordinal dimensions (1–5). In the **panel protocol** ([protocol.md](protocol.md)), several evaluators split the library into a blind half and a sighted half, and judges code the blind interpretations. In both, the library is rated separately on formal coherence and visual grammar; in the panel, at the end, so the blind pass is answered without the set in view. The panel is the instrument under study; the six ratings of the individual evaluation come from version 3 and are kept as a review tool. The literature behind each aspect of the panel is summarised in [protocol.md](protocol.md#what-each-aspect-rests-on). None of this has been validated yet: the panel collects the data a reliability study needs (inter-rater agreement for the coding and for «¿Sirve aquí?»), but there are no studies of dimensional structure, norms or criterion validity.
 
 The literature below grounds the *constructs*. It does not validate the *instrument*.
 
@@ -12,7 +12,7 @@ The literature below grounds the *constructs*. It does not validate the *instrum
 
 | Dimension | Construct | Grounding in the literature | What the instrument records today | Known limitation |
 |---|---|---|---|---|
-| Clarity | Perceptual legibility of the graphic form | Graphic-symbol design and perceptual-quality testing (ISO 22727 for design requirements; ISO 9186-2 for perceptual quality) | A 1–5 judgement | Viewing size, screen and distance are not controlled or recorded; overlaps with cognitive accessibility |
+| Clarity | Perceptual legibility of the graphic form | Graphic-symbol design and perceptual-quality testing (ISO 22727 for design requirements; ISO 9186-2 for perceptual quality) | A 1–5 judgement | Viewing distance is not controlled; the display size is fixed and recorded only in the panel; overlaps with cognitive accessibility |
 | Recognizability | Identification of the referent | Iconicity terminology: transparency vs. translucency (Fuller & Lloyd, 1991); comprehension testing (ISO 9186-1); normative indices for ARASAAC pictograms (Díez et al., 2024); symbol norms (Prada et al., 2015) | A 1–5 judgement made **after** the source phrase is revealed | Strictly measures translucency, not transparency (see below) |
 | Semantic transparency | Correspondence between pictogram and the meaning of the target phrase | Fuller & Lloyd (1991); Díez et al. (2024) | A 1–5 judgement, also after the reveal | Shares the hindsight bias of recognizability; in the individual evaluation the blind interpretation is recorded but not scored (the panel protocol codes it) |
 | Pragmatic fit | Usefulness in real AAC communication | Communicative competence in AAC (Light & McNaughton, 2014); the field's current challenges (Light & McNaughton, 2012) | A 1–5 judgement | Bundles board utility, age/ability appropriateness and social adequacy |
@@ -35,7 +35,7 @@ In the AAC iconicity literature, *transparency* is the ability to guess a symbol
 ## What the current design cannot support
 
 - **The average.** The per-pictogram average treats ordinal ratings as interval data, weights the six dimensions equally without justification and lets a serious failure in one dimension be offset by others. It is provisional.
-- **Precision.** The individual evaluation, with one evaluator, no randomisation, no timing and no repeated items, gives no estimate of error. The panel protocol randomises order per person and measures agreement between judges, but still records no timing and no repeated items.
+- **Precision.** The individual evaluation, with one evaluator, no randomisation, no timing and no repeated items, gives no estimate of error. The panel protocol randomises order per person, records the time of each answer and the size the pictogram was shown at, measures agreement between judges (also on the comprehension rule) and gives each comprehension rate a Wilson interval, but has no repeated items yet.
 - **Suitability thresholds.** No score level means "suitable for AAC". Earlier scale labels that said so have been withdrawn.
 - **Comprehension thresholds.** Public-information symbol standards use comprehension criteria for adoption; the exact criterion, edition and method must be checked against the standard before any threshold is adopted here.
 

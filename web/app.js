@@ -1,5 +1,6 @@
 import { applyTranslations, getLocale, initI18n, marked, setLocale, t } from "./i18n.js";
 import { initCoordination, isCoordinationRequested } from "./coordination.js";
+import { libraryHash } from "./protocol.js";
 
 const DIMENSIONS = [
   { key: "clarity", code: "CLA" },
@@ -22,7 +23,11 @@ const LIBRARY_DIMENSIONS = ["coherence", "grammar"];
 // blind and rates half 2 with the phrase visible; form B does the reverse. The phrase
 // of a blind item is never revealed in the session, so the two constructs do not
 // contaminate each other. Without ?forma the app keeps the individual flow.
-const PROTOCOL_VERSION = "protocolo-experimental-0.2";
+// 0.3: the set is rated after the pictograms, so the blind pass is answered without
+// the whole library in view as a contrast set.
+const PROTOCOL_VERSION = "protocolo-experimental-0.3";
+// The consent text lives in locales/ (consent.*); change this version whenever it changes.
+const CONSENT_VERSION = "consentimiento-0.1";
 // Pass 2 asks a single question, "¿Sirve aquí?", instead of the six ratings.
 const USE_ANSWERS = ["yes", "partly", "no", "cannot_judge"];
 // ?p=<n> numbers the participant and derives the form from its parity (odd A, even B),
@@ -47,6 +52,7 @@ const PROTOCOL_FORM = (() => {
   if (form === "A" || form === "B") return form;
   return PARTICIPANT ? (PARTICIPANT % 2 ? "A" : "B") : null;
 })();
+const SET_LAST = Boolean(PROTOCOL_FORM);
 
 const state = {
   rubric: null,
@@ -110,7 +116,7 @@ function bindElements() {
     "homeScreen", "evaluatorShell", "startEvaluationBtn", "brandHome", "statusRegion", "languageSelect", "themeSelect",
     "stepBtn1", "stepBtn2", "stepBtn3", "stepBtn4", "step1", "step2", "step3", "step4",
     "step1Nav", "step2Nav", "step3Nav", "step2Title", "step2NextBtn", "setBackBtn", "evalNextBtn",
-    "evaluatorForm", "evalAacNoExperience",
+    "evaluatorForm", "evalAacNoExperience", "consentInput",
     "libraryFileInput", "libraryLoader", "libraryLoaded", "loadedLibraryName",
     "replaceLibraryBtn", "libraryStatus", "loadedLibraryContext", "loadedLibraryCount", "auditGrid", "setQuestionTitle", "setQuestionBody", "setOptions",
     "evalPosition", "evalProgressBar", "noticePanel", "noticeText", "noticeContext", "noticeBtn",
@@ -261,16 +267,24 @@ function announce(message) {
 }
 function updateStepLocks() {
   const hasProfile = isProfileComplete(state.evaluatorProfile);
-  const setReady = state.items.length > 0 && isLibraryAssessmentComplete();
-  const pictogramsComplete = setReady && countCompletedItems() === state.items.length;
+  const loaded = state.items.length > 0;
+  const setDone = loaded && isLibraryAssessmentComplete();
+  const pictogramsDone = loaded && countCompletedItems() === state.items.length;
 
-  el.stepBtn2.disabled = !hasProfile;
-  el.stepBtn3.disabled = !(hasProfile && setReady);
-  el.stepBtn4.disabled = !(hasProfile && pictogramsComplete);
+  // In the protocol the set comes after the pictograms; until then step 2 only loads the library.
+  document.body.classList.toggle("set-pending", SET_LAST && !pictogramsDone);
+  el.stepBtn2.disabled = !(hasProfile && (!SET_LAST || !loaded || pictogramsDone));
+  el.stepBtn3.disabled = !(hasProfile && (SET_LAST ? loaded : setDone));
+  el.stepBtn4.disabled = !(hasProfile && setDone && pictogramsDone);
+}
+
+function isSetPending() {
+  return SET_LAST && !(state.items.length > 0 && countCompletedItems() === state.items.length);
 }
 
 function isProfileComplete(profile) {
   if (!profile) return false;
+  if (PROTOCOL_FORM && profile.consent?.version !== CONSENT_VERSION) return false;
   return Array.isArray(profile.aacRelations) && profile.aacRelations.length > 0;
 }
 
@@ -357,6 +371,7 @@ function loadLibraryPayload(payload, fileName) {
     author: payload.config && (payload.config.credits || payload.config.author) ? (payload.config.credits || payload.config.author) : "",
     imageFormats,
     domainContext: String(payload.config?.domainContext || "").trim() || null,
+    contentHash: null,
     key: buildLibraryStorageKey(payload, items)
       + (PROTOCOL_FORM ? `:${PROTOCOL_VERSION}:${PROTOCOL_FORM}` : "")
       + (PARTICIPANT ? `:p${PARTICIPANT}` : ""),
@@ -371,6 +386,8 @@ function loadLibraryPayload(payload, fileName) {
   loadStoredEvaluations();
   if (!state.assessment) state.assessment = createAssessmentIdentity();
   if (PROTOCOL_FORM) applyProtocolPlan(payload);
+  const library = state.library;
+  libraryHash(payload.rows).then((hash) => { library.contentHash = hash; }).catch(() => {});
 
   state.setIndex = isLibraryAssessmentComplete() ? LIBRARY_DIMENSIONS.length - 1 : 0;
   renderLibrarySummary();
@@ -381,10 +398,14 @@ function loadLibraryPayload(payload, fileName) {
   if (!el.step2.classList.contains("hidden")) el.step2Title.focus({ preventScroll: true });
 }
 
-// In the protocol the PDF report (six ratings per pictogram) does not apply.
+// In the protocol the PDF report (six ratings per pictogram) does not apply, and the
+// set step moves after the pictograms: the stepper shows it third.
 function markProtocolMode() {
   document.body.classList.add("protocol-mode");
   el.doneIntro.dataset.i18n = "done.introProtocol";
+  document.getElementById("setIntro").dataset.i18n = "set.introEnd";
+  el.stepBtn2.firstElementChild.textContent = "3";
+  el.stepBtn3.firstElementChild.textContent = "2";
 }
 
 function applyProtocolPlan(payload) {
@@ -457,7 +478,7 @@ function parseLibraryPayload(payload) {
 
 function normalizeRowItem(row, index) {
   const id = String(row.id || row.sourceRowId || `ROW_${index + 1}`);
-  const utterance = String(row.UTTERANCE || row.utterance || row.prompt || t("evaluation.itemFallback", { number: index + 1 }));
+  const utterance = String(row.UTTERANCE || row.utterance || t("evaluation.itemFallback", { number: index + 1 }));
   const image = resolveRowImage(row);
   if (!image) return null;
   const category = String(row.NLU?.domain || row.domain || row.category || "").trim();
@@ -560,7 +581,7 @@ function utf8ToBase64(value) {
 function renderLibrarySummary() {
   if (!state.library) return;
   el.libraryStatus.textContent = t("library.successStatus", { count: state.items.length });
-  el.step2Title.textContent = t("set.title");
+  el.step2Title.textContent = t(isSetPending() ? "set.pendingTitle" : "set.title");
   el.libraryLoader.classList.add("hidden");
   el.libraryLoaded.classList.remove("hidden");
   el.loadedLibraryName.textContent = state.library.name || t("library.untitled");
@@ -585,11 +606,19 @@ function renderLibrarySummary() {
 function onEvaluatorSubmit(event) {
   event.preventDefault();
 
+  const previous = state.evaluatorProfile?.consent;
   const profile = {
     aacRelations: getSelectedAacRelations(),
     savedAt: new Date().toISOString(),
+    consent: el.consentInput.checked
+      ? (previous?.version === CONSENT_VERSION ? previous : { version: CONSENT_VERSION, acceptedAt: new Date().toISOString() })
+      : null,
   };
 
+  if (PROTOCOL_FORM && !profile.consent) {
+    alert(t("consent.required"));
+    return;
+  }
   if (!isProfileComplete(profile)) {
     alert(t("profile.required"));
     return;
@@ -599,7 +628,7 @@ function onEvaluatorSubmit(event) {
   localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
   persistEvaluations();
   updateStepLocks();
-  goToStep(2);
+  goToStep(SET_LAST && state.items.length ? 3 : 2);
 }
 
 function getSelectedAacRelations() {
@@ -663,9 +692,11 @@ function loadEvaluatorProfile() {
     const profile = {
       aacRelations: migrateLegacyAacRelations(storedProfile),
       savedAt: storedProfile.savedAt || null,
+      consent: storedProfile.consent?.version === CONSENT_VERSION ? storedProfile.consent : null,
     };
     state.evaluatorProfile = profile;
     setAacRelations(profile.aacRelations);
+    el.consentInput.checked = Boolean(profile.consent);
     localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
   } catch (error) {
     console.warn("No se pudo cargar perfil de evaluador.", error);
@@ -698,7 +729,8 @@ function firstSightedIndex() {
 // Resume at the first unanswered question of the first unfinished pictogram.
 function enterPictograms() {
   const pending = state.items.findIndex((item) => !isRecordComplete(state.evaluations.get(item.id)));
-  state.evalIndex = pending === -1 ? 0 : pending;
+  // With everything answered, the protocol reopens on the last (sighted) item, never on a blind one.
+  state.evalIndex = pending === -1 ? (PROTOCOL_FORM ? state.items.length - 1 : 0) : pending;
   state.qIndex = firstOpenQuestion(state.items[state.evalIndex]);
   renderCurrentEvalItem();
 }
@@ -745,6 +777,7 @@ function renderCurrentEvalItem() {
   }
 
   setImage(el.evalImage, item.imageSrc, `${t("evaluation.imageAlt")} ${item.id}`);
+  markShown(`${item.id}|${question}`);
   // A blind item's phrase never enters the DOM; otherwise it shows once the guess is in.
   const showPhrase = item.pass !== "blind" && question !== "guess";
   el.phraseLine.replaceChildren(showPhrase ? marked(t("evaluation.sourcePhraseLine", { phrase: item.utterance })) : "");
@@ -815,6 +848,25 @@ function renderLevelOptions(container, levels, selected, onPick, onAdvance, focu
   if (focus) (container.querySelector("input:checked") || container.querySelector("input"))?.focus({ preventScroll: true });
 }
 
+// Latency: from the moment the pictogram is decoded and on screen to the confirmation
+// of the answer, with the size it was shown at. Only the first confirmation counts; a
+// reload loses the start, and that answer goes without a time.
+let shown = null;
+let showing = null;
+function markShown(key) {
+  shown = null;
+  const token = {};
+  showing = token;
+  el.evalImage.decode().catch(() => {}).then(() => {
+    if (showing === token) shown = { key, at: performance.now(), px: Math.round(el.evalImage.getBoundingClientRect().height) };
+  });
+}
+
+function recordTiming(item, record, question) {
+  if (record.timing?.[question] || shown?.key !== `${item.id}|${question}`) return;
+  record.timing = { ...record.timing, [question]: { ms: Math.round(performance.now() - shown.at), imagePx: shown.px } };
+}
+
 function saveRecord(item, record) {
   record.updatedAt = new Date().toISOString();
   state.evaluations.set(item.id, record);
@@ -830,6 +882,7 @@ function saveGuess(skipped) {
   record.guess = skipped ? "" : guess;
   record.guessSkipped = skipped;
   record.guessUpdatedAt = new Date().toISOString();
+  recordTiming(item, record, "guess");
   saveRecord(item, record);
   nextQuestion();
 }
@@ -860,7 +913,13 @@ function showQuestionTop() {
 
 function nextQuestion() {
   const item = state.items[state.evalIndex];
-  if (!isQuestionAnswered(state.evaluations.get(item.id), questionsFor(item)[state.qIndex])) return;
+  const record = state.evaluations.get(item.id);
+  const question = questionsFor(item)[state.qIndex];
+  if (!isQuestionAnswered(record, question)) return;
+  if (question !== "guess" && !record.timing?.[question]) {
+    recordTiming(item, record, question);
+    saveRecord(item, record);
+  }
   if (state.qIndex < questionsFor(item).length - 1) {
     state.qIndex += 1;
   } else if (state.evalIndex < state.items.length - 1) {
@@ -869,12 +928,13 @@ function nextQuestion() {
   } else {
     const pending = state.items.findIndex((candidate) => !isRecordComplete(state.evaluations.get(candidate.id)));
     if (pending === -1) {
-      goToStep(4);
-      // In the protocol the JSON is what gets handed in: download it on finishing and say so.
-      if (PROTOCOL_FORM) {
-        const file = exportEvaluationJson();
-        el.doneStatus.textContent = t("done.downloaded", { file });
-        el.doneStatus.classList.remove("hidden");
+      if (SET_LAST && !isLibraryAssessmentComplete()) {
+        state.setIndex = 0;
+        renderLibrarySummary();
+        goToStep(2);
+        el.setOptions.querySelector("input")?.focus({ preventScroll: true });
+      } else {
+        finish();
       }
       return;
     }
@@ -883,6 +943,16 @@ function nextQuestion() {
   }
   renderCurrentEvalItem();
   showQuestionTop();
+}
+
+function finish() {
+  goToStep(4);
+  // In the protocol the JSON is what gets handed in: download it on finishing and say so.
+  if (PROTOCOL_FORM) {
+    const file = exportEvaluationJson();
+    el.doneStatus.textContent = t("done.downloaded", { file });
+    el.doneStatus.classList.remove("hidden");
+  }
 }
 
 // Going back never crosses from the second part of the protocol into the blind one.
@@ -983,17 +1053,28 @@ function renderSetQuestion(focus = true) {
 }
 
 function renderSetNext() {
+  if (isSetPending()) {
+    el.step2NextBtn.textContent = t("set.continue");
+    el.step2NextBtn.disabled = !state.items.length;
+    return;
+  }
   const last = state.setIndex === LIBRARY_DIMENSIONS.length - 1;
-  el.step2NextBtn.textContent = t(last ? "set.continue" : "nav.next");
+  el.step2NextBtn.textContent = t(last ? (SET_LAST ? "set.finish" : "set.continue") : "nav.next");
   el.step2NextBtn.disabled = last
     ? !isLibraryAssessmentComplete()
     : normalizeScore(state.libraryAssessment?.scores?.[LIBRARY_DIMENSIONS[state.setIndex]]) === null;
 }
 
 function changeSetQuestion(offset) {
+  if (isSetPending()) {
+    if (offset > 0 && state.items.length) goToStep(3);
+    return;
+  }
   const next = state.setIndex + offset;
   if (next >= LIBRARY_DIMENSIONS.length) {
-    if (isLibraryAssessmentComplete()) goToStep(3);
+    if (!isLibraryAssessmentComplete()) return;
+    if (SET_LAST) finish();
+    else goToStep(3);
     return;
   }
   if (next < 0) return;
@@ -1208,6 +1289,7 @@ function buildExportPayload() {
         ? { respuesta: record?.use || null, motivo: record?.useReason || "" }
         : null,
       category: item.category || null,
+      timing: record?.timing || null,
       comprension_pragmatica: {
         estado: record ? (record.guessSkipped ? "omitida" : record.guess ? "respondida" : "pendiente") : "pendiente",
         respuesta: record && record.guess ? record.guess : "",
@@ -1219,7 +1301,7 @@ function buildExportPayload() {
   });
 
   const payload = {
-    schemaVersion: "pictos-index-library-evaluation-1.5.0",
+    schemaVersion: "pictos-index-library-evaluation-1.6.0",
     instrumentVersion: APP_VERSION,
     exportedAt: new Date().toISOString(),
     uiLocale: getLocale(),
@@ -1227,6 +1309,11 @@ function buildExportPayload() {
     library: state.library,
     evaluator: state.evaluatorProfile,
     protocol: state.protocol || null,
+    // Conditions of presentation: each answer also carries the image size it was shown at.
+    presentation: {
+      devicePixelRatio: window.devicePixelRatio || 1,
+      viewport: [window.innerWidth, window.innerHeight],
+    },
     summary: buildSummary(),
     libraryAssessment: {
       scores: {

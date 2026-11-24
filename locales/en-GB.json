@@ -253,7 +253,7 @@
     "sheets": "Coded sheets (CSV, choose all of them)",
     "needTwoSheets": "At least two sheets are needed to compute agreement.",
     "sheetsUnreadable": "The sheets could not be read. Check that they are saved as CSV.",
-    "codingSummary": "{judges} judges. Agreement between judges (Krippendorff's nominal alpha): {alpha}. Answers with disagreement: {disagreements}.",
+    "codingSummary": "{judges} judges. Agreement between judges (Krippendorff's nominal alpha): {alpha}. On the comprehension rule: strict {strict}, lenient {lenient}. Answers with disagreement: {disagreements}.",
     "disagreements": "Disagreements to resolve",
     "phrase": "Phrase",
     "answer": "Answer",
@@ -313,7 +313,10 @@
   "set": {
     "title": "Look at the set",
     "intro": "Before seeing each pictogram on its own, look at them all together and answer two questions about the set.",
-    "continue": "Start with the pictograms"
+    "continue": "Start with the pictograms",
+    "pendingTitle": "Your library is ready",
+    "introEnd": "To finish, look at all the pictograms together and answer two questions about the set.",
+    "finish": "Finish and hand in"
   },
   "notice": {
     "continue": "Continue",
@@ -344,5 +347,13 @@
     "source": "Source code on GitHub",
     "label": "Links",
     "protocol": "Protocol guide"
+  },
+  "consent": {
+    "title": "Before you start",
+    "study": "You are taking part in a **study about pictograms**: you will say what you think some of them communicate and whether others work in a situation.",
+    "data": "**We do not ask for your name.** The file keeps your relationship with AAC, your answers, how long each one takes and the size of your screen.",
+    "withdraw": "**Taking part is voluntary.** You can stop whenever you like: if you do not send the file, there is no data. If you have already sent it, ask the coordinator to delete it.",
+    "accept": "I agree to take part and for my answers to be used in this study.",
+    "required": "To take part, tick that you agree."
   }
 }

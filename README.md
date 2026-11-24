@@ -58,8 +58,8 @@ La **[guía del protocolo](docs/protocolo.md)** lo explica paso a paso, con capt
 
 ## Cómo se recorre el instrumento
 
-1. **Tú.** La persona declara su relación con la Comunicación Aumentativa y Alternativa (CAA).
-2. **Conjunto.** Ve la librería completa, sin frases, y valora su coherencia formal y su gramática visual.
+1. **Tú.** La persona declara su relación con la Comunicación Aumentativa y Alternativa (CAA). En el panel, antes acepta el consentimiento.
+2. **Conjunto.** Ve la librería completa, sin frases, y valora su coherencia formal y su gramática visual. En el panel este paso va al final, para que la primera parte se responda sin el conjunto a la vista.
 3. **Pictogramas.** Una pregunta por pantalla. Primero escribe qué cree que comunica cada pictograma, sin conocer su frase. En la evaluación individual, después ve la frase y califica seis dimensiones; en el panel, responde la parte que le toca según su forma.
 4. **Entrega.** Descarga sus resultados. En el panel, el archivo se descarga solo y puede enviarse directamente desde el teléfono.
 
@@ -67,12 +67,15 @@ El avance queda guardado en el navegador, y el instrumento se puede usar por com
 
 ## Qué se mide
 
-- **Seis dimensiones por pictograma** (evaluación individual), de 1 a 5, cada nivel con su descripción: claridad, reconocibilidad, transparencia semántica, adecuación pragmática, adecuación cultural y accesibilidad cognitiva. Ver la [rúbrica](docs/rubric.md).
-- **Dos propiedades del conjunto:** coherencia formal y gramática visual. Se informan aparte y nunca se promedian con los pictogramas.
-- **Comprensión a ciegas** (panel): las interpretaciones escritas sin conocer la frase, codificadas por jueces.
-- **Utilidad situada** (panel): si el pictograma sirve para decir su frase en el contexto de uso declarado.
+El instrumento en estudio es el **panel**:
 
-Qué sustenta cada dimensión y qué no puede afirmar todavía el instrumento está en [fundamentos](docs/foundations.md).
+- **Comprensión a ciegas:** las interpretaciones escritas sin conocer la frase, codificadas por jueces. Se informa como tasa de acierto con su intervalo de confianza.
+- **Utilidad situada:** si el pictograma sirve para decir su frase en el contexto de uso declarado.
+- **Dos propiedades del conjunto:** coherencia formal y gramática visual. Se informan aparte y nunca se promedian con los pictogramas.
+
+La evaluación individual añade **seis dimensiones por pictograma**, de 1 a 5: claridad, reconocibilidad, transparencia semántica, adecuación pragmática, adecuación cultural y accesibilidad cognitiva (ver la [rúbrica](docs/rubric.md)). Viene de la versión 3 y sirve para revisar una librería, pero no es validable tal como está: se califica después de conocer la frase y con una sola persona.
+
+La [guía del protocolo](docs/protocolo.md#en-qué-se-apoya-cada-aspecto) dice en qué literatura se apoya cada aspecto; [fundamentos](docs/foundations.md) detalla los constructos y lo que el instrumento todavía no puede afirmar.
 
 ## Librerías de ejemplo
 

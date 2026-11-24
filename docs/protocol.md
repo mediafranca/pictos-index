@@ -5,7 +5,7 @@
 This guide explains how to evaluate a pictogram library with a group of people, each on their own phone or computer, and how to turn their answers into results. It is written for the person coordinating a panel; no programming is needed.
 
 > [!NOTE]
-> Status: experimental (`protocolo-experimental-0.2`), in PICTOS Index 4.x. There is no server and no database: each person answers in their browser, downloads a file with their answers and sends it to you.
+> Status: experimental (`protocolo-experimental-0.3`), since PICTOS Index 4.2. There is no server and no database: each person answers in their browser, downloads a file with their answers and sends it to you.
 
 ## In short
 
@@ -81,17 +81,19 @@ Each link looks like `…/pictos-index/?p=3&lib=…`: `p` is the person's number
 
 Each person scans their code with the phone camera, or opens the link on a computer. The library loads by itself and cannot be changed. Wi-Fi is advisable: a library is several megabytes (the sample ones, about 20 MB).
 
-1. **You.** They state their relationship with Augmentative and Alternative Communication (AAC).
-2. **The set.** They see the whole library as a grid without phrases and rate its formal coherence and visual grammar. Seeing the set reveals no phrase.
-3. **Part one: what does it mean?** For each pictogram in their blind half they write what they think it communicates, or choose "I do not know what it communicates". The phrase is not shown and is not in the page.
-4. **Part two: does it work here?** For each pictogram in the other half they see the phrase and answer whether it helps someone say it in that situation: *yes*, *with reservations*, *no* or *I cannot judge*, with an optional reason. Once part two has started, there is no going back to part one.
+1. **You.** They read the consent and accept it (they cannot go on without accepting), and state their relationship with Augmentative and Alternative Communication (AAC).
+2. **Part one: what does it mean?** For each pictogram in their blind half they write what they think it communicates, or choose "I do not know what it communicates". The phrase is not shown and is not in the page.
+3. **Part two: does it work here?** For each pictogram in the other half they see the phrase and answer whether it helps someone say it in that situation: *yes*, *with reservations*, *no* or *I cannot judge*, with an optional reason. Once part two has started, there is no going back to part one.
+4. **The set.** At the end they see the whole library as a grid without phrases and rate its formal coherence and visual grammar. It comes last so that part one is answered without the set in view: seeing all the pictograms together offers a contrast that helps guessing.
 5. **Submit.** On the last answer, the file with their answers **downloads by itself** and the screen names it. On most phones a "Send the file…" button also appears, which sends it straight to the coordinator by WhatsApp, email or other means.
 
 <p>
-  <img src="img/en-movil-conjunto.png" width="240" alt="The set step on a phone: the whole library, without phrases" />
   <img src="img/en-movil-parte1.png" width="240" alt="Part one on a phone: what does this pictogram communicate?, without the phrase" />
   <img src="img/en-movil-parte2.png" width="240" alt="Part two on a phone: does it work here?, with the phrase" />
+  <img src="img/en-movil-conjunto.png" width="240" alt="The set step on a phone: the whole library, without phrases" />
 </p>
+
+**The consent** says what is being studied, that no name is asked for, what the file keeps and how to withdraw: simply do not send the file or, if it has been sent, ask the coordinator to delete it. The current text is a draft: before a real panel, replace it with the one the ethics committee approves (keys `consent.*` in `locales/`) and change its version (`CONSENT_VERSION` in `web/app.js`). Each file keeps the accepted version and the time.
 
 If someone closes the browser halfway, opening their link again resumes where they left off.
 
@@ -126,12 +128,12 @@ They then save the sheet as CSV, with the same name, and send it back. The coord
 In step 3, load every returned sheet. The screen shows:
 
 - the problems in each sheet (missing or invalid codes);
-- **the agreement between judges** (Krippendorff's nominal alpha);
+- **the agreement between judges** (Krippendorff's nominal alpha), and also on the comprehension rule: strict (code 1 against the rest) and lenient (codes 1 and 2 against the rest);
 - the **disagreements to resolve**: answers the judges coded differently. They count as "unresolved" until the judges agree and correct their sheets.
 
 And it downloads:
 
-- **results per item** (CSV), one row per pictogram: its half, how many interpretations it had, how many received each code, the unresolved ones, the strict and lenient comprehension rates, and how often each "Does it work here?" option was chosen;
+- **results per item** (CSV), one row per pictogram: its half, how many interpretations it had, how many received each code, the unresolved ones, the settled ones, the strict and lenient comprehension rates with their 95 % confidence intervals, and how often each "Does it work here?" option was chosen;
 - the **coding report** (JSON) with all of the above.
 
 #### What counts as "understood"
@@ -141,7 +143,7 @@ This rule is fixed here, before any panel, so it cannot be chosen after seeing t
 - **Strict (primary result):** code 1 only.
 - **Lenient (secondary):** codes 1 and 2.
 
-Report the strict rate as the result and the lenient one beside it. They allow comparison with the acceptance criterion of ISO 9186-1 or with published comprehension indices.
+Report the strict rate as the result and the lenient one beside it, each **with its confidence interval** (Wilson, 1927). With few answers the interval is wide: with 10 answers, 70 % runs from 40 % to 89 %. Without the interval, the number suggests a precision the data do not have. The rates allow comparison with the acceptance criterion of ISO 9186-1 or with published comprehension indices.
 
 #### Which alpha to report
 
@@ -149,13 +151,16 @@ The alpha of the **first complete round** of sheets measures how reliable the co
 
 Codes are categories, not a scale: 6 is not "worse" than 5. Agreement is therefore reported with nominal alpha, and each pictogram with the distribution of its codes, not an average.
 
+Also report the alpha **on the rule**. Two judges can disagree between 3 and 4 without changing any comprehension rate; the alpha behind the reported result is the one on the strict rule (and the lenient one for the secondary result).
+
 ## What the app guarantees
 
 - **The same halves on every phone.** The split derives from the library, not from the session.
 - **A different order for each person** within each part, with a seed that is recorded.
-- **Blind phrases are not in the page.** During part one the phrase does not exist in the document (hiding it with styles would not be enough), and it is not in the exported file either.
-- **No going back** from part two to part one; after a reload, it resumes at the first unfinished pictogram.
-- **Every file is traceable:** it carries the person's number, form, protocol version and instrument version.
+- **Blind phrases are not in the page.** During part one the phrase does not exist in the document (hiding it with styles would not be enough), and it is not in the exported file either. It is in the library file the browser downloads: someone who knows the developer tools could find it. For a panel of people answering in good faith this is a minor risk, and it is declared.
+- **No going back** from part two to part one; after a reload, or when reopening the pictograms, it resumes in part two.
+- **Every answer carries its time** (from the moment the pictogram is on screen to the confirmation of the answer) and **the size it was shown at**. The pictogram is shown at a fixed size: 288 px high on wide screens and 160 px on phones. An answer resumed after reloading the page has no time.
+- **Every file is traceable:** it carries the person's number, form, the accepted consent, the protocol version, the instrument version and a **library fingerprint** (SHA-256 of every id, phrase and image). Coordination leaves out evaluations whose fingerprint does not match: two libraries with the same ids but other images are no longer confused.
 
 ## What it cannot claim
 
@@ -171,13 +176,58 @@ Without a participant number (`?p=`) or form (`?forma=`), the app offers the **i
 
 ## Details for whoever analyses the data
 
-- **Each person's file** (`pictos-index-library-evaluation-1.5.0`): `protocol` (version, form, participant number, seeds, both halves and the full sequence), `items[].pass` (`blind` or `sighted`), `items[].sirve_aqui` (`respuesta`: `yes`, `partly`, `no`, `cannot_judge`; and `motivo`), `libraryAssessment` (coherence and grammar) and `instrumentVersion`.
-- **Aggregate report** (`pictos-index-protocol-aggregate-0.2`): per item, the blind interpretations with form and position, and the "Does it work here?" answers with their distribution; plus the list of evaluations with their participant and the ordinal alpha.
-- **Coding report** (`pictos-index-coding-0.2`): judges, `agreement` (nominal alpha and `firstRound`), `round`, disagreements and, per item, distribution, unresolved and `comprehension` (`strict`, `lenient`).
+- **Each person's file** (`pictos-index-library-evaluation-1.6.0`): `protocol` (version, form, participant number, seeds, both halves and the full sequence), `evaluator.consent` (`version`, `acceptedAt`), `library.contentHash`, `presentation` (`devicePixelRatio`, `viewport`), `items[].pass` (`blind` or `sighted`), `items[].timing` (`guess` or `use`: `ms` and `imagePx`), `items[].sirve_aqui` (`respuesta`: `yes`, `partly`, `no`, `cannot_judge`; and `motivo`), `libraryAssessment` (coherence and grammar) and `instrumentVersion`.
+- **Aggregate report** (`pictos-index-protocol-aggregate-0.3`): per item, the blind interpretations with form and position, and the "Does it work here?" answers with their distribution; plus the list of evaluations with their participant, the library fingerprint (`libraryHash`) and the ordinal alpha.
+- **Coding report** (`pictos-index-coding-0.3`): judges, `agreement` (`alpha_nominal`, `alpha_strict`, `alpha_lenient` and `firstRound`), `round`, disagreements and, per item, distribution, unresolved and `comprehension` (`strict`, `lenient`, `settled` and their intervals `strict_ci95`, `lenient_ci95`).
+- **Changes since protocol version 0.2:** the set is rated at the end; consent, times, presentation size and the fingerprint are added. Coordination does not mix evaluations from different protocol versions.
 - The same can be done from the command line (see [development](development.md)).
+
+## What each aspect rests on
+
+| Aspect | What the protocol does | Grounding |
+|---|---|---|
+| Transparency ("What does it mean?") | Free interpretation, without the phrase | Transparency as distinct from translucency: Fuller & Lloyd (1991). Comprehension testing with open answers: ISO 9186-1. Transparency norms for 1,525 ARASAAC pictograms, the natural point of comparison: Díez et al. (2024) |
+| Use with the phrase ("Does it work here?") | A judgement of use in a situation, with the phrase in view | What is asked once the meaning is known is translucency (Fuller & Lloyd, 1991). Communicative competence depends on the person, partner, task and context (Light, 1989; Light & McNaughton, 2014). "Does it work here?" is PICTOS Index's own wording, not a published scale |
+| Forms A and B | Each pictogram blind for half the panel and with its phrase for the other half | Own design, motivated by the transparency–translucency distinction: someone who already knows the meaning cannot give a blind judgement |
+| Coding the interpretations | Six codes, from "correct" to "no answer" | Ramírez (2018), adapting comprehension-test procedures for graphic symbols |
+| Agreement between judges and between people | Krippendorff's nominal (codes) and ordinal ("Does it work here?") alpha; fixed first round | Krippendorff (2004, 2011) |
+| Comprehension rule and intervals | Strict and lenient, fixed before the data, with a Wilson interval | Wilson (1927); acceptance criteria in ISO 9186-1 |
+| Relationship with AAC | Recorded to stratify, never averaged | Symbol perception varies with culture, language and the respondent's profile (Huer, 2000; Haupt & Alant, 2002; Dada, Huguet & Bornman, 2013; Kang, Kim & Yeon, 2019) |
+| Formal coherence and visual grammar of the set | Two ratings from 1 to 5, at the end | The design tradition of sign systems; no validated measure has been identified, and this is stated |
+| What the protocol does not measure | Learnability and effectiveness in a real conversation | They require repeated exposures or a task with a partner (Mizuko, 1987; Alant et al., 2013; Light & McNaughton, 2014): separate studies |
+
+Each construct and its limits are detailed in [foundations.md](foundations.md).
 
 ## References
 
+Verified by DOI in OpenAlex. ISO standards are given by title for orientation; their edition has not been checked.
+
+Alant, E., Zheng, W., Harty, M., & Lloyd, L. L. (2013). Translucency ratings of Blissymbols over repeated exposures by children with autism. *Augmentative and Alternative Communication*, 29(3), 272–283. https://doi.org/10.3109/07434618.2013.813967
+
+Dada, S., Huguet, A., & Bornman, J. (2013). The iconicity of picture communication symbols for children with English additional language and mild intellectual disability. *Augmentative and Alternative Communication*, 29(4), 360–373. https://doi.org/10.3109/07434618.2013.849753
+
+Díez, E., Díez-Álamo, A. M., Alonso, M. Á., Wojcik, D. Z., & Fernández, Á. (2024). Transparency and translucency indices for 1,525 pictograms from the Aragonese Portal of Augmentative and Alternative Communication. *Frontiers in Psychology*, 15, 1467796. https://doi.org/10.3389/fpsyg.2024.1467796
+
+Fuller, D. R., & Lloyd, L. L. (1991). Toward a common usage of iconicity terminology. *Augmentative and Alternative Communication*, 7(3), 215–220. https://doi.org/10.1080/07434619112331275913
+
+Haupt, L., & Alant, E. (2002). The iconicity of picture communication symbols for rural Zulu children. *South African Journal of Communication Disorders*, 49(1), 40–49. https://doi.org/10.4102/sajcd.v49i1.216
+
+Huer, M. B. (2000). Examining perceptions of graphic symbols across cultures: Preliminary study of the impact of culture/ethnicity. *Augmentative and Alternative Communication*, 16(3), 180–185. https://doi.org/10.1080/07434610012331279034
+
+ISO 9186-1. Graphical symbols — Test methods — Part 1: Method for testing comprehensibility.
+
+Kang, R., Kim, Y. T., & Yeon, S. J. (2019). Cultural differences on the recognition of social word AAC graphic symbols between Korean and American undergraduate students. *Communication Sciences & Disorders*, 24(1), 71–86. https://doi.org/10.12963/csd.18542
+
+Krippendorff, K. (2004). Reliability in content analysis: Some common misconceptions and recommendations. *Human Communication Research*, 30(3), 411–433. https://doi.org/10.1111/j.1468-2958.2004.tb00738.x
+
 Krippendorff, K. (2011). *Computing Krippendorff's alpha-reliability*. Annenberg School for Communication, University of Pennsylvania. https://repository.upenn.edu/asc_papers/43
 
+Light, J. (1989). Toward a definition of communicative competence for individuals using augmentative and alternative communication systems. *Augmentative and Alternative Communication*, 5(2), 137–144. https://doi.org/10.1080/07434618912331275126
+
+Light, J., & McNaughton, D. (2014). Communicative competence for individuals who require augmentative and alternative communication: A new definition for a new era of communication? *Augmentative and Alternative Communication*, 30(1), 1–18. https://doi.org/10.3109/07434618.2014.885080
+
+Mizuko, M. (1987). Transparency and ease of learning of symbols represented by Blissymbols, PCS, and Picsyms. *Augmentative and Alternative Communication*, 3(3), 129–136. https://doi.org/10.1080/07434618712331274409
+
 Ramírez M., R. (2018). El desempeño de íconos como herramienta gráfica para comunicar la emergencia. *Revista de Estudios Latinoamericanos sobre Reducción del Riesgo de Desastres REDER*, 2(1), 71–87. https://doi.org/10.55467/reder.v2i1.12
+
+Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. *Journal of the American Statistical Association*, 22(158), 209–212. https://doi.org/10.1080/01621459.1927.10502953

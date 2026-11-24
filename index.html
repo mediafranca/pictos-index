@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b0613" />
     <!-- The instrument version (SemVer): shown in the header and stamped on every export. Keep in step with package.json. -->
-    <meta name="pictos-index-version" content="4.1.2" />
+    <meta name="pictos-index-version" content="4.2.0" />
     <meta
       name="description" data-i18n-content="meta.description"
       content="PICTOS Index es un instrumento para evaluar la calidad comunicativa de librerías pictográficas."
@@ -309,6 +309,17 @@
         <p class="muted" data-i18n="profile.help">Puedes marcar más de una opción.</p>
 
         <form id="evaluatorForm" class="evaluator-grid">
+          <fieldset class="consent-box full-width">
+            <legend data-i18n="consent.title">Antes de empezar</legend>
+            <p data-i18n="consent.study">Participas en un **estudio sobre pictogramas**: dirás qué crees que comunican algunos y si otros sirven en una situación.</p>
+            <p data-i18n="consent.data">**No pedimos tu nombre.** El archivo guarda tu relación con la CAA, tus respuestas, cuánto tardas en cada una y el tamaño de tu pantalla.</p>
+            <p data-i18n="consent.withdraw">**Participar es voluntario.** Puedes dejarlo cuando quieras: si no envías el archivo, no hay datos. Si ya lo enviaste, pide a quien coordina que lo borre.</p>
+            <label class="consent-accept">
+              <input id="consentInput" type="checkbox" />
+              <span data-i18n="consent.accept">Acepto participar y que mis respuestas se usen en este estudio.</span>
+            </label>
+          </fieldset>
+
           <fieldset class="relation-fieldset full-width">
             <legend class="sr-only" data-i18n="profile.legend">Relación o experiencia con la CAA</legend>
             <div class="relation-options">
@@ -395,7 +406,7 @@
             <button id="replaceLibraryBtn" class="link-btn" type="button" data-i18n="library.change">Cambiar librería</button>
           </p>
           <p id="loadedLibraryContext" class="library-context"></p>
-          <p class="muted" data-i18n="set.intro">Antes de ver cada pictograma por separado, míralos todos juntos.</p>
+          <p id="setIntro" class="muted" data-i18n="set.intro">Antes de ver cada pictograma por separado, míralos todos juntos.</p>
           <div id="auditGrid" class="audit-grid"></div>
           <p id="loadedLibraryCount" class="muted small library-count"></p>
 

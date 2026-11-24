@@ -58,8 +58,8 @@ The **[protocol guide](docs/protocol.md)** explains it step by step, with screen
 
 ## How the instrument runs
 
-1. **You.** The person states their relationship with Augmentative and Alternative Communication (AAC).
-2. **The set.** They see the whole library, without phrases, and rate its formal coherence and visual grammar.
+1. **You.** The person states their relationship with Augmentative and Alternative Communication (AAC). In a panel, they first accept the consent.
+2. **The set.** They see the whole library, without phrases, and rate its formal coherence and visual grammar. In a panel this step comes last, so that part one is answered without the set in view.
 3. **Pictograms.** One question per screen. First they write what they think each pictogram communicates, without knowing its phrase. In the individual evaluation, they then see the phrase and rate six dimensions; in a panel, they answer the part their form assigns.
 4. **Submit.** They download their results. In a panel, the file downloads by itself and can be sent straight from the phone.
 
@@ -67,12 +67,15 @@ Progress is saved in the browser, and the instrument can be used entirely with t
 
 ## What is measured
 
-- **Six dimensions per pictogram** (individual evaluation), from 1 to 5, each level with its description: clarity, recognisability, semantic transparency, pragmatic fit, cultural adequacy and cognitive accessibility. See the [rubric](docs/rubric.md).
-- **Two properties of the set:** formal coherence and visual grammar. They are reported separately and never averaged with the pictograms.
-- **Blind comprehension** (panel): interpretations written without knowing the phrase, coded by judges.
-- **Situated usefulness** (panel): whether the pictogram works for saying its phrase in the declared context of use.
+The instrument under study is the **panel**:
 
-What grounds each dimension, and what the instrument cannot yet claim, is in [foundations](docs/foundations.md).
+- **Blind comprehension:** interpretations written without knowing the phrase, coded by judges. Reported as a rate with its confidence interval.
+- **Situated usefulness:** whether the pictogram works for saying its phrase in the declared context of use.
+- **Two properties of the set:** formal coherence and visual grammar. They are reported separately and never averaged with the pictograms.
+
+The individual evaluation adds **six dimensions per pictogram**, from 1 to 5: clarity, recognisability, semantic transparency, pragmatic fit, cultural adequacy and cognitive accessibility (see the [rubric](docs/rubric.md)). It comes from version 3 and is useful for reviewing a library, but it cannot be validated as it stands: it is rated after the phrase is known, by a single person.
+
+The [protocol guide](docs/protocol.md#what-each-aspect-rests-on) says what literature each aspect rests on; [foundations](docs/foundations.md) details the constructs and what the instrument cannot yet claim.
 
 ## Sample libraries
 

@@ -66,6 +66,31 @@ export function krippendorffAlpha(units, level = "ordinal") {
   return expected === 0 ? null : 1 - ((n - 1) * observed) / expected;
 }
 
+/** Wilson score interval for k successes in n trials (95 % by default). */
+export function wilson(k, n, z = 1.959964) {
+  if (!n) return null;
+  const p = k / n;
+  const d = 1 + (z * z) / n;
+  const c = (p + (z * z) / (2 * n)) / d;
+  const h = (z * Math.sqrt((p * (1 - p)) / n + (z * z) / (4 * n * n))) / d;
+  return [Math.round((c - h) * 1000) / 1000, Math.round((c + h) * 1000) / 1000];
+}
+
+/**
+ * SHA-256 over what each row shows and means (id, phrase, image), so two libraries
+ * with the same ids but other images or phrases are told apart. The app stamps it on
+ * every export; the aggregator requires all evaluations to share it.
+ */
+export async function libraryHash(rows = []) {
+  const basis = rows.map((row, index) => [
+    row.id || row.sourceRowId || `ROW_${index + 1}`,
+    row.UTTERANCE || row.utterance || "",
+    row.bitmap || row.rawSvg || row.structuredSvg || "",
+  ].join("\u0000")).join("\u0001");
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(basis));
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 export function aggregate(library, exports) {
   const rows = library.rows || [];
   const byId = new Map(rows.map((row) => [String(row.id), row]));
@@ -85,6 +110,9 @@ export function aggregate(library, exports) {
     const p = data.protocol;
     if (p.version !== reference.version || p.partitionSeed !== reference.partitionSeed) {
       warnings.push(`${file}: different protocol version or split, excluded`); return false;
+    }
+    if ((data.library?.contentHash ?? null) !== (valid[0].data.library?.contentHash ?? null)) {
+      warnings.push(`${file}: library content differs from the first evaluation, excluded`); return false;
     }
     return true;
   });
@@ -133,9 +161,10 @@ export function aggregate(library, exports) {
   };
 
   return {
-    schema: "pictos-index-protocol-aggregate-0.2",
+    schema: "pictos-index-protocol-aggregate-0.3",
     generated_at: new Date().toISOString(),
     protocol: { version: reference.version, partitionSeed: reference.partitionSeed },
+    libraryHash: valid[0].data.library?.contentHash ?? null,
     library: { name: library.config?.name ?? null, domainContext: library.config?.domainContext ?? null, items: rows.length },
     forms,
     coding_scheme: CODING_SCHEME,
@@ -234,6 +263,12 @@ export function mergeCoding(aggregate, sheets) {
 
   const units = rows.map((row) => judges.map((judge) => judge.codes.get(row.id)).filter((code) => code !== undefined));
   const alpha = krippendorffAlpha(units, "nominal");
+  // The alpha that matters for the reported result is the one on the decision rule:
+  // two judges who split 3 against 4 change no comprehension rate.
+  const ruleAlpha = (hit) => {
+    const value = krippendorffAlpha(units.map((codes) => codes.map((code) => (hit(code) ? 1 : 0))), "nominal");
+    return value === null ? null : Math.round(value * 1000) / 1000;
+  };
   const disagreements = rows
     .map((row, i) => ({ row, codes: Object.fromEntries(judges.map((judge) => [judge.name, judge.codes.get(row.id) ?? null])), values: units[i] }))
     .filter(({ values }) => new Set(values).size > 1)
@@ -253,18 +288,28 @@ export function mergeCoding(aggregate, sheets) {
     // rule (code 1) is primary, the lenient one (codes 1 + 2) secondary; see docs/protocol.md.
     const settled = item.blind.length - unresolved;
     const rate = (count) => (settled ? Math.round((count / settled) * 1000) / 1000 : null);
+    const strict = distribution[1];
+    const lenient = distribution[1] + distribution[2];
     return {
       itemId: item.itemId, utterance: item.utterance, answers: item.blind.length, distribution, unresolved,
-      comprehension: { strict: rate(distribution[1]), lenient: rate(distribution[1] + distribution[2]) },
+      comprehension: {
+        strict: rate(strict), lenient: rate(lenient), settled,
+        strict_ci95: wilson(strict, settled), lenient_ci95: wilson(lenient, settled),
+      },
     };
   });
 
   return {
-    schema: "pictos-index-coding-0.2",
+    schema: "pictos-index-coding-0.3",
     generated_at: new Date().toISOString(),
     coding_scheme: CODING_SCHEME,
     judges: judges.map(({ name, codes, problems }) => ({ name, coded: codes.size, problems })),
-    agreement: { alpha_nominal: alpha === null ? null : Math.round(alpha * 1000) / 1000, answers: rows.length, pairable: units.filter((u) => u.length >= 2).length },
+    agreement: {
+      alpha_nominal: alpha === null ? null : Math.round(alpha * 1000) / 1000,
+      alpha_strict: ruleAlpha((code) => code === 1),
+      alpha_lenient: ruleAlpha((code) => code <= 2),
+      answers: rows.length, pairable: units.filter((u) => u.length >= 2).length,
+    },
     disagreements,
     items,
   };
@@ -274,14 +319,18 @@ export function mergeCoding(aggregate, sheets) {
 export function resultsCsv(aggregate, coding = null) {
   const codes = Object.keys(CODING_SCHEME.codes);
   const head = ["item", "frase", "mitad", "interpretaciones",
-    ...(coding ? [...codes.map((c) => `codigo_${c}`), "sin_resolver", "acierto_estricto", "acierto_laxo"] : []),
+    ...(coding ? [...codes.map((c) => `codigo_${c}`), "sin_resolver", "resueltas",
+      "acierto_estricto", "estricto_ic95_inf", "estricto_ic95_sup",
+      "acierto_laxo", "laxo_ic95_inf", "laxo_ic95_sup"] : []),
     "sirve_si", "sirve_con_reservas", "sirve_no", "no_puede_juzgar"];
   const byItem = new Map((coding?.items || []).map((item) => [item.itemId, item]));
   const lines = aggregate.items.map((item) => {
     const coded = byItem.get(item.itemId);
     return [item.itemId, item.utterance ?? "", item.half ?? "", item.blind.length,
       ...(coding ? [...codes.map((c) => coded?.distribution[c] ?? 0), coded?.unresolved ?? 0,
-        coded?.comprehension.strict ?? "", coded?.comprehension.lenient ?? ""] : []),
+        coded?.comprehension.settled ?? "",
+        coded?.comprehension.strict ?? "", ...(coded?.comprehension.strict_ci95 ?? ["", ""]),
+        coded?.comprehension.lenient ?? "", ...(coded?.comprehension.lenient_ci95 ?? ["", ""])] : []),
       ...USE_ANSWERS.map((a) => item.use.distribution[a])];
   });
   return `\uFEFF${[head, ...lines].map((row) => row.map(quote).join(";")).join("\r\n")}\r\n`;

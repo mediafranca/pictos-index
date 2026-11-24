@@ -253,7 +253,7 @@
     "sheets": "Planillas codificadas (CSV, elige todas)",
     "needTwoSheets": "Se necesitan al menos dos planillas para calcular el acuerdo.",
     "sheetsUnreadable": "No se pudieron leer las planillas. Revisa que estén guardadas como CSV.",
-    "codingSummary": "{judges} jueces. Acuerdo entre jueces (alfa de Krippendorff nominal): {alpha}. Respuestas con desacuerdo: {disagreements}.",
+    "codingSummary": "{judges} jueces. Acuerdo entre jueces (alfa de Krippendorff nominal): {alpha}. Sobre la regla de comprensión: estricta {strict}, laxa {lenient}. Respuestas con desacuerdo: {disagreements}.",
     "disagreements": "Desacuerdos por resolver",
     "phrase": "Frase",
     "answer": "Respuesta",
@@ -313,7 +313,10 @@
   "set": {
     "title": "Mira el conjunto",
     "intro": "Antes de ver cada pictograma por separado, míralos todos juntos y responde dos preguntas sobre el conjunto.",
-    "continue": "Comenzar con los pictogramas"
+    "continue": "Comenzar con los pictogramas",
+    "pendingTitle": "Tu librería está lista",
+    "introEnd": "Para terminar, mira todos los pictogramas juntos y responde dos preguntas sobre el conjunto.",
+    "finish": "Terminar y entregar"
   },
   "notice": {
     "continue": "Continuar",
@@ -344,5 +347,13 @@
     "source": "Código fuente en GitHub",
     "label": "Enlaces",
     "protocol": "Guía del protocolo"
+  },
+  "consent": {
+    "title": "Antes de empezar",
+    "study": "Participas en un **estudio sobre pictogramas**: dirás qué crees que comunican algunos y si otros sirven en una situación.",
+    "data": "**No pedimos tu nombre.** El archivo guarda tu relación con la CAA, tus respuestas, cuánto tardas en cada una y el tamaño de tu pantalla.",
+    "withdraw": "**Participar es voluntario.** Puedes dejarlo cuando quieras: si no envías el archivo, no hay datos. Si ya lo enviaste, pide a quien coordina que lo borre.",
+    "accept": "Acepto participar y que mis respuestas se usen en este estudio.",
+    "required": "Para participar, marca que aceptas."
   }
 }

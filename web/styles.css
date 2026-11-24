@@ -302,13 +302,26 @@ textarea { min-height: 9rem; resize: vertical; }
 .relation-option input { width: 1.15rem; height: 1.15rem; flex: 0 0 auto; margin-top: .05rem; accent-color: var(--violet); }
 .relation-none { grid-column: 1 / -1; }
 /* An aside, not another option: plain text, no box. */
+/* Consent: only in the panel protocol, before the profile. */
+.consent-box { display: none; min-width: 0; margin: 0 0 .5rem; padding: .9rem 1rem; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.protocol-mode .consent-box { display: block; }
+.consent-box legend { padding: 0 .3rem; color: var(--ink); font-weight: 700; }
+.consent-box p { margin: .35rem 0; color: var(--ink-soft); font-size: .9rem; line-height: 1.55; }
+.evaluator-grid .consent-accept { display: flex; gap: .55rem; align-items: flex-start; margin-top: .7rem; font-weight: 600; }
+.consent-accept input { flex: none; margin-top: .2rem; }
+/* Protocol: the set step comes third and, until the pictograms are done, only shows the library. */
+.protocol-mode #stepBtn2 { order: 3; }
+.protocol-mode #stepBtn3 { order: 2; }
+.protocol-mode #stepBtn4 { order: 4; }
+.set-pending #setIntro, .set-pending #auditGrid, .set-pending #setQuestion, .set-pending #setBackBtn { display: none; }
 .data-notice { margin: .25rem 0 0; color: var(--muted); font-size: .84rem; line-height: 1.55; }
 .data-notice strong { color: var(--ink-soft); }
 .real-phrase { margin: .25rem 0 0; color: var(--muted); font-size: clamp(1.05rem, 1.8vw, 1.3rem); font-weight: 400; }
 .real-phrase strong { color: var(--ink); font-weight: 700; }
 .workspace-panel { min-height: clamp(18rem, 39vh, 23rem); padding: .8rem; }
 .stage-image-card { display: grid; place-items: start center; }
-.stage-image { height: clamp(16rem, 36vh, 21.4rem); }
+/* A fixed display size, the same in both passes; each answer records the size it was shown at. */
+.stage-image { height: 18rem; }
 .stage-input-card .eyebrow { margin-bottom: .75rem; }
 .pragmatic-actions, .screen-actions {
   margin-top: .75rem; display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap;
@@ -431,7 +444,7 @@ textarea { min-height: 9rem; resize: vertical; }
 @media (max-width: 960px) {
   .question-panel { grid-template-columns: 1fr; }
   .question-panel > .stage-image-card { top: 0; z-index: 2; min-height: 0; padding: .4rem; box-shadow: 0 8px 18px rgb(0 0 0 / .18); }
-  .question-panel .stage-image { height: clamp(7rem, 24vh, 10rem); padding: .4rem; }
+  .question-panel .stage-image { height: 10rem; padding: .4rem; }
   .level-option { grid-template-columns: auto auto minmax(0, 1fr); gap: .5rem; padding: .5rem .6rem; }
 }
 .done-status { margin: .75rem 0 0; padding: .8rem 1rem; border-left: 3px solid var(--ok); background: var(--surface-raised); color: var(--ink); font-weight: 650; overflow-wrap: anywhere; }

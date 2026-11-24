@@ -5,7 +5,7 @@
 Esta guía explica cómo evaluar una librería de pictogramas con un grupo de personas, cada una desde su teléfono o computador, y cómo convertir sus respuestas en resultados. Está pensada para quien coordina un panel; no hace falta saber programar.
 
 > [!NOTE]
-> Estado: experimental (`protocolo-experimental-0.2`), en PICTOS Index 4.x. No hay servidor ni base de datos: cada persona responde en su navegador, descarga un archivo con sus respuestas y te lo envía.
+> Estado: experimental (`protocolo-experimental-0.3`), desde PICTOS Index 4.2. No hay servidor ni base de datos: cada persona responde en su navegador, descarga un archivo con sus respuestas y te lo envía.
 
 ## En breve
 
@@ -81,17 +81,19 @@ Cada enlace tiene la forma `…/pictos-index/?p=3&lib=…`: `p` es el número de
 
 Cada persona escanea su código con la cámara del teléfono, o abre el enlace en un computador. La librería se carga sola y no se puede cambiar. Conviene usar wifi: una librería pesa varios megabytes (las de ejemplo, unos 20 MB).
 
-1. **Tú.** Declara su relación con la Comunicación Aumentativa y Alternativa (CAA).
-2. **Conjunto.** Ve la librería completa, como grilla y sin frases, y valora su coherencia formal y su gramática visual. Ver el conjunto no revela ninguna frase.
-3. **Primera parte: ¿qué significa?** Para cada pictograma de su mitad a ciegas escribe qué cree que comunica, o marca «No sé qué comunica». La frase no se muestra ni está en la página.
-4. **Segunda parte: ¿sirve aquí?** Para cada pictograma de la otra mitad ve la frase y responde si le sirve a alguien para decirla en esa situación: *sí*, *con reservas*, *no* o *no puedo juzgarlo*, con un motivo opcional. Una vez empezada la segunda parte no se puede volver a la primera.
+1. **Tú.** Lee el consentimiento y lo acepta (sin aceptarlo no puede seguir), y declara su relación con la Comunicación Aumentativa y Alternativa (CAA).
+2. **Primera parte: ¿qué significa?** Para cada pictograma de su mitad a ciegas escribe qué cree que comunica, o marca «No sé qué comunica». La frase no se muestra ni está en la página.
+3. **Segunda parte: ¿sirve aquí?** Para cada pictograma de la otra mitad ve la frase y responde si le sirve a alguien para decirla en esa situación: *sí*, *con reservas*, *no* o *no puedo juzgarlo*, con un motivo opcional. Una vez empezada la segunda parte no se puede volver a la primera.
+4. **Conjunto.** Al final ve la librería completa, como grilla y sin frases, y valora su coherencia formal y su gramática visual. Va al final para que la primera parte se responda sin el conjunto a la vista: ver todos los pictogramas juntos ofrece un contraste que ayuda a adivinar.
 5. **Entrega.** Al responder la última pregunta, el archivo con sus respuestas **se descarga solo** y la pantalla dice su nombre. En la mayoría de los teléfonos aparece además «Enviar el archivo…», que lo manda directamente por WhatsApp, correo u otro medio a quien coordina.
 
 <p>
-  <img src="img/es-movil-conjunto.png" width="240" alt="Paso Conjunto en un teléfono: la librería completa, sin frases" />
   <img src="img/es-movil-parte1.png" width="240" alt="Primera parte en un teléfono: ¿qué comunica este pictograma?, sin la frase" />
   <img src="img/es-movil-parte2.png" width="240" alt="Segunda parte en un teléfono: ¿sirve aquí?, con la frase" />
+  <img src="img/es-movil-conjunto.png" width="240" alt="Paso Conjunto en un teléfono: la librería completa, sin frases" />
 </p>
+
+**El consentimiento** dice qué se estudia, que no se pide el nombre, qué guarda el archivo y cómo retirarse: basta con no enviar el archivo o, si ya se envió, pedir a quien coordina que lo borre. El texto actual es un borrador: antes de un panel real, reemplázalo por el que apruebe el comité de ética (claves `consent.*` en `locales/`) y cambia su versión (`CONSENT_VERSION` en `web/app.js`). Cada archivo guarda la versión aceptada y la hora.
 
 Si una persona cierra el navegador a mitad de camino, al volver a abrir su enlace continúa donde quedó.
 
@@ -126,12 +128,12 @@ Luego guarda la planilla como CSV, con el mismo nombre, y la devuelve. La pantal
 En el paso 3, carga todas las planillas devueltas. La pantalla muestra:
 
 - los problemas de cada planilla (códigos que faltan o no son válidos);
-- **el acuerdo entre jueces** (alfa de Krippendorff nominal);
+- **el acuerdo entre jueces** (alfa de Krippendorff nominal), y también sobre la regla de comprensión: estricta (código 1 frente al resto) y laxa (códigos 1 y 2 frente al resto);
 - los **desacuerdos por resolver**: respuestas a las que los jueces dieron códigos distintos. Se cuentan como «sin resolver» hasta que los jueces se pongan de acuerdo y corrijan sus planillas.
 
 Y descarga:
 
-- **resultados por ítem** (CSV), una fila por pictograma: su mitad, cuántas interpretaciones tuvo, cuántas recibieron cada código, las sin resolver, la tasa de acierto estricta y laxa, y cuántas veces se respondió cada opción de «¿Sirve aquí?»;
+- **resultados por ítem** (CSV), una fila por pictograma: su mitad, cuántas interpretaciones tuvo, cuántas recibieron cada código, las sin resolver, las resueltas, la tasa de acierto estricta y laxa con su intervalo de confianza al 95 %, y cuántas veces se respondió cada opción de «¿Sirve aquí?»;
 - el **informe de codificación** (JSON) con todo lo anterior.
 
 #### Qué cuenta como «entendido»
@@ -141,7 +143,7 @@ Esta regla se fija aquí, antes de cualquier panel, para que no se elija despué
 - **Estricta (resultado principal):** solo código 1.
 - **Laxa (secundaria):** códigos 1 y 2.
 
-Informa la estricta como resultado y la laxa a su lado. Sirven para comparar con el criterio de aceptación de la norma ISO 9186-1 o con índices de comprensión publicados.
+Informa la estricta como resultado y la laxa a su lado, cada una **con su intervalo de confianza** (Wilson, 1927). Con pocas respuestas el intervalo es ancho: con 10 respuestas, un 70 % va de 40 % a 89 %. Sin el intervalo, el número sugiere una precisión que el dato no tiene. Las tasas sirven para comparar con el criterio de aceptación de la norma ISO 9186-1 o con índices de comprensión publicados.
 
 #### Qué alfa informar
 
@@ -149,13 +151,16 @@ El alfa de la **primera ronda completa** de planillas mide la fiabilidad de la c
 
 Los códigos son categorías, no una escala: 6 no es «peor» que 5. Por eso el acuerdo se informa con alfa nominal y cada pictograma con la distribución de sus códigos, no con un promedio.
 
+Informa además el alfa **sobre la regla**. Dos jueces pueden discrepar entre 3 y 4 sin que cambie ninguna tasa de comprensión; el alfa que respalda el resultado informado es el de la regla estricta (y el de la laxa para el resultado secundario).
+
 ## Qué garantiza la aplicación
 
 - **Las mismas mitades en todos los teléfonos.** La división se deriva de la librería, no de la sesión.
 - **Orden distinto para cada persona** dentro de cada parte, con una semilla que queda registrada.
-- **Las frases a ciegas no están en la página.** Durante la primera parte la frase no existe en el documento (ocultarla con estilos no bastaría), y tampoco va en el archivo exportado.
-- **No se vuelve atrás** de la segunda parte a la primera; tras una recarga se retoma en el primer pictograma sin terminar.
-- **Cada archivo es trazable:** lleva el número de la persona, su forma, la versión del protocolo y la versión del instrumento.
+- **Las frases a ciegas no están en la página.** Durante la primera parte la frase no existe en el documento (ocultarla con estilos no bastaría), y tampoco va en el archivo exportado. Sí está en el archivo de la librería que descarga el navegador: quien sepa usar las herramientas de desarrollo podría encontrarla. Para un panel de personas que responden de buena fe es un riesgo menor, y se declara.
+- **No se vuelve atrás** de la segunda parte a la primera; tras una recarga, o al volver a abrir los pictogramas, se retoma en la segunda parte.
+- **Cada respuesta lleva su tiempo** (desde que el pictograma aparece en pantalla hasta que se confirma la respuesta) y **el tamaño al que se mostró**. El pictograma se muestra a un tamaño fijo: 288 px de alto en pantallas anchas y 160 px en teléfonos. Una respuesta que se retoma tras recargar la página queda sin tiempo.
+- **Cada archivo es trazable:** lleva el número de la persona, su forma, el consentimiento aceptado, la versión del protocolo, la del instrumento y una **huella de la librería** (SHA-256 de cada identificador, frase e imagen). La coordinación deja fuera las evaluaciones cuya huella no coincide: dos librerías con los mismos identificadores pero otras imágenes ya no se confunden.
 
 ## Qué no puede afirmar
 
@@ -171,13 +176,58 @@ Sin número de participante (`?p=`) ni forma (`?forma=`), la aplicación ofrece 
 
 ## Detalles para quien analiza los datos
 
-- **Archivo de cada persona** (`pictos-index-library-evaluation-1.5.0`): `protocol` (versión, forma, número de participante, semillas, las dos mitades y la secuencia completa), `items[].pass` (`blind` o `sighted`), `items[].sirve_aqui` (`respuesta`: `yes`, `partly`, `no`, `cannot_judge`; y `motivo`), `libraryAssessment` (coherencia y gramática) e `instrumentVersion`.
-- **Informe agregado** (`pictos-index-protocol-aggregate-0.2`): por ítem, las interpretaciones a ciegas con forma y posición, y las respuestas de «¿Sirve aquí?» con su distribución; además, la lista de evaluaciones con su participante y el alfa ordinal.
-- **Informe de codificación** (`pictos-index-coding-0.2`): jueces, `agreement` (alfa nominal y `firstRound`), `round`, desacuerdos y, por ítem, distribución, sin resolver y `comprehension` (`strict`, `lenient`).
+- **Archivo de cada persona** (`pictos-index-library-evaluation-1.6.0`): `protocol` (versión, forma, número de participante, semillas, las dos mitades y la secuencia completa), `evaluator.consent` (`version`, `acceptedAt`), `library.contentHash`, `presentation` (`devicePixelRatio`, `viewport`), `items[].pass` (`blind` o `sighted`), `items[].timing` (`guess` o `use`: `ms` e `imagePx`), `items[].sirve_aqui` (`respuesta`: `yes`, `partly`, `no`, `cannot_judge`; y `motivo`), `libraryAssessment` (coherencia y gramática) e `instrumentVersion`.
+- **Informe agregado** (`pictos-index-protocol-aggregate-0.3`): por ítem, las interpretaciones a ciegas con forma y posición, y las respuestas de «¿Sirve aquí?» con su distribución; además, la lista de evaluaciones con su participante, la huella de la librería (`libraryHash`) y el alfa ordinal.
+- **Informe de codificación** (`pictos-index-coding-0.3`): jueces, `agreement` (`alpha_nominal`, `alpha_strict`, `alpha_lenient` y `firstRound`), `round`, desacuerdos y, por ítem, distribución, sin resolver y `comprehension` (`strict`, `lenient`, `settled` y sus intervalos `strict_ci95`, `lenient_ci95`).
+- **Cambios desde la versión 0.2 del protocolo:** el conjunto se valora al final, se añaden el consentimiento, los tiempos, el tamaño de presentación y la huella. La coordinación no mezcla evaluaciones de versiones distintas del protocolo.
 - Lo mismo puede hacerse por línea de comandos (ver [desarrollo](desarrollo.md)).
+
+## En qué se apoya cada aspecto
+
+| Aspecto | Qué hace el protocolo | Fundamento |
+|---|---|---|
+| Transparencia («¿Qué significa?») | Interpretación libre, sin la frase | Definición de transparencia frente a translucidez: Fuller y Lloyd (1991). Prueba de comprensión con respuesta abierta: ISO 9186-1. Normas de transparencia de 1.525 pictogramas ARASAAC, el punto de comparación natural: Díez et al. (2024) |
+| Uso con la frase («¿Sirve aquí?») | Juicio de uso en una situación, con la frase a la vista | Lo que se pregunta con el significado ya conocido es translucidez (Fuller y Lloyd, 1991). La competencia comunicativa depende de la persona, el interlocutor, la tarea y el contexto (Light, 1989; Light y McNaughton, 2014). La pregunta «¿Sirve aquí?» es formulación propia de PICTOS Index, no una escala publicada |
+| Formas A y B | Cada pictograma, a ciegas para una mitad del panel y con frase para la otra | Diseño propio, motivado por la distinción entre transparencia y translucidez: quien ya conoce el significado no puede dar un juicio a ciegas |
+| Codificación de las interpretaciones | Seis códigos, de «correcto» a «sin respuesta» | Ramírez (2018), que adapta procedimientos de prueba de comprensión de símbolos gráficos |
+| Acuerdo entre jueces y entre personas | Alfa de Krippendorff nominal (códigos) y ordinal («¿Sirve aquí?»); primera ronda fija | Krippendorff (2004, 2011) |
+| Regla de comprensión e intervalos | Estricta y laxa, fijadas antes de los datos, con intervalo de Wilson | Wilson (1927); criterios de aceptación en ISO 9186-1 |
+| Relación con la CAA | Se registra para estratificar, no se promedia | La percepción de los símbolos varía según la cultura, la lengua y el perfil de quien responde (Huer, 2000; Haupt y Alant, 2002; Dada, Huguet y Bornman, 2013; Kang, Kim y Yeon, 2019) |
+| Coherencia formal y gramática visual del conjunto | Dos valoraciones de 1 a 5, al final | Tradición del diseño de sistemas de signos; no se ha identificado una medida validada, y así se declara |
+| Lo que el protocolo no mide | Aprendibilidad y eficacia en una conversación real | Exigen exposiciones repetidas o una tarea con interlocutor (Mizuko, 1987; Alant et al., 2013; Light y McNaughton, 2014): son estudios aparte |
+
+El detalle de cada constructo y sus límites está en [foundations.md](foundations.md) (en inglés).
 
 ## Referencias
 
+Verificadas por DOI en OpenAlex. De las normas ISO se dan los títulos como orientación; no se ha revisado su edición.
+
+Alant, E., Zheng, W., Harty, M., & Lloyd, L. L. (2013). Translucency ratings of Blissymbols over repeated exposures by children with autism. *Augmentative and Alternative Communication*, 29(3), 272–283. https://doi.org/10.3109/07434618.2013.813967
+
+Dada, S., Huguet, A., & Bornman, J. (2013). The iconicity of picture communication symbols for children with English additional language and mild intellectual disability. *Augmentative and Alternative Communication*, 29(4), 360–373. https://doi.org/10.3109/07434618.2013.849753
+
+Díez, E., Díez-Álamo, A. M., Alonso, M. Á., Wojcik, D. Z., & Fernández, Á. (2024). Transparency and translucency indices for 1,525 pictograms from the Aragonese Portal of Augmentative and Alternative Communication. *Frontiers in Psychology*, 15, 1467796. https://doi.org/10.3389/fpsyg.2024.1467796
+
+Fuller, D. R., & Lloyd, L. L. (1991). Toward a common usage of iconicity terminology. *Augmentative and Alternative Communication*, 7(3), 215–220. https://doi.org/10.1080/07434619112331275913
+
+Haupt, L., & Alant, E. (2002). The iconicity of picture communication symbols for rural Zulu children. *South African Journal of Communication Disorders*, 49(1), 40–49. https://doi.org/10.4102/sajcd.v49i1.216
+
+Huer, M. B. (2000). Examining perceptions of graphic symbols across cultures: Preliminary study of the impact of culture/ethnicity. *Augmentative and Alternative Communication*, 16(3), 180–185. https://doi.org/10.1080/07434610012331279034
+
+ISO 9186-1. Graphical symbols — Test methods — Part 1: Method for testing comprehensibility.
+
+Kang, R., Kim, Y. T., & Yeon, S. J. (2019). Cultural differences on the recognition of social word AAC graphic symbols between Korean and American undergraduate students. *Communication Sciences & Disorders*, 24(1), 71–86. https://doi.org/10.12963/csd.18542
+
+Krippendorff, K. (2004). Reliability in content analysis: Some common misconceptions and recommendations. *Human Communication Research*, 30(3), 411–433. https://doi.org/10.1111/j.1468-2958.2004.tb00738.x
+
 Krippendorff, K. (2011). *Computing Krippendorff's alpha-reliability*. Annenberg School for Communication, University of Pennsylvania. https://repository.upenn.edu/asc_papers/43
 
+Light, J. (1989). Toward a definition of communicative competence for individuals using augmentative and alternative communication systems. *Augmentative and Alternative Communication*, 5(2), 137–144. https://doi.org/10.1080/07434618912331275126
+
+Light, J., & McNaughton, D. (2014). Communicative competence for individuals who require augmentative and alternative communication: A new definition for a new era of communication? *Augmentative and Alternative Communication*, 30(1), 1–18. https://doi.org/10.3109/07434618.2014.885080
+
+Mizuko, M. (1987). Transparency and ease of learning of symbols represented by Blissymbols, PCS, and Picsyms. *Augmentative and Alternative Communication*, 3(3), 129–136. https://doi.org/10.1080/07434618712331274409
+
 Ramírez M., R. (2018). El desempeño de íconos como herramienta gráfica para comunicar la emergencia. *Revista de Estudios Latinoamericanos sobre Reducción del Riesgo de Desastres REDER*, 2(1), 71–87. https://doi.org/10.55467/reder.v2i1.12
+
+Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. *Journal of the American Statistical Association*, 22(158), 209–212. https://doi.org/10.1080/01621459.1927.10502953

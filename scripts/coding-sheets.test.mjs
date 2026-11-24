@@ -33,7 +33,14 @@ test("merge: agreement, disagreements and per-item distribution", () => {
   assert.equal(out.items[1].distribution[6], 1);
   assert.equal(out.items[1].unresolved, 1);
   // item 0: codes 1 and 3 settled → strict 1/2, lenient 1/2; item 1: only the skip settles → 0
-  assert.deepEqual(out.items[0].comprehension, { strict: 0.5, lenient: 0.5 });
-  assert.deepEqual(out.items[1].comprehension, { strict: 0, lenient: 0 });
+  assert.equal(out.items[0].comprehension.strict, 0.5);
+  assert.equal(out.items[0].comprehension.lenient, 0.5);
+  assert.deepEqual(out.items[0].comprehension.strict_ci95, [0.095, 0.905]);
+  assert.equal(out.items[1].comprehension.strict, 0);
+  assert.equal(out.items[1].comprehension.settled, 1);
+  // judges split 2 against 4 on one answer: both sides miss the strict rule (alpha 1),
+  // but only one meets the lenient rule
+  assert.equal(out.agreement.alpha_strict, 1);
+  assert.ok(out.agreement.alpha_lenient < 1);
   assert.deepEqual(out.judges.map((j) => j.problems), [[], []]);
 });

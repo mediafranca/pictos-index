@@ -244,7 +244,7 @@ function render() {
   }
   const problems = coding.judges.flatMap((judge) => judge.problems.map((p) => `${judge.name}: ${p}`));
   $("coordCodingSummary").innerHTML = `
-    <p>${escapeHtml(t("coordination.codingSummary", { judges: coding.judges.length, alpha: formatAlpha(coding.agreement.alpha_nominal), disagreements: coding.disagreements.length }))}</p>
+    <p>${escapeHtml(t("coordination.codingSummary", { judges: coding.judges.length, alpha: formatAlpha(coding.agreement.alpha_nominal), strict: formatAlpha(coding.agreement.alpha_strict), lenient: formatAlpha(coding.agreement.alpha_lenient), disagreements: coding.disagreements.length }))}</p>
     ${coding.agreement.firstRound ? `<p>${escapeHtml(t("coordination.firstRound", { alpha: formatAlpha(coding.agreement.firstRound.alpha_nominal), round: coding.round ?? "–" }))}</p>` : ""}
     ${problems.length ? list(problems, "coord-warnings") : ""}
     ${coding.disagreements.length ? `
