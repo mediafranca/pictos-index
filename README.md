@@ -98,7 +98,7 @@ Son material de prueba, no librerías para usar con personas.
 
 ## Acerca de
 
-PICTOS Index nace en la investigación doctoral de [Herbert Spencer](https://herbertspencer.net/cc) sobre diseño para la CAA, en Auckland University of Technology (AUT). Es el complemento evaluativo de [PICTOS.net](https://pictos.net), que genera pictogramas a partir de una frase y su situación de uso, y reemplaza a VCSCI, su primera formulación.
+PICTOS Index es un proyecto de [Herbert Spencer](https://herbertspencer.net/cc) en [MediaFranca](https://mediafranca.net), sobre diseño para la CAA. Es el complemento evaluativo de [PICTOS.net](https://pictos.net), que genera pictogramas a partir de una frase y su situación de uso, y reemplaza a VCSCI, su primera formulación.
 
 El proceso de PICTOS.net avanza en tres fases, y cada una se fija en un esquema formal: [pictos-nlu-schema](https://github.com/mediafranca/pictos-nlu-schema) para la comprensión de la intención comunicativa, [pictos-composition-schema](https://github.com/mediafranca/pictos-composition-schema) para la correspondencia entre palabra e imagen, y [pictos-svg-schema](https://github.com/mediafranca/pictos-svg-schema) para el SVG accesible que contiene toda su estirpe generativa.
 

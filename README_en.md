@@ -98,7 +98,7 @@ Their phrases are in Spanish. They are test material, not libraries for use with
 
 ## About
 
-PICTOS Index originates in the doctoral research of [Herbert Spencer](https://herbertspencer.net/cc) on design for AAC at Auckland University of Technology (AUT). It is the evaluative counterpart to [PICTOS.net](https://pictos.net), which generates pictograms from a phrase and its context of use, and it replaces VCSCI, its first formulation.
+PICTOS Index is a project by [Herbert Spencer](https://herbertspencer.net/cc) at [MediaFranca](https://mediafranca.net), on design for AAC. It is the evaluative counterpart to [PICTOS.net](https://pictos.net), which generates pictograms from a phrase and its context of use, and it replaces VCSCI, its first formulation.
 
 The PICTOS.net process moves through three phases, each fixed in a formal schema: [pictos-nlu-schema](https://github.com/mediafranca/pictos-nlu-schema) for understanding the communicative intent, [pictos-composition-schema](https://github.com/mediafranca/pictos-composition-schema) for the correspondence between word and image, and [pictos-svg-schema](https://github.com/mediafranca/pictos-svg-schema) for the accessible SVG that holds its whole generative lineage.
 
