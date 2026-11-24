@@ -109,7 +109,16 @@ async function init() {
     document.getElementById("coordinationScreen").classList.remove("hidden");
     return;
   }
-  showHome(false);
+  // A panel link (?p, ?forma or ?lib) is an invitation to evaluate: open the instrument,
+  // not the home page.
+  if (PROTOCOL_FORM || LIBRARY_URL) openEvaluator(false);
+  else showHome(false);
+}
+
+function openEvaluator(moveFocus = true) {
+  el.homeScreen.classList.add("hidden");
+  el.evaluatorShell.classList.remove("hidden");
+  goToStep(1, moveFocus);
 }
 function bindElements() {
   const ids = [
@@ -140,11 +149,7 @@ function bindEvents() {
   SYSTEM_LIGHT.addEventListener("change", applyTheme);
   applyTheme();
   [el.startEvaluationBtn, ...document.querySelectorAll("[data-start-evaluation]")].forEach((button) => {
-    button.addEventListener("click", () => {
-      el.homeScreen.classList.add("hidden");
-      el.evaluatorShell.classList.remove("hidden");
-      goToStep(1, true);
-    });
+    button.addEventListener("click", () => openEvaluator());
   });
   el.brandHome.addEventListener("click", (event) => {
     event.preventDefault();
