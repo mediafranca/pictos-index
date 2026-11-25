@@ -3,6 +3,7 @@
 import { getLocale, marked, t } from "./i18n.js";
 import { aggregate, codingRows, mergeCoding, resultsCsv, shuffle, toCsv } from "./protocol.js";
 import qrcode from "./vendor/qrcode.mjs";
+import { readLibraryAddress } from "./library-address.js";
 
 // libraryRef: what the evaluators' links carry in ?lib= (null for a local file).
 const state = { library: null, libraryName: "", libraryRef: null, evaluations: [], aggregate: null, sheets: [], coding: null };
@@ -57,35 +58,20 @@ function onSampleChange(event) {
 // Reads the library the way an evaluator's browser will, so a bad address (private,
 // a preview page, no cross-origin reads) shows up here and not in the panel.
 async function useLibraryAddress(address) {
-  if (!address) return;
-  let url;
-  try {
-    url = new URL(address, window.location.href);
-    if (!/^https?:$/.test(url.protocol)) throw new Error("protocol");
-  } catch {
-    showLibraryStatus(t("coordination.badUrl"), true);
-    return;
-  }
   showLibraryStatus(t("coordination.checking"));
-  let library;
+  let library, url, fileName;
   try {
-    const response = await fetch(url, { mode: "cors" });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    library = await response.json();
+    const result = await readLibraryAddress(address, { baseUrl: window.location.href });
+    library = result.payload; url = result.url; fileName = result.fileName;
   } catch (error) {
-    console.error(error);
-    showLibraryStatus(t("coordination.unreachable"), true);
-    return;
-  }
-  if (!Array.isArray(library?.rows) || !library.rows.length) {
-    showLibraryStatus(t("coordination.notALibrary"), true);
+    showLibraryStatus(t(`coordination.${error.reason || "unreachable"}`), true);
     return;
   }
   // Same-site libraries travel as a short relative path; others as the full address.
   const ref = url.origin === window.location.origin
     ? url.pathname.replace(new URL(".", window.location.href).pathname, "")
     : url.href;
-  setLibrary(library, decodeURIComponent(url.pathname.split("/").pop()), ref);
+  setLibrary(library, fileName, ref);
 }
 
 function showLibraryStatus(text, isError = false) {

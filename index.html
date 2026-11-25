@@ -361,42 +361,23 @@
         <h2 id="step2Title" tabindex="-1" data-i18n="library.title">Carga la librería</h2>
 
         <div id="libraryLoader" class="library-loader">
-          <p class="muted">
-            <span data-i18n="library.instructionBefore">Selecciona un archivo JSON exportado desde</span>
-            <a class="inline-link" href="https://pictos.net" target="_blank" rel="noopener noreferrer">PICTOS.net</a>.
-          </p>
-          <div class="step1-left">
-            <div class="load-row">
-              <label class="file-field" for="libraryFileInput">
-                <strong data-i18n="library.uploadTitle">Cargar un archivo propio</strong>
-                <span><span data-i18n="library.uploadHintBefore">Formato JSON exportado desde</span> <a class="inline-link" href="https://pictos.net" target="_blank" rel="noopener noreferrer">PICTOS.net</a>.</span>
-              </label>
-              <input id="libraryFileInput" type="file" accept=".json,application/json" />
-
-              <div class="sample-picker" aria-labelledby="samplePickerTitle">
-                <h3 id="samplePickerTitle" data-i18n="library.samplesTitle">O prueba con una librería breve</h3>
-                <p data-i18n="library.samplesBody">Tres situaciones de uso declaradas, con el mismo estilo gráfico.</p>
-                <div class="sample-grid">
-                  <button class="sample-card" type="button" data-sample-path="./examples/restoran-graph-2026-11-23.json">
-                    <strong data-i18n="library.exampleRestaurant">Almorzar en el restorán</strong>
-                    <span>Raster · GPT Image</span>
-                    <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
-                  </button>
-                  <button class="sample-card" type="button" data-sample-path="./examples/transporte-graph-2026-11-23.json">
-                    <strong data-i18n="library.exampleTransport">Viajar en transporte público</strong>
-                    <span>Raster · GPT Image</span>
-                    <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
-                  </button>
-                  <button class="sample-card" type="button" data-sample-path="./examples/salud-graph-2026-11-23.json">
-                    <strong data-i18n="library.exampleHealth">Consulta de salud</strong>
-                    <span>Raster · GPT Image</span>
-                    <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
-                  </button>
-                </div>
-              </div>
-            </div>
-
+          <label for="librarySource" data-i18n="library.source">Librería para evaluar</label>
+          <select id="librarySource">
+            <option value="" data-i18n="coordination.chooseLibrary">Elige una librería…</option>
+            <option value="examples/restoran-graph-2026-11-23.json" data-i18n="library.exampleRestaurant">Almorzar en el restorán</option>
+            <option value="examples/transporte-graph-2026-11-23.json" data-i18n="library.exampleTransport">Viajar en transporte público</option>
+            <option value="examples/salud-graph-2026-11-23.json" data-i18n="library.exampleHealth">Consulta de salud</option>
+            <option value="url" data-i18n="coordination.publishedLibrary">Otra librería, publicada en internet</option>
+            <option value="file" data-i18n="coordination.ownLibrary">Otra librería, en este computador</option>
+          </select>
+          <div id="libraryUrlRow" class="coord-url hidden">
+            <label for="libraryUrlInput"><span data-i18n="coordination.libraryUrl">Dirección pública del archivo JSON</span>
+              <input id="libraryUrlInput" type="url" inputmode="url" placeholder="https://…" />
+            </label>
+            <button id="libraryUrlBtn" class="secondary-btn" type="button" data-i18n="coordination.useUrl">Usar esta dirección</button>
           </div>
+          <input id="libraryFileInput" class="hidden" type="file" accept=".json,application/json" aria-label="Archivo de la librería" data-i18n-aria-label="coordination.libraryFile" />
+          <p class="muted small" data-i18n="library.sourceHint">Puedes elegir una librería breve, cargar un JSON o pegar su dirección pública.</p>
         </div>
 
 

@@ -6,7 +6,7 @@
 -- Scope: One person evaluating one pictogram library in the browser, from
 --   loading the library to exporting the result.
 -- Includes:
---   - Loading a library (a PICTOS export or a bundled example) and resuming
+--   - Loading a library (a PICTOS export, public JSON URL or bundled example) and resuming
 --     saved progress for the same library
 --   - The evaluator's relationship with AAC (augmentative and alternative
 --     communication)
@@ -371,13 +371,23 @@ surface LoadLibraryStep {
     provides:
         LibraryLoaded(library)
 
+    @guarantee SharedLibrarySourceInteraction
+        -- Individual evaluation and panel coordination both offer a source
+        -- selector: bundled library, local JSON file or public JSON address.
+        -- Selecting an address reveals a labelled URL field and load button;
+        -- Enter also loads it. HTTP/HTTPS addresses must return library JSON
+        -- readable directly by the browser with cross-origin access.
+        -- Invalid addresses, previews, inaccessible files and invalid JSON show
+        -- actionable errors. A failed individual import preserves the current
+        -- library and saved progress and permits another attempt. Interface
+        -- labels and errors are available in Spanish and English.
     @guarantee StaysOnDevice
         -- Files, images and progress never leave the browser. Nothing is
         -- uploaded, including for the PDF.
 
     @guidance
-        -- Step 1. Upload a PICTOS JSON export or pick one of the three
-        -- bundled examples.
+        -- Upload a PICTOS JSON export, paste a public JSON URL or pick one
+        -- of the three bundled examples.
 }
 
 surface LibrarySummary {

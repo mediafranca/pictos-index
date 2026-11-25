@@ -102,7 +102,9 @@
     "pictogramCount": "{count} pictograms",
     "linkLoading": "Loading the panel’s library… This may take a moment: it is several megabytes.",
     "linkError": "The library in this link could not be loaded. Check your connection and open it again; if it still fails, let the panel coordinator know.",
-    "contextLabel": "Context of use: {context}"
+    "contextLabel": "Context of use: {context}",
+    "source": "Library to evaluate",
+    "sourceHint": "Choose a short library, upload JSON or paste its public address."
   },
   "profile": {
     "title": "Tell us about your relationship with AAC",

@@ -102,7 +102,9 @@
     "pictogramCount": "{count} pictogramas",
     "linkLoading": "Cargando la librería del panel… Puede tardar un poco: pesa varios megabytes.",
     "linkError": "No se pudo cargar la librería de este enlace. Revisa tu conexión y vuelve a abrirlo; si sigue sin funcionar, avísale a quien coordina el panel.",
-    "contextLabel": "Contexto de uso: {context}"
+    "contextLabel": "Contexto de uso: {context}",
+    "source": "Librería para evaluar",
+    "sourceHint": "Puedes elegir una librería breve, cargar un JSON o pegar su dirección pública."
   },
   "profile": {
     "title": "Cuéntanos tu relación con la CAA",

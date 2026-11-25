@@ -112,3 +112,7 @@ https://github.com/mediafranca/pictos-index
 ```
 
 *Licences: Apache 2.0 (code) · CC BY 4.0 (rubric and research documentation) · CC BY-SA (sample libraries). Details in [LICENSE](LICENSE).*
+
+## Loading a library
+
+Individual evaluation and panel coordination use the same source selector: choose an example, upload a local JSON file or paste a public library URL. The address must serve JSON and permit cross-origin reads; preview pages and private files do not work. If loading fails, correct the address and try again.

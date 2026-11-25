@@ -1,6 +1,7 @@
 import { applyTranslations, getLocale, initI18n, marked, setLocale, t } from "./i18n.js";
 import { initCoordination, isCoordinationRequested } from "./coordination.js";
 import { libraryHash } from "./protocol.js";
+import { readLibraryAddress } from "./library-address.js";
 
 const DIMENSIONS = [
   { key: "clarity", code: "CLA" },
@@ -69,6 +70,7 @@ const state = {
 };
 
 const el = {};
+let libraryAddressRequest = 0;
 
 // The instrument version (SemVer), declared once in index.html.
 const APP_VERSION = document.querySelector('meta[name="pictos-index-version"]')?.content || null;
@@ -126,7 +128,7 @@ function bindElements() {
     "stepBtn1", "stepBtn2", "stepBtn3", "stepBtn4", "step1", "step2", "step3", "step4",
     "step1Nav", "step2Nav", "step3Nav", "step2Title", "step2NextBtn", "setBackBtn", "evalNextBtn",
     "evaluatorForm", "evalAacNoExperience", "consentInput",
-    "libraryFileInput", "libraryLoader", "libraryLoaded", "loadedLibraryName",
+    "libraryFileInput", "librarySource", "libraryUrlRow", "libraryUrlInput", "libraryUrlBtn", "libraryLoader", "libraryLoaded", "loadedLibraryName",
     "replaceLibraryBtn", "libraryStatus", "loadedLibraryContext", "loadedLibraryCount", "auditGrid", "setQuestionTitle", "setQuestionBody", "setOptions",
     "evalPosition", "evalProgressBar", "noticePanel", "noticeText", "noticeContext", "noticeBtn",
     "questionPanel", "phraseLine", "evalImage", "guessStage", "guessText", "saveGuessBtn", "skipGuessBtn",
@@ -135,7 +137,6 @@ function bindElements() {
     "doneIntro", "doneStatus", "auditExportBtn", "auditPdfBtn", "shareJsonBtn",
   ];
   ids.forEach((id) => { el[id] = document.getElementById(id); });
-  el.sampleLibraryButtons = Array.from(document.querySelectorAll("[data-sample-path]"));
   el.evalAacRelationInputs = Array.from(document.querySelectorAll('input[name="aacRelations"]'));
 }
 function bindEvents() {
@@ -166,9 +167,14 @@ function bindEvents() {
   el.evalAacRelationInputs.forEach((input) => input.addEventListener("change", onAacRelationChange));
 
   el.libraryFileInput.addEventListener("change", onLibraryFileChange);
-  el.replaceLibraryBtn.addEventListener("click", () => el.libraryFileInput.click());
-  el.sampleLibraryButtons.forEach((button) => {
-    button.addEventListener("click", () => onLoadSampleLibrary(button));
+  el.replaceLibraryBtn.addEventListener("click", () => {
+    el.libraryLoader.classList.remove("hidden");
+    el.librarySource.focus();
+  });
+  el.librarySource.addEventListener("change", onLibrarySourceChange);
+  el.libraryUrlBtn.addEventListener("click", () => useIndividualLibraryAddress(el.libraryUrlInput.value));
+  el.libraryUrlInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") { event.preventDefault(); useIndividualLibraryAddress(el.libraryUrlInput.value); }
   });
   el.setBackBtn.addEventListener("click", () => changeSetQuestion(-1));
   el.step2NextBtn.addEventListener("click", () => changeSetQuestion(1));
@@ -294,6 +300,7 @@ function isProfileComplete(profile) {
 }
 
 async function onLibraryFileChange(event) {
+  libraryAddressRequest++;
   const file = event.target.files && event.target.files[0];
   if (!file) return;
 
@@ -328,35 +335,42 @@ async function loadLinkedLibrary() {
   }
 }
 
-async function onLoadSampleLibrary(button) {
-  const path = button.dataset.samplePath;
-  if (!path) return;
+function onLibrarySourceChange() {
+  libraryAddressRequest++;
+  el.libraryUrlBtn.disabled = false;
+  const choice = el.librarySource.value;
+  el.libraryUrlRow.classList.toggle("hidden", choice !== "url");
+  el.libraryFileInput.classList.toggle("hidden", choice !== "file");
+  el.libraryStatus.classList.remove("sr-only");
+  el.libraryStatus.textContent = "";
+  if (choice === "url") el.libraryUrlInput.focus();
+  else if (choice === "file") el.libraryFileInput.click();
+  else if (choice) useIndividualLibraryAddress(choice);
+}
 
-  const previousLabel = button.innerHTML;
-  button.disabled = true;
-  button.setAttribute("aria-busy", "true");
-
+async function useIndividualLibraryAddress(address) {
+  const request = ++libraryAddressRequest;
+  el.libraryUrlBtn.disabled = true;
+  el.libraryStatus.classList.remove("sr-only");
+  el.libraryStatus.textContent = t("coordination.checking");
   try {
-    const response = await fetch(path);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const payload = await response.json();
-    const fileName = path.split("/").pop() || "sample-library.json";
-    loadLibraryPayload(payload, fileName);
+    const { payload, fileName } = await readLibraryAddress(address, { baseUrl: window.location.href });
+    if (request !== libraryAddressRequest) return;
+    if (!loadLibraryPayload(payload, fileName, { reportInvalid: false })) {
+      el.libraryStatus.textContent = t("coordination.notALibrary");
+    }
   } catch (error) {
-    console.error(error);
-    alert(t("alerts.sampleLoad"));
+    if (request === libraryAddressRequest) el.libraryStatus.textContent = t(`coordination.${error.reason || "unreachable"}`);
   } finally {
-    button.disabled = false;
-    button.removeAttribute("aria-busy");
-    button.innerHTML = previousLabel;
+    if (request === libraryAddressRequest) el.libraryUrlBtn.disabled = false;
   }
 }
 
-function loadLibraryPayload(payload, fileName) {
+function loadLibraryPayload(payload, fileName, { reportInvalid = true } = {}) {
   const { items } = parseLibraryPayload(payload);
   if (!items.length) {
-    alert(t("alerts.noImages"));
-    return;
+    if (reportInvalid) alert(t("alerts.noImages"));
+    return false;
   }
 
   const imageFormats = items.reduce((counts, item) => {
@@ -401,6 +415,7 @@ function loadLibraryPayload(payload, fileName) {
   // The button that loaded the library is now hidden: keep the focus on this step
   // (unless the library came with the link and the person is still on another step).
   if (!el.step2.classList.contains("hidden")) el.step2Title.focus({ preventScroll: true });
+  return true;
 }
 
 // In the protocol the PDF report (six ratings per pictogram) does not apply, and the

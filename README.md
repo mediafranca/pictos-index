@@ -112,3 +112,7 @@ https://github.com/mediafranca/pictos-index
 ```
 
 *Licencias: Apache 2.0 (código) · CC BY 4.0 (rúbrica y documentación de investigación) · CC BY-SA (librerías de ejemplo). Detalle en [LICENSE](LICENSE).*
+
+## Cargar una librería
+
+La evaluación individual y la coordinación de un panel usan el mismo selector: puedes elegir un ejemplo, cargar un archivo JSON local o pegar la URL pública de una biblioteca. La dirección debe entregar JSON y permitir lectura entre sitios; una vista previa o un archivo privado no sirven. Si una carga falla, puedes corregir la dirección e intentarlo nuevamente.
