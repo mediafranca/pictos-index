@@ -263,7 +263,7 @@ code {
 .sample-card strong { font-size: .84rem; }
 .sample-card span { margin-top: .25rem; color: var(--ink-soft); font-size: .7rem; line-height: 1.35; }
 .sample-card small { margin-top: auto; color: var(--violet-bright); font-size: .64rem; font-weight: 700; }
-input[type="text"], select, textarea, input[type="file"] {
+input[type="text"], input[type="url"], select, textarea, input[type="file"] {
   width: 100%; min-height: 2.85rem; border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
   padding: .7rem .8rem; background: var(--bg-deep); color: var(--ink);
 }
@@ -462,7 +462,7 @@ textarea { min-height: 9rem; resize: vertical; }
 .coord-how ol { margin: 0 0 .6rem; padding-left: 1.3rem; display: grid; gap: .4rem; line-height: 1.5; }
 .coord-how p { margin: 0; }
 .coord-url { display: flex; gap: .6rem; align-items: end; flex-wrap: wrap; }
-.coord-url label { flex: 1 1 20rem; }
+.coord-url label { display: grid; gap: .4rem; flex: 1 1 20rem; min-width: 0; }
 .coord-instructions ul { margin: .5rem 0 0; padding-left: 1.2rem; display: grid; gap: .35rem; }
 .coord-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: .75rem; }
 .coord-card {
