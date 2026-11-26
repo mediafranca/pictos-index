@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b0613" />
     <!-- The instrument version (SemVer): shown in the header and stamped on every export. Keep in step with package.json. -->
-    <meta name="pictos-index-version" content="4.2.3" />
+    <meta name="pictos-index-version" content="4.3.0" />
     <meta
       name="description" data-i18n-content="meta.description"
       content="PICTOS Index es un instrumento para evaluar la calidad comunicativa de librerías pictográficas."
@@ -53,14 +53,7 @@
             <option value="en-GB">English</option>
           </select>
         </label>
-        <label class="language-picker">
-          <span class="sr-only" data-i18n="theme.label">Tema</span>
-          <select id="themeSelect" aria-label="Tema" data-i18n-aria-label="theme.label">
-            <option value="system" data-i18n="theme.system">Tema del sistema</option>
-            <option value="light" data-i18n="theme.light">Claro</option>
-            <option value="dark" data-i18n="theme.dark">Oscuro</option>
-          </select>
-        </label>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Tema"><svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
       </div>
     </header>
 
@@ -364,20 +357,37 @@
           <label for="librarySource" data-i18n="library.source">Librería para evaluar</label>
           <select id="librarySource">
             <option value="" data-i18n="coordination.chooseLibrary">Elige una librería…</option>
-            <option value="examples/restoran-graph-2026-11-23.json" data-i18n="library.exampleRestaurant">Almorzar en el restorán</option>
-            <option value="examples/transporte-graph-2026-11-23.json" data-i18n="library.exampleTransport">Viajar en transporte público</option>
-            <option value="examples/salud-graph-2026-11-23.json" data-i18n="library.exampleHealth">Consulta de salud</option>
-            <option value="url" data-i18n="coordination.publishedLibrary">Otra librería, publicada en internet</option>
-            <option value="file" data-i18n="coordination.ownLibrary">Otra librería, en este computador</option>
+            <option value="file" data-i18n="library.optionFile">Subir una librería</option>
+            <option value="url" data-i18n="library.optionUrl">Usar una librería publicada en la web</option>
+            <option value="samples" data-i18n="library.optionSamples">Usar una librería de ejemplo</option>
           </select>
-          <div id="libraryUrlRow" class="coord-url hidden">
-            <label for="libraryUrlInput"><span data-i18n="coordination.libraryUrl">Dirección pública del archivo JSON</span>
-              <input id="libraryUrlInput" type="url" inputmode="url" placeholder="https://…" />
-            </label>
-            <button id="libraryUrlBtn" class="secondary-btn" type="button" data-i18n="coordination.useUrl">Usar esta dirección</button>
+          <div id="libraryUrlRow" class="hidden">
+            <div class="coord-url">
+              <label for="libraryUrlInput"><span data-i18n="coordination.libraryUrl">Dirección pública del archivo JSON</span>
+                <input id="libraryUrlInput" type="url" inputmode="url" placeholder="https://…/libreria.json" data-i18n-placeholder="library.urlPlaceholder" />
+              </label>
+              <button id="libraryUrlBtn" class="secondary-btn" type="button" data-i18n="coordination.useUrl">Usar esta dirección</button>
+            </div>
+            <p class="small"><a href="https://librerias.pictos.net" data-i18n-href="library.browseUrl" target="_blank" rel="noopener noreferrer" data-i18n="library.browseLink">Buscar librerías en librerias.pictos.net</a></p>
           </div>
           <input id="libraryFileInput" class="hidden" type="file" accept=".json,application/json" aria-label="Archivo de la librería" data-i18n-aria-label="coordination.libraryFile" />
-          <p class="muted small" data-i18n="library.sourceHint">Puedes elegir una librería breve, cargar un JSON o pegar su dirección pública.</p>
+          <div id="librarySamples" class="sample-grid hidden">
+              <button class="sample-card" type="button" data-sample-path="examples/restoran-graph-2026-11-23.json">
+                <strong data-i18n="library.exampleRestaurant"></strong>
+                <span>Raster · GPT Image</span>
+                <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
+              </button>
+              <button class="sample-card" type="button" data-sample-path="examples/transporte-graph-2026-11-23.json">
+                <strong data-i18n="library.exampleTransport"></strong>
+                <span>Raster · GPT Image</span>
+                <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
+              </button>
+              <button class="sample-card" type="button" data-sample-path="examples/salud-graph-2026-11-23.json">
+                <strong data-i18n="library.exampleHealth"></strong>
+                <span>Raster · GPT Image</span>
+                <small data-i18n="library.eighteenPictograms">18 pictogramas</small>
+              </button>
+          </div>
         </div>
 
 
@@ -484,6 +494,7 @@
         <a href="https://github.com/mediafranca/pictos-index/blob/main/docs/protocolo.md" target="_blank" rel="noopener noreferrer" data-i18n="footer.protocol" data-i18n-href="nav.protocolHref">Guía del protocolo</a>
         <a href="./?coordinar" data-i18n="nav.panel">Coordinar un panel</a>
         <a href="https://pictos.net" target="_blank" rel="noopener noreferrer">PICTOS.net</a>
+        <a href="https://librerias.pictos.net" target="_blank" rel="noopener noreferrer" data-i18n-href="library.browseUrl" data-i18n="footer.libraries">Librerías PICTOS</a>
         <a href="https://github.com/mediafranca/pictos-index" target="_blank" rel="noopener noreferrer" data-i18n="footer.source">Código fuente en GitHub</a>
         <a href="https://mediafranca.net" target="_blank" rel="noopener noreferrer">MediaFranca</a>
       </nav>

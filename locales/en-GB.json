@@ -104,7 +104,12 @@
     "linkError": "The library in this link could not be loaded. Check your connection and open it again; if it still fails, let the panel coordinator know.",
     "contextLabel": "Context of use: {context}",
     "source": "Library to evaluate",
-    "sourceHint": "Choose a short library, upload JSON or paste its public address."
+    "optionFile": "Upload a library",
+    "optionUrl": "Use a library published on the web",
+    "optionSamples": "Use an example library",
+    "urlPlaceholder": "https://…/library.json",
+    "browseUrl": "https://libraries.pictos.net",
+    "browseLink": "Browse libraries at libraries.pictos.net"
   },
   "profile": {
     "title": "Tell us about your relationship with AAC",
@@ -140,6 +145,7 @@
     "itemFallback": "Item {number}",
     "imageFallback": "Pictogram unavailable",
     "noLevelDescription": "No description is available for this level.",
+    "scaleHint": "Hover over a value to see what it means; choose one to fix it.",
     "questionPosition": "Pictogram {current} of {total} · question {question} of {questions}",
     "sourcePhraseLine": "Source phrase: **“{phrase}”**"
   },
@@ -335,9 +341,8 @@
   },
   "theme": {
     "label": "Theme",
-    "system": "System theme",
-    "light": "Light",
-    "dark": "Dark"
+    "toLight": "Switch to light theme",
+    "toDark": "Switch to dark theme"
   },
   "keys": {
     "choose": "Arrows: choose · Enter: next",
@@ -348,7 +353,8 @@
     "licences": "Code under the Apache 2.0 licence · Rubric under CC BY 4.0",
     "source": "Source code on GitHub",
     "label": "Links",
-    "protocol": "Protocol guide"
+    "protocol": "Protocol guide",
+    "libraries": "PICTOS Libraries"
   },
   "consent": {
     "title": "Before you start",

@@ -85,6 +85,7 @@ function applyTheme() {
   const light = saved ? saved === "light" : SYSTEM_LIGHT.matches;
   document.documentElement.dataset.theme = light ? "light" : "dark";
   document.querySelector('meta[name="theme-color"]').content = light ? "#faf8fd" : "#0b0613";
+  document.getElementById("themeToggle")?.setAttribute("aria-label", t(light ? "theme.toDark" : "theme.toLight"));
 }
 
 document.addEventListener("DOMContentLoaded", init);
@@ -124,11 +125,11 @@ function openEvaluator(moveFocus = true) {
 }
 function bindElements() {
   const ids = [
-    "homeScreen", "evaluatorShell", "startEvaluationBtn", "brandHome", "statusRegion", "languageSelect", "themeSelect",
+    "homeScreen", "evaluatorShell", "startEvaluationBtn", "brandHome", "statusRegion", "languageSelect", "themeToggle",
     "stepBtn1", "stepBtn2", "stepBtn3", "stepBtn4", "step1", "step2", "step3", "step4",
     "step1Nav", "step2Nav", "step3Nav", "step2Title", "step2NextBtn", "setBackBtn", "evalNextBtn",
     "evaluatorForm", "evalAacNoExperience", "consentInput",
-    "libraryFileInput", "librarySource", "libraryUrlRow", "libraryUrlInput", "libraryUrlBtn", "libraryLoader", "libraryLoaded", "loadedLibraryName",
+    "libraryFileInput", "librarySource", "libraryUrlRow", "libraryUrlInput", "libraryUrlBtn", "librarySamples", "libraryLoader", "libraryLoaded", "loadedLibraryName",
     "replaceLibraryBtn", "libraryStatus", "loadedLibraryContext", "loadedLibraryCount", "auditGrid", "setQuestionTitle", "setQuestionBody", "setOptions",
     "evalPosition", "evalProgressBar", "noticePanel", "noticeText", "noticeContext", "noticeBtn",
     "questionPanel", "phraseLine", "evalImage", "guessStage", "guessText", "saveGuessBtn", "skipGuessBtn",
@@ -141,10 +142,8 @@ function bindElements() {
 }
 function bindEvents() {
   el.languageSelect.addEventListener("change", onLanguageChange);
-  el.themeSelect.value = localStorage.getItem(THEME_KEY) || "system";
-  el.themeSelect.addEventListener("change", () => {
-    if (el.themeSelect.value === "system") localStorage.removeItem(THEME_KEY);
-    else localStorage.setItem(THEME_KEY, el.themeSelect.value);
+  el.themeToggle.addEventListener("click", () => {
+    localStorage.setItem(THEME_KEY, document.documentElement.dataset.theme === "light" ? "dark" : "light");
     applyTheme();
   });
   SYSTEM_LIGHT.addEventListener("change", applyTheme);
@@ -172,6 +171,10 @@ function bindEvents() {
     el.librarySource.focus();
   });
   el.librarySource.addEventListener("change", onLibrarySourceChange);
+  el.librarySamples.addEventListener("click", (event) => {
+    const card = event.target.closest("[data-sample-path]");
+    if (card) useIndividualLibraryAddress(card.dataset.samplePath);
+  });
   el.libraryUrlBtn.addEventListener("click", () => useIndividualLibraryAddress(el.libraryUrlInput.value));
   el.libraryUrlInput.addEventListener("keydown", event => {
     if (event.key === "Enter") { event.preventDefault(); useIndividualLibraryAddress(el.libraryUrlInput.value); }
@@ -235,6 +238,7 @@ function createFallbackRubric() {
 function onLanguageChange(event) {
   if (!setLocale(event.target.value)) return;
   applyTranslations();
+  applyTheme();
   if (state.library) renderLibrarySummary();
   if (state.items.length && !el.step3.classList.contains("hidden")) renderCurrentEvalItem();
 }
@@ -341,11 +345,11 @@ function onLibrarySourceChange() {
   const choice = el.librarySource.value;
   el.libraryUrlRow.classList.toggle("hidden", choice !== "url");
   el.libraryFileInput.classList.toggle("hidden", choice !== "file");
+  el.librarySamples.classList.toggle("hidden", choice !== "samples");
   el.libraryStatus.classList.remove("sr-only");
   el.libraryStatus.textContent = "";
   if (choice === "url") el.libraryUrlInput.focus();
   else if (choice === "file") el.libraryFileInput.click();
-  else if (choice) useIndividualLibraryAddress(choice);
 }
 
 async function useIndividualLibraryAddress(address) {
@@ -838,8 +842,9 @@ function renderCurrentEvalItem() {
   }
 }
 
-// Five options, each with what its score means. Picking only selects; the person
-// confirms with Next (or Enter), so a slip of the pointer never skips a question.
+// A horizontal 1–5 bar. Hovering or focusing a level previews its description in the
+// legend under the bar; picking fixes it. Picking only selects; the person confirms with
+// Next (or Enter), so a slip of the pointer never skips a question.
 function renderLevelOptions(container, levels, selected, onPick, onAdvance, focus = true) {
   container.innerHTML = "";
   container.onkeydown = (event) => {
@@ -847,24 +852,41 @@ function renderLevelOptions(container, levels, selected, onPick, onAdvance, focu
     event.preventDefault();
     onAdvance();
   };
-  levels.forEach((text, index) => {
+  const bar = document.createElement("div");
+  bar.className = "level-bar";
+  const legend = document.createElement("p");
+  legend.className = "level-legend";
+  legend.setAttribute("aria-live", "polite");
+  const show = (score) => {
+    const level = score ? levels[score - 1] : null;
+    legend.replaceChildren(level ? emphasize(level.text ?? level, level.emphasis) : t("evaluation.scaleHint"));
+    legend.classList.toggle("is-empty", !level);
+    legend.style.setProperty("--at", score ? `${(score - 0.5) * 20}%` : "50%");
+  };
+  const current = () => Number(container.querySelector("input:checked")?.value) || null;
+  levels.forEach((_, index) => {
     const score = index + 1;
     const option = document.createElement("label");
     option.className = "level-option";
+    option.dataset.score = String(score);
     const input = document.createElement("input");
     input.type = "radio";
     input.name = `${container.id}-level`;
     input.value = String(score);
     input.checked = selected === score;
-    input.addEventListener("change", () => onPick(score));
+    input.addEventListener("change", () => { show(score); onPick(score); });
+    input.addEventListener("focus", () => show(score));
+    input.addEventListener("blur", () => show(current()));
+    option.addEventListener("pointerenter", () => show(score));
+    option.addEventListener("pointerleave", () => show(current()));
     const number = document.createElement("span");
     number.className = "level-number";
     number.textContent = String(score);
-    const description = document.createElement("span");
-    description.append(emphasize(text.text ?? text, text.emphasis));
-    option.append(input, number, description);
-    container.append(option);
+    option.append(input, number);
+    bar.append(option);
   });
+  container.append(bar, legend);
+  show(selected);
   if (focus) (container.querySelector("input:checked") || container.querySelector("input"))?.focus({ preventScroll: true });
 }
 

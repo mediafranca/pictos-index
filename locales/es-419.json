@@ -104,7 +104,12 @@
     "linkError": "No se pudo cargar la librería de este enlace. Revisa tu conexión y vuelve a abrirlo; si sigue sin funcionar, avísale a quien coordina el panel.",
     "contextLabel": "Contexto de uso: {context}",
     "source": "Librería para evaluar",
-    "sourceHint": "Puedes elegir una librería breve, cargar un JSON o pegar su dirección pública."
+    "optionFile": "Subir una librería",
+    "optionUrl": "Usar una librería publicada en la web",
+    "optionSamples": "Usar una librería de ejemplo",
+    "urlPlaceholder": "https://…/libreria.json",
+    "browseUrl": "https://librerias.pictos.net",
+    "browseLink": "Buscar librerías en librerias.pictos.net"
   },
   "profile": {
     "title": "Cuéntanos tu relación con la CAA",
@@ -140,6 +145,7 @@
     "itemFallback": "Elemento {number}",
     "imageFallback": "Pictograma sin imagen",
     "noLevelDescription": "Sin descripción para este nivel.",
+    "scaleHint": "Pasa el cursor sobre un valor para ver qué significa; elige uno para fijarlo.",
     "questionPosition": "Pictograma {current} de {total} · pregunta {question} de {questions}",
     "sourcePhraseLine": "Frase de origen: **«{phrase}»**"
   },
@@ -335,9 +341,8 @@
   },
   "theme": {
     "label": "Tema",
-    "system": "Tema del sistema",
-    "light": "Claro",
-    "dark": "Oscuro"
+    "toLight": "Cambiar a tema claro",
+    "toDark": "Cambiar a tema oscuro"
   },
   "keys": {
     "choose": "Flechas: elegir · Enter: siguiente",
@@ -348,7 +353,8 @@
     "licences": "Código bajo licencia Apache 2.0 · Rúbrica bajo CC BY 4.0",
     "source": "Código fuente en GitHub",
     "label": "Enlaces",
-    "protocol": "Guía del protocolo"
+    "protocol": "Guía del protocolo",
+    "libraries": "Librerías PICTOS"
   },
   "consent": {
     "title": "Antes de empezar",
